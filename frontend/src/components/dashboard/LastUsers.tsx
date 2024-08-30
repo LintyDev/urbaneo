@@ -19,7 +19,7 @@ function LastUsers() {
 			{loading && <LoadingBox />}
 			{error && <ErrorBox />}
 
-			<div className="flex gap-2 h-full w-full overflow-x-scroll">
+			<div className="flex gap-2 h-full w-full overflow-x-scroll max-h-[210px]">
 				{data?.getUsers.map((u) => (
 					<div
 						key={u.id}
