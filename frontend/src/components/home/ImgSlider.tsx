@@ -36,7 +36,7 @@ function ImgSlider() {
 
 	return (
 		<>
-			<div className="absolute top-0 left-0 w-full h-full object-cover object-center -z-50">
+			<div className="absolute top-0 left-0 w-full h-full object-cover object-center -z-50 overflow-hidden">
 				{images.map((src, index) => (
 					<img
 						key={index}
