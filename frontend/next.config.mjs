@@ -9,6 +9,10 @@ const nextConfig = {
 				hostname: "localhost",
 				port: "4005",
 			},
+			{
+				protocol: "https",
+				hostname: "urbaneo.lintyserver.cloud",
+			},
 		],
 	},
 	transpilePackages: ["lucide-react"],

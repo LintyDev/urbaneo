@@ -47,7 +47,11 @@ const main = async () => {
 	app.use(
 		"/",
 		cors<cors.CorsRequest>({
-			origin: ["http://localhost:3000", "https://studio.apollographql.com"],
+			origin: [
+				"http://localhost:3000",
+				"https://studio.apollographql.com",
+				"https://urbaneo.lintyserver.cloud",
+			],
 			credentials: true,
 		}),
 		express.json(),

@@ -12,7 +12,8 @@ export default new DataSource({
 	host: "db",
 	database: process.env.POSTGRES_DB,
 	entities: [User, City, Category, Review, POI, Message, Role],
-	port: 5432,
+	port:
+		process.env.POSTGRES_PORT === undefined ? 5432 : +process.env.POSTGRES_PORT,
 	username: process.env.POSTGRES_USER,
 	password: process.env.POSTGRES_PASSWORD,
 	synchronize: true, // pas en prod
