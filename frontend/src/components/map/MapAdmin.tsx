@@ -23,6 +23,7 @@ function MapAdmin({ p }: { p: { x: number; y: number } }) {
 			zoom={13}
 			style={{ height: "100%", width: "100%", borderRadius: "0.375rem" }}
 			scrollWheelZoom={false}
+			// @ts-ignore
 			smoothSensitivity={1.5}
 			smoothWheelZoom={true}
 		>

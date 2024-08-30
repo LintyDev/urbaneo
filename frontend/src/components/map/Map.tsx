@@ -11,6 +11,7 @@ const MapComponent = () => {
 			zoom={14}
 			style={{ height: "100%", width: "100%" }}
 			scrollWheelZoom={false}
+			// @ts-ignore
 			smoothSensitivity={1.5}
 			smoothWheelZoom={true}
 		>
