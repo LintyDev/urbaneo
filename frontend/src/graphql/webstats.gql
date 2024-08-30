@@ -1,0 +1,6 @@
+query GetWebStats {
+	getWebStats {
+		label
+		nb
+	}
+}

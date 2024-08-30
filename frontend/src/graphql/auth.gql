@@ -1,0 +1,37 @@
+query Me {
+	me {
+		id
+		email
+		firstName
+		lastName
+		location
+		avatar
+		isValid
+		role
+		cityRole {
+			id
+			label
+		}
+	}
+}
+
+mutation Register($data: UserCreateInput!) {
+	register(data: $data) {
+		message
+		success
+	}
+}
+
+query Login($data: UserLoginInput!) {
+	login(data: $data) {
+		success
+		message
+	}
+}
+
+query Logout {
+	logout {
+		success
+		message
+	}
+}

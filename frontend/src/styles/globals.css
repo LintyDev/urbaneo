@@ -1,0 +1,54 @@
+@import "../../public/fonts/font.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	color: black;
+	background-color: white;
+	height: 100svh;
+	width: 100svw;
+}
+
+textarea,
+input {
+	outline: none;
+}
+
+input[type="text"] {
+	font-size: inherit;
+}
+
+.menu-shadow {
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.bg-modal {
+	position: fixed;
+	z-index: 1000;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+	background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal {
+	position: absolute;
+	background-color: white;
+	border-radius: 1rem;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	text-align: left;
+	padding: 30px;
+	display: flex;
+	width: 300;
+	height: 200;
+}
+
+.shadow-top {
+	box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,12 @@
+query GetLastUsers($limit: Float) {
+	getUsers(limit: $limit) {
+		id
+		email
+		firstName
+		lastName
+		location
+		avatar
+		isValid
+		role
+	}
+}

@@ -1,0 +1,55 @@
+query GetCities {
+	getCities {
+		id
+		name
+		coordinates {
+			x
+			y
+		}
+		zip_code
+		slug
+	}
+}
+
+query GetCity($getCityId: String!) {
+	getCity(id: $getCityId) {
+		id
+		name
+		coordinates {
+			x
+			y
+		}
+		zip_code
+		slug
+	}
+}
+
+mutation CreateCity($data: CityCreateInput!) {
+	createCity(data: $data) {
+		id
+		name
+		coordinates {
+			x
+			y
+		}
+		zip_code
+		slug
+	}
+}
+
+mutation UpdateCity($data: CityUpdateInput!) {
+	updateCity(data: $data) {
+		id
+		name
+		coordinates {
+			x
+			y
+		}
+		zip_code
+		slug
+	}
+}
+
+mutation DeleteCity($deleteCityId: String!) {
+	deleteCity(id: $deleteCityId)
+}
