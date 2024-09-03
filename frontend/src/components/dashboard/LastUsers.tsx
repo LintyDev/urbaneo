@@ -12,14 +12,14 @@ function LastUsers() {
 		},
 	});
 	return (
-		<div className="flex flex-col w-[70%] bg-white p-5 rounded-2xl shadow-md overflow-hidden">
+		<div className="flex flex-col w-[70%] bg-white p-5 rounded-2xl shadow-md overflow-hidden max-h-[210px]">
 			<p className="font-thin text-xs pl-2 pb-3">
 				Derniers utilisateurs inscrits
 			</p>
 			{loading && <LoadingBox />}
 			{error && <ErrorBox />}
 
-			<div className="flex gap-2 h-full w-full overflow-x-scroll max-h-[210px]">
+			<div className="flex gap-2 h-full w-full overflow-x-auto max-h-[210px]">
 				{data?.getUsers.map((u) => (
 					<div
 						key={u.id}

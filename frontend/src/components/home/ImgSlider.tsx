@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 function ImgSlider() {
@@ -32,12 +33,13 @@ function ImgSlider() {
 			document.body.style.color = "black";
 			clearInterval(interval);
 		};
-	}, []);
+	}, [images.length]);
 
 	return (
 		<>
 			<div className="absolute top-0 left-0 w-full h-full object-cover object-center -z-50 overflow-hidden">
 				{images.map((src, index) => (
+					// eslint-disable-next-line @next/next/no-img-element
 					<img
 						key={index}
 						src={src}

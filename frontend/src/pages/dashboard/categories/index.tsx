@@ -69,7 +69,7 @@ function Categories() {
 				<div
 					className={
 						showAllCat
-							? "pt-3 h-full overflow-scroll pb-5"
+							? "pt-3 h-full overflow-auto pb-5"
 							: "flex h-full gap-3 pt-3 overflow-hidden pb-5"
 					}
 				>

@@ -61,7 +61,7 @@ function Cities() {
 				<div
 					className={
 						showAllCities
-							? "pt-3 h-full overflow-scroll pb-5"
+							? "pt-3 h-full overflow-auto pb-5"
 							: "flex gap-3 pt-3 h-full overflow-hidden pb-5"
 					}
 				>
