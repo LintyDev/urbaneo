@@ -1,5 +1,6 @@
 import { GetCitiesDocument, useCreateCityMutation } from "@/graphql/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
+import axios from "axios";
 import { Save, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -9,6 +10,16 @@ import { number, object, string } from "yup";
 const MapAdmin = dynamic(() => import("@/components/map/MapAdmin"), {
 	ssr: false,
 });
+
+interface ApiCity {
+	nom: string;
+	code: string;
+	centre: {
+		type: string;
+		coordinates: [number, number];
+	};
+	_score: number;
+}
 
 function CreateCityC({
 	closeCreateCity,
@@ -20,6 +31,7 @@ function CreateCityC({
 	});
 	const [slug, setSlug] = useState<string[]>(["lille", "59000"]);
 	const [latLong, setLatLong] = useState({ y: 50.633333, x: 3.066667 });
+	const [citySearch, setCitySearch] = useState<ApiCity[]>([]);
 
 	const schema = object({
 		name: string().required(),
@@ -33,9 +45,34 @@ function CreateCityC({
 		handleSubmit,
 		formState: { errors },
 		reset,
+		setValue,
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
+
+	const searchCity = async (text: string) => {
+		try {
+			const result = await axios.get(
+				`https://geo.api.gouv.fr/communes?nom=${text}&fields=nom,code,centre&format=json&geometry=centre`
+			);
+			setCitySearch(result.data);
+		} catch (error) {
+			console.log("Erreur when retrieve cities");
+		}
+	};
+
+	const fillCity = (city: ApiCity) => {
+		setValue("name", city.nom);
+		setValue("zipcode", parseInt(city.code));
+		setValue("latitude", city.centre.coordinates[1]);
+		setValue("longitude", city.centre.coordinates[0]);
+		setSlug([city.nom, city.code]);
+		setLatLong({
+			y: city.centre.coordinates[1],
+			x: city.centre.coordinates[0],
+		});
+		setCitySearch([]);
+	};
 
 	const onSubmit = handleSubmit(async (data) => {
 		try {
@@ -86,21 +123,38 @@ function CreateCityC({
 							</span>
 						)}
 					</label>
-					<div className="mt-2">
+					<div className="mt-2 relative">
 						<input
 							id="name"
 							type="text"
-							className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+							className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm z-10 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 							placeholder="Lille"
 							{...register("name")}
-							onChange={(e) =>
+							onChange={(e) => {
 								setSlug((prev) => {
 									const newSlug = [...prev];
 									newSlug[0] = e.target.value.toLowerCase() ?? "";
 									return newSlug;
-								})
-							}
+								});
+								searchCity(e.target.value.toString());
+							}}
 						/>
+						{citySearch.length > 0 && (
+							<div className="absolute bg-white shadow-md w-full rounded-b-md max-h-40 overflow-y-auto">
+								{citySearch.map((c, i) => (
+									<p
+										key={i}
+										className="flex flex-col px-2 my-2 cursor-pointer hover:bg-blue-50/80"
+										onClick={() => fillCity(c)}
+									>
+										<span>{c.nom}</span>
+										<span className="text-xs text-gray-600">
+											{c.code} | {c.centre.coordinates.join(" - ")}
+										</span>
+									</p>
+								))}
+							</div>
+						)}
 					</div>
 				</div>
 
