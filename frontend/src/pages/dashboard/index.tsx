@@ -10,7 +10,7 @@ function Dashboard() {
 				<StatsWeb />
 				<StatsServer />
 			</div>
-			<div className="pt-3 h-full overflow-auto pb-5 flex gap-3 max-h-[300px]">
+			<div className="pt-3 overflow-auto pb-5 flex gap-3">
 				<LastUsers />
 				<LastPremium />
 			</div>

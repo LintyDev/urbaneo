@@ -4,7 +4,7 @@ import {
 	MonitorCog,
 	Settings,
 	User,
-	UserCog,
+	UserPen,
 } from "lucide-react";
 import {
 	Popover,
@@ -21,9 +21,9 @@ import { useEffect, useState } from "react";
 
 const linkAdmin = [
 	{
-		name: "Paramètres du compte",
+		name: "Editer mon profil",
 		href: "/account",
-		icon: UserCog,
+		icon: UserPen,
 		color: "hover:bg-[#ffffff1a]",
 	},
 	{
@@ -48,9 +48,9 @@ const linkAdmin = [
 
 const linkUser = [
 	{
-		name: "Paramètres du compte",
+		name: "Editer mon profil",
 		href: "/account",
-		icon: UserCog,
+		icon: UserPen,
 		color: "hover:bg-[#ffffff1a]",
 	},
 	{
