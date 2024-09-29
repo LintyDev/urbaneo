@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import { useAuth } from "@/contexts/AuthContext";
 import axiosImg from "@/lib/axiosImg";
 import { getImageUrl } from "@/lib/getImagesUrl";

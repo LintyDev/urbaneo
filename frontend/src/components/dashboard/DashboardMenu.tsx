@@ -57,8 +57,10 @@ function DashboardMenu() {
 							<List size={19} /> Catégories
 						</Link>
 						<Link
-							href={"#"}
-							className={`flex items-center gap-4 rounded-lg py-2 px-4 hover:bg-[#ebf2ff] hover:shadow-sm`}
+							href={"/dashboard/pois"}
+							className={`flex items-center gap-4 rounded-lg py-2 px-4 ${
+								pathname === "/dashboard/pois" ? "bg-[#ebf2ff] shadow-sm" : ""
+							} hover:bg-[#ebf2ff] hover:shadow-sm`}
 						>
 							<MapPinned size={19} /> Points d&apos;intêrets
 						</Link>

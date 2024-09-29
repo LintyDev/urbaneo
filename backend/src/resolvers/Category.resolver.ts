@@ -18,6 +18,13 @@ export default class CategoryResolver {
 	}
 
 	@Authorized(UserRole.ADMIN)
+	@Query(() => [Category])
+	async searchCategories(@Arg("text") text: string) {
+		const categories = await new CategoryServices().searchCategories(text);
+		return categories;
+	}
+
+	@Authorized(UserRole.ADMIN)
 	@Mutation(() => Category)
 	async createCategory(@Arg("data") data: CategoryCreateInput) {
 		try {

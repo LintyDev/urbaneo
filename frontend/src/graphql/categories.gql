@@ -6,6 +6,14 @@ query GetCategories {
 	}
 }
 
+query SearchCategories($text: String!) {
+	searchCategories(text: $text) {
+		id
+		name
+		icon
+	}
+}
+
 mutation CreateCategory($data: CategoryCreateInput!) {
 	createCategory(data: $data) {
 		id

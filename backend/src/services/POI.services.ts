@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { POI, POICreateInput, POIUpdateInput } from "../entities/POI.entity";
 import datasource from "../lib/datasource";
 import CityServices from "./City.services";
@@ -18,7 +18,21 @@ export default class POIServices {
 		});
 	}
 
-	async getPOIs(limit?: number): Promise<POI[]> {
+	async getPOIs(limit?: number, cityIds?: string[]): Promise<POI[]> {
+		if (cityIds?.length) {
+			const city = await new CityServices().getCities();
+			const cityIn = city.filter((c) => cityIds.includes(c.id));
+			const poisCityAdmin = await this.db.find({
+				where: {
+					city: In(cityIn),
+				},
+				take: limit,
+				relations: ["city", "categories"],
+			});
+
+			return poisCityAdmin;
+		}
+
 		const pois = await this.db.find({
 			take: limit,
 			relations: ["city", "categories"],

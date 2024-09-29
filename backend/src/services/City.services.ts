@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { Like, Repository } from "typeorm";
 import datasource from "../lib/datasource";
 import {
 	City,
@@ -19,6 +19,15 @@ export default class CityServices {
 
 	async getCities(limit?: number): Promise<City[]> {
 		const cities = await this.db.find({ take: limit });
+		return cities;
+	}
+
+	async searchCities(text: string): Promise<City[]> {
+		const cities = await this.db.find({
+			where: {
+				name: Like(`%${text}%`),
+			},
+		});
 		return cities;
 	}
 

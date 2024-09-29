@@ -39,9 +39,9 @@ export class POI {
 	@Column()
 	description: string;
 
-	@Field()
-	@Column()
-	photo: string;
+	@Field(() => [String])
+	@Column({ type: "text", array: true })
+	photos: string[];
 
 	@Field()
 	@Column()
@@ -91,8 +91,8 @@ export class POICreateInput {
 	@Field()
 	description: string;
 
-	@Field()
-	photo: string;
+	@Field(() => [String])
+	photos: string[];
 
 	@Field(() => PointInput)
 	gps_coordinates: PointInput;
@@ -118,8 +118,8 @@ export class POIUpdateInput {
 	@Field()
 	description?: string;
 
-	@Field()
-	photo?: string;
+	@Field(() => [String])
+	photos?: string[];
 
 	@Field(() => PointInput)
 	gps_coordinates?: PointInput;
@@ -132,4 +132,13 @@ export class POIUpdateInput {
 
 	@Field(() => [String], { nullable: true })
 	categoryIds?: string[];
+}
+
+@ObjectType()
+export class POIAndToken {
+	@Field(() => POI)
+	poi: POI;
+
+	@Field()
+	token: string;
 }

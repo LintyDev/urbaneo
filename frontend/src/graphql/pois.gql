@@ -1,0 +1,23 @@
+mutation CreatePOI($data: POICreateInput!) {
+	createPOI(data: $data) {
+		id
+		name
+		description
+		photos
+		slug
+		coordinates {
+			x
+			y
+		}
+		address
+		city {
+			id
+			name
+		}
+		categories {
+			id
+			icon
+			name
+		}
+	}
+}

@@ -29,7 +29,7 @@ function DashboardLayout({ children }: PropsWithChildren) {
 	return (
 		<div className="w-svw h-svh flex min-h-screen">
 			<DashboardMenu />
-			<main className="flex flex-col pl-3 h-full w-full pt-5 pr-5 overflow-x-hidden">
+			<main className="grid grid-rows-[auto_1fr] pl-3 h-full w-full pt-5 pr-5 overflow-x-hidden">
 				<DashboardHeader />
 				{children}
 			</main>

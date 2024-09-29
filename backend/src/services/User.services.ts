@@ -6,6 +6,7 @@ import {
 } from "../entities/User.entity";
 import datasource from "../lib/datasource";
 import { validate } from "class-validator";
+import { SignJWT } from "jose";
 
 export default class UserServices {
 	db: Repository<User>;
@@ -54,5 +55,14 @@ export default class UserServices {
 			relations: ["cityRole.city", "reviews"],
 		});
 		return user;
+	}
+
+	async generateToken(user: string): Promise<string> {
+		const token = await new SignJWT({ user, access: true })
+			.setProtectedHeader({ alg: "HS256", typ: "jwt" })
+			.setExpirationTime("1h")
+			.sign(new TextEncoder().encode(`${process.env.SECRET_KEY}`));
+
+		return token;
 	}
 }

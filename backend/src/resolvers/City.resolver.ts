@@ -27,6 +27,13 @@ export default class CityResolver {
 	}
 
 	@Authorized(UserRole.ADMIN)
+	@Query(() => [City])
+	async searchCities(@Arg("text") text: string) {
+		const cities = await new CityServices().searchCities(text);
+		return cities;
+	}
+
+	@Authorized(UserRole.ADMIN)
 	@Mutation(() => City)
 	async createCity(@Arg("data") data: CityCreateInput) {
 		try {

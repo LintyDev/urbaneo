@@ -15,13 +15,14 @@ function SetViewOnClick({ coords }: { coords: LatLngExpression }) {
 	return null;
 }
 
-function MapAdmin({ p }: { p: { x: number; y: number } }) {
+function MapAdmin({ p, size }: { p: { x: number; y: number }; size?: string }) {
+	const currSize = size ? size : "100%";
 	return (
 		<MapContainer
 			id="map_admin"
 			center={[0, 0]}
 			zoom={13}
-			style={{ height: "100%", width: "100%", borderRadius: "0.375rem" }}
+			style={{ height: currSize, width: "100%", borderRadius: "0.375rem" }}
 			scrollWheelZoom={false}
 			// @ts-ignore
 			smoothSensitivity={1.5}

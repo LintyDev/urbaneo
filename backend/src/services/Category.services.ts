@@ -1,4 +1,4 @@
-import { Repository, In } from "typeorm";
+import { Repository, In, Like } from "typeorm";
 import {
 	Category,
 	CategoryCreateInput,
@@ -30,8 +30,18 @@ export default class CategoryServices {
 		return categories;
 	}
 
+	async searchCategories(text: string): Promise<Category[]> {
+		const categories = await this.db.find({
+			where: { name: Like(`%${text.toLowerCase()}%`) },
+		});
+		return categories;
+	}
+
 	async createCategory(data: CategoryCreateInput): Promise<Category> {
-		const newCategory = this.db.create(data);
+		const newCategory = this.db.create({
+			...data,
+			name: data.name.toLowerCase(),
+		});
 		return await this.db.save(newCategory);
 	}
 

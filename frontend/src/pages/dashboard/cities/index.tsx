@@ -4,6 +4,7 @@ import ModalDeleteCity from "@/components/dashboard/cities/ModalDeleteCity";
 import UpdateCity from "@/components/dashboard/cities/UpdateCity";
 import { GetCityQuery } from "@/graphql/schema";
 import { Plus, Search } from "lucide-react";
+import React from "react";
 import { useState } from "react";
 
 function Cities() {

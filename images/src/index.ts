@@ -4,10 +4,13 @@ import multer from "multer";
 import checkToken from "./middlewares/token";
 import path from "path";
 import fs from "fs";
-import upload from "./lib/upload";
+import upload, { uploadPOI } from "./lib/upload";
 import cookieParser from "cookie-parser";
 
 const app = express();
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use(
 	cors({
@@ -36,8 +39,6 @@ app.get("/:img", (req, res) => {
 	});
 });
 
-// app.use(checkToken);
-
 app.post("/img", function (req, res) {
 	console.log("post img");
 	upload(req, res, function (err: any) {
@@ -51,6 +52,27 @@ app.post("/img", function (req, res) {
 		return res.json({
 			filename: req.file?.filename,
 			success: true,
+		});
+	});
+});
+
+app.use(checkToken);
+
+app.post("/imgPoi", function (req, res) {
+	uploadPOI(req, res, function (err: any) {
+		if (err instanceof multer.MulterError) {
+			return res.json({ message: err.message, success: false });
+		} else if (err) {
+			return res.json({ message: err.message, success: false });
+		}
+
+		let fileNames: string[] = [];
+		if (req.files && Array.isArray(req.files)) {
+			fileNames = req.files.map((file) => file.filename);
+		}
+		return res.json({
+			success: true,
+			fileNames: fileNames,
 		});
 	});
 });

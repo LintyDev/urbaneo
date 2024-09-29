@@ -72,7 +72,7 @@ export type Mutation = {
   addReview: Review;
   createCategory: Category;
   createCity: City;
-  createPOI: Message;
+  createPOI: Poi;
   delereRoles: Message;
   deleteCategory: Scalars['Boolean']['output'];
   deleteCity: Scalars['Boolean']['output'];
@@ -187,7 +187,7 @@ export type Poi = {
   description: Scalars['String']['output'];
   id: Scalars['String']['output'];
   name: Scalars['String']['output'];
-  photo: Scalars['String']['output'];
+  photos: Array<Scalars['String']['output']>;
   reviews?: Maybe<Array<Review>>;
   slug: Scalars['String']['output'];
 };
@@ -199,7 +199,7 @@ export type PoiCreateInput = {
   description: Scalars['String']['input'];
   gps_coordinates: PointInput;
   name: Scalars['String']['input'];
-  photo: Scalars['String']['input'];
+  photos: Array<Scalars['String']['input']>;
 };
 
 export type PoiUpdateInput = {
@@ -210,7 +210,7 @@ export type PoiUpdateInput = {
   gps_coordinates: PointInput;
   id: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  photo: Scalars['String']['input'];
+  photos: Array<Scalars['String']['input']>;
 };
 
 export type PointInput = {
@@ -239,6 +239,8 @@ export type Query = {
   login: Message;
   logout: Message;
   me?: Maybe<UserWithoutPassword>;
+  searchCategories: Array<Category>;
+  searchCities: Array<City>;
 };
 
 
@@ -284,6 +286,16 @@ export type QueryGetUsersArgs = {
 
 export type QueryLoginArgs = {
   data: UserLoginInput;
+};
+
+
+export type QuerySearchCategoriesArgs = {
+  text: Scalars['String']['input'];
+};
+
+
+export type QuerySearchCitiesArgs = {
+  text: Scalars['String']['input'];
 };
 
 export type Review = {
@@ -421,6 +433,13 @@ export type GetCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetCategoriesQuery = { __typename?: 'Query', getCategories: Array<{ __typename?: 'Category', id: any, name: string, icon: string }> };
 
+export type SearchCategoriesQueryVariables = Exact<{
+  text: Scalars['String']['input'];
+}>;
+
+
+export type SearchCategoriesQuery = { __typename?: 'Query', searchCategories: Array<{ __typename?: 'Category', id: any, name: string, icon: string }> };
+
 export type CreateCategoryMutationVariables = Exact<{
   data: CategoryCreateInput;
 }>;
@@ -454,6 +473,13 @@ export type GetCityQueryVariables = Exact<{
 
 export type GetCityQuery = { __typename?: 'Query', getCity: { __typename?: 'City', id: any, name: string, zip_code: number, slug: string, coordinates: { __typename?: 'PointObject', x: number, y: number } } };
 
+export type SearchCitiesQueryVariables = Exact<{
+  text: Scalars['String']['input'];
+}>;
+
+
+export type SearchCitiesQuery = { __typename?: 'Query', searchCities: Array<{ __typename?: 'City', id: any, name: string, slug: string, zip_code: number, coordinates: { __typename?: 'PointObject', x: number, y: number } }> };
+
 export type CreateCityMutationVariables = Exact<{
   data: CityCreateInput;
 }>;
@@ -474,6 +500,13 @@ export type DeleteCityMutationVariables = Exact<{
 
 
 export type DeleteCityMutation = { __typename?: 'Mutation', deleteCity: boolean };
+
+export type CreatePoiMutationVariables = Exact<{
+  data: PoiCreateInput;
+}>;
+
+
+export type CreatePoiMutation = { __typename?: 'Mutation', createPOI: { __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, address: string, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> } };
 
 export type GetLastUsersQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']['input']>;
@@ -694,6 +727,48 @@ export type GetCategoriesQueryHookResult = ReturnType<typeof useGetCategoriesQue
 export type GetCategoriesLazyQueryHookResult = ReturnType<typeof useGetCategoriesLazyQuery>;
 export type GetCategoriesSuspenseQueryHookResult = ReturnType<typeof useGetCategoriesSuspenseQuery>;
 export type GetCategoriesQueryResult = Apollo.QueryResult<GetCategoriesQuery, GetCategoriesQueryVariables>;
+export const SearchCategoriesDocument = gql`
+    query SearchCategories($text: String!) {
+  searchCategories(text: $text) {
+    id
+    name
+    icon
+  }
+}
+    `;
+
+/**
+ * __useSearchCategoriesQuery__
+ *
+ * To run a query within a React component, call `useSearchCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchCategoriesQuery({
+ *   variables: {
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useSearchCategoriesQuery(baseOptions: Apollo.QueryHookOptions<SearchCategoriesQuery, SearchCategoriesQueryVariables> & ({ variables: SearchCategoriesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchCategoriesQuery, SearchCategoriesQueryVariables>(SearchCategoriesDocument, options);
+      }
+export function useSearchCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchCategoriesQuery, SearchCategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchCategoriesQuery, SearchCategoriesQueryVariables>(SearchCategoriesDocument, options);
+        }
+export function useSearchCategoriesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SearchCategoriesQuery, SearchCategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchCategoriesQuery, SearchCategoriesQueryVariables>(SearchCategoriesDocument, options);
+        }
+export type SearchCategoriesQueryHookResult = ReturnType<typeof useSearchCategoriesQuery>;
+export type SearchCategoriesLazyQueryHookResult = ReturnType<typeof useSearchCategoriesLazyQuery>;
+export type SearchCategoriesSuspenseQueryHookResult = ReturnType<typeof useSearchCategoriesSuspenseQuery>;
+export type SearchCategoriesQueryResult = Apollo.QueryResult<SearchCategoriesQuery, SearchCategoriesQueryVariables>;
 export const CreateCategoryDocument = gql`
     mutation CreateCategory($data: CategoryCreateInput!) {
   createCategory(data: $data) {
@@ -888,6 +963,53 @@ export type GetCityQueryHookResult = ReturnType<typeof useGetCityQuery>;
 export type GetCityLazyQueryHookResult = ReturnType<typeof useGetCityLazyQuery>;
 export type GetCitySuspenseQueryHookResult = ReturnType<typeof useGetCitySuspenseQuery>;
 export type GetCityQueryResult = Apollo.QueryResult<GetCityQuery, GetCityQueryVariables>;
+export const SearchCitiesDocument = gql`
+    query SearchCities($text: String!) {
+  searchCities(text: $text) {
+    id
+    name
+    slug
+    zip_code
+    coordinates {
+      x
+      y
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchCitiesQuery__
+ *
+ * To run a query within a React component, call `useSearchCitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchCitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchCitiesQuery({
+ *   variables: {
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useSearchCitiesQuery(baseOptions: Apollo.QueryHookOptions<SearchCitiesQuery, SearchCitiesQueryVariables> & ({ variables: SearchCitiesQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchCitiesQuery, SearchCitiesQueryVariables>(SearchCitiesDocument, options);
+      }
+export function useSearchCitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchCitiesQuery, SearchCitiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchCitiesQuery, SearchCitiesQueryVariables>(SearchCitiesDocument, options);
+        }
+export function useSearchCitiesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SearchCitiesQuery, SearchCitiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchCitiesQuery, SearchCitiesQueryVariables>(SearchCitiesDocument, options);
+        }
+export type SearchCitiesQueryHookResult = ReturnType<typeof useSearchCitiesQuery>;
+export type SearchCitiesLazyQueryHookResult = ReturnType<typeof useSearchCitiesLazyQuery>;
+export type SearchCitiesSuspenseQueryHookResult = ReturnType<typeof useSearchCitiesSuspenseQuery>;
+export type SearchCitiesQueryResult = Apollo.QueryResult<SearchCitiesQuery, SearchCitiesQueryVariables>;
 export const CreateCityDocument = gql`
     mutation CreateCity($data: CityCreateInput!) {
   createCity(data: $data) {
@@ -999,6 +1121,57 @@ export function useDeleteCityMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteCityMutationHookResult = ReturnType<typeof useDeleteCityMutation>;
 export type DeleteCityMutationResult = Apollo.MutationResult<DeleteCityMutation>;
 export type DeleteCityMutationOptions = Apollo.BaseMutationOptions<DeleteCityMutation, DeleteCityMutationVariables>;
+export const CreatePoiDocument = gql`
+    mutation CreatePOI($data: POICreateInput!) {
+  createPOI(data: $data) {
+    id
+    name
+    description
+    photos
+    slug
+    coordinates {
+      x
+      y
+    }
+    address
+    city {
+      id
+      name
+    }
+    categories {
+      id
+      icon
+      name
+    }
+  }
+}
+    `;
+export type CreatePoiMutationFn = Apollo.MutationFunction<CreatePoiMutation, CreatePoiMutationVariables>;
+
+/**
+ * __useCreatePoiMutation__
+ *
+ * To run a mutation, you first call `useCreatePoiMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePoiMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPoiMutation, { data, loading, error }] = useCreatePoiMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCreatePoiMutation(baseOptions?: Apollo.MutationHookOptions<CreatePoiMutation, CreatePoiMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePoiMutation, CreatePoiMutationVariables>(CreatePoiDocument, options);
+      }
+export type CreatePoiMutationHookResult = ReturnType<typeof useCreatePoiMutation>;
+export type CreatePoiMutationResult = Apollo.MutationResult<CreatePoiMutation>;
+export type CreatePoiMutationOptions = Apollo.BaseMutationOptions<CreatePoiMutation, CreatePoiMutationVariables>;
 export const GetLastUsersDocument = gql`
     query GetLastUsers($limit: Float) {
   getUsers(limit: $limit) {
