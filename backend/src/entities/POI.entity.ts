@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType } from "type-graphql";
+import { Field, InputType, ObjectType, registerEnumType } from "type-graphql";
 import {
 	BeforeInsert,
 	BeforeUpdate,
@@ -15,6 +15,17 @@ import { Category } from "./Category.entity";
 import { Review } from "./Review.entity";
 import { Point } from "geojson";
 import { PointInput, PointObject } from "./Point.entity";
+
+export enum POIBudget {
+	HIGH = "HIGH",
+	MID = "MID",
+	LOW = "LOW",
+}
+
+registerEnumType(POIBudget, {
+	name: "POIBudget",
+	description: "POI's budgets level",
+});
 
 @ObjectType()
 @Entity()
@@ -66,6 +77,13 @@ export class POI {
 	@Column()
 	address: string;
 
+	@Field((type) => POIBudget)
+	@Column({
+		type: "enum",
+		enum: POIBudget,
+	})
+	budget: POIBudget;
+
 	//Suppression du POI si la ville est supprimée
 	@Field(() => City)
 	@ManyToOne(() => City, (city) => city.pois, {
@@ -100,6 +118,9 @@ export class POICreateInput {
 	@Field()
 	address: string;
 
+	@Field((type) => POIBudget)
+	budget: POIBudget;
+
 	@Field()
 	cityId: string;
 
@@ -126,6 +147,9 @@ export class POIUpdateInput {
 
 	@Field()
 	address?: string;
+
+	@Field((type) => POIBudget)
+	budget?: POIBudget;
 
 	@Field()
 	cityId: string;

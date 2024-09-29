@@ -181,6 +181,7 @@ export type MutationUpdateUserArgs = {
 export type Poi = {
   __typename?: 'POI';
   address: Scalars['String']['output'];
+  budget: PoiBudget;
   categories: Array<Category>;
   city: City;
   coordinates: PointObject;
@@ -192,8 +193,16 @@ export type Poi = {
   slug: Scalars['String']['output'];
 };
 
+/** POI's budgets level */
+export const enum PoiBudget {
+  High = 'HIGH',
+  Low = 'LOW',
+  Mid = 'MID'
+};
+
 export type PoiCreateInput = {
   address: Scalars['String']['input'];
+  budget: PoiBudget;
   categoryIds?: InputMaybe<Array<Scalars['String']['input']>>;
   cityId: Scalars['String']['input'];
   description: Scalars['String']['input'];
@@ -204,6 +213,7 @@ export type PoiCreateInput = {
 
 export type PoiUpdateInput = {
   address: Scalars['String']['input'];
+  budget: PoiBudget;
   categoryIds?: InputMaybe<Array<Scalars['String']['input']>>;
   cityId: Scalars['String']['input'];
   description: Scalars['String']['input'];
@@ -506,7 +516,7 @@ export type CreatePoiMutationVariables = Exact<{
 }>;
 
 
-export type CreatePoiMutation = { __typename?: 'Mutation', createPOI: { __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, address: string, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> } };
+export type CreatePoiMutation = { __typename?: 'Mutation', createPOI: { __typename?: 'POI', id: string, name: string, description: string, address: string, slug: string, photos: Array<string>, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> } };
 
 export type GetLastUsersQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']['input']>;
@@ -1127,13 +1137,13 @@ export const CreatePoiDocument = gql`
     id
     name
     description
-    photos
+    address
     slug
+    photos
     coordinates {
       x
       y
     }
-    address
     city {
       id
       name
@@ -1143,6 +1153,7 @@ export const CreatePoiDocument = gql`
       icon
       name
     }
+    budget
   }
 }
     `;

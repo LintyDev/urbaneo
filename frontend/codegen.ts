@@ -17,6 +17,9 @@ const config: CodegenConfig = {
 				// Plugin pour générer des hooks React Apollo avec TypeScript.
 				"typescript-react-apollo",
 			],
+			config: {
+				constEnums: true,
+			},
 		},
 	},
 };

@@ -3,13 +3,13 @@ mutation CreatePOI($data: POICreateInput!) {
 		id
 		name
 		description
-		photos
+		address
 		slug
+		photos
 		coordinates {
 			x
 			y
 		}
-		address
 		city {
 			id
 			name
@@ -19,5 +19,6 @@ mutation CreatePOI($data: POICreateInput!) {
 			icon
 			name
 		}
+		budget
 	}
 }

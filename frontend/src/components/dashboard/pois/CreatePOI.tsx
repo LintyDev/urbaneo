@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import DynamicIcon, { IconProps } from "@/components/common/DynamicIcon";
 import {
+	PoiBudget,
 	Query,
 	useCreatePoiMutation,
 	useSearchCategoriesLazyQuery,
@@ -9,7 +10,7 @@ import {
 import { formats } from "@/lib/acceptedFormats";
 import axiosImg from "@/lib/axiosImg";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Save, ScanEye, X } from "lucide-react";
+import { DollarSign, Save, ScanEye, X } from "lucide-react";
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { array, mixed, number, object, string } from "yup";
@@ -82,6 +83,18 @@ function CreatePOI({
 				if (!value) return false;
 				return Array.from(value).every((file) => file.size < 5 * 1024 * 1024);
 			}),
+		budget: string()
+			.test("testEnum", "Wrong Value", (value) => {
+				if (
+					value === PoiBudget.High ||
+					value === PoiBudget.Mid ||
+					value === PoiBudget.Low
+				) {
+					return true;
+				}
+				return false;
+			})
+			.required(),
 	});
 
 	const {
@@ -144,6 +157,7 @@ function CreatePOI({
 					cityId: data.cityId,
 					categoryIds: data.categories.map((c) => c.id),
 					photos: fileNames,
+					budget: data.budget as PoiBudget,
 				},
 			},
 		});
@@ -502,6 +516,30 @@ function CreatePOI({
 							/>
 						</div>
 					</div>
+				</div>
+
+				<div className="mt-2">
+					<label
+						htmlFor="budget"
+						className="flex items-center gap-2 text-sm font-medium leading-6 text-gray-900"
+					>
+						<span>Budget</span>
+						{errors.budget && (
+							<span className="text-sm text-red-600 italic">
+								{errors.budget.message}
+							</span>
+						)}
+					</label>
+					<select
+						id="budget"
+						className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+						{...register("budget")}
+					>
+						<option value={"none"}>Choisir un budget</option>
+						<option value={PoiBudget.High}>$$$</option>
+						<option value={PoiBudget.Mid}>$$</option>
+						<option value={PoiBudget.Low}>$</option>
+					</select>
 				</div>
 
 				<div className="flex justify-between">
