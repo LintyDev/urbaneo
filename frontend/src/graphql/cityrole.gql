@@ -1,0 +1,13 @@
+mutation AddRole($data: RoleInput!) {
+	AddRole(data: $data) {
+		message
+		success
+	}
+}
+
+mutation DeleteRoles($data: RoleInput!) {
+	deleteRoles(data: $data) {
+		message
+		success
+	}
+}

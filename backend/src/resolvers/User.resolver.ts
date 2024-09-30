@@ -41,7 +41,7 @@ export default class UserResolver {
 	@Query(() => Message)
 	async login(@Arg("data") data: UserLoginInput, @Ctx() ctx: MyContext) {
 		const user = await new UserServices().findUserByEmail(data.email);
-		if (!user) {
+		if (!user || !user.isValid) {
 			throw new Error("Combinaison incorrecte");
 		}
 		// Comparaison du mot de passe haché
@@ -95,17 +95,14 @@ export default class UserResolver {
 		return msg;
 	}
 
-	@Mutation(() => Message)
+	@Authorized(UserRole.ADMIN)
+	@Mutation(() => UserWithoutPassword)
 	async updateUser(@Arg("data") data: UserUpdateInput) {
-		const msg = new Message();
 		try {
-			await new UserServices().updateUser(data);
-			msg.success = true;
-			msg.message = "Utilisateur modifié avec succès";
+			return await new UserServices().updateUser(data);
 		} catch (error: any) {
 			throw new Error("Erreur lors de la modification de l'utilisateur");
 		}
-		return msg;
 	}
 
 	@Authorized(UserRole.ADMIN)

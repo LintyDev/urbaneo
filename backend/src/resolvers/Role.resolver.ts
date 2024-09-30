@@ -1,6 +1,6 @@
-import { Arg, Authorized, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Authorized, Mutation, Query, Resolver } from "type-graphql";
 import { UserRole } from "../entities/User.entity";
-import { RoleInput, RoleUpdate } from "../entities/Role.entity";
+import { Label, RoleInput, RoleUpdate } from "../entities/Role.entity";
 import RoleService from "../services/Role.services";
 import { Message } from "../entities/Message.entity";
 
@@ -36,13 +36,17 @@ export default class RoleResolver {
 
 	@Authorized(UserRole.ADMIN)
 	@Mutation(() => Message)
-	async delereRoles(@Arg("userId") userId: string) {
+	async deleteRoles(@Arg("data") data: RoleInput) {
 		const msg = new Message();
 		try {
-			await new RoleService().deleteRoles(userId);
+			await new RoleService().deleteRoleByCity(
+				data.userId,
+				data.cityId,
+				data.label
+			);
 			msg.success = true;
 			msg.message = "Role supprimé avec succès";
-		} catch (error: any) {
+		} catch (error) {
 			throw new Error("Erreur lors de suppression du role");
 		}
 		return msg;

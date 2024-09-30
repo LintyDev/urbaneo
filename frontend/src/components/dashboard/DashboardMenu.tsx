@@ -69,8 +69,10 @@ function DashboardMenu() {
 					<div className="flex flex-col gap-2 font-light">
 						<p className="font-thin text-xs pl-2">Gestions</p>
 						<Link
-							href={"#"}
-							className={`flex items-center gap-4 rounded-lg py-2 px-4 hover:bg-[#ebf2ff] hover:shadow-sm`}
+							href={"/dashboard/users"}
+							className={`flex items-center gap-4 rounded-lg py-2 px-4 ${
+								pathname === "/dashboard/users" ? "bg-[#ebf2ff] shadow-sm" : ""
+							} hover:bg-[#ebf2ff] hover:shadow-sm`}
 						>
 							<Users size={19} /> Utilisateurs
 						</Link>

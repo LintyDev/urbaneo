@@ -68,7 +68,7 @@ export class User {
 	@Column({ default: true })
 	isValid: boolean;
 
-	@Field()
+	@Field((type) => UserRole)
 	@Column({
 		type: "enum",
 		enum: UserRole,
@@ -108,7 +108,7 @@ export class UserWithoutPassword implements Omit<User, "password"> {
 	@Field()
 	isValid: boolean;
 
-	@Field()
+	@Field((type) => UserRole)
 	role: UserRole;
 
 	@Field(() => [Role])
@@ -163,9 +163,6 @@ export class UserUpdateInput {
 	email?: string;
 
 	@Field({ nullable: true })
-	password?: string;
-
-	@Field({ nullable: true })
 	location?: string;
 
 	@Field({ nullable: true })
@@ -174,6 +171,6 @@ export class UserUpdateInput {
 	@Field({ nullable: true })
 	isValid: boolean;
 
-	@Field({ nullable: true })
+	@Field((type) => UserRole, { nullable: true })
 	role: UserRole;
 }

@@ -27,7 +27,7 @@ export class Role {
 	@Field(() => GraphQLUUID)
 	id: string;
 
-	@Field()
+	@Field((type) => Label)
 	@Column({
 		type: "enum",
 		enum: Label,
@@ -47,7 +47,7 @@ export class Role {
 
 @InputType()
 export class RoleInput {
-	@Field()
+	@Field((type) => Label)
 	label: Label;
 
 	@Field(() => GraphQLUUID)
@@ -62,7 +62,7 @@ export class RoleUpdate {
 	@Field(() => GraphQLUUID)
 	id: string;
 
-	@Field()
+	@Field((type) => Label)
 	label: Label;
 
 	@Field(() => GraphQLUUID)

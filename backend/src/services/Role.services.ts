@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { Role, RoleInput, RoleUpdate } from "../entities/Role.entity";
+import { Label, Role, RoleInput, RoleUpdate } from "../entities/Role.entity";
 import datasource from "../lib/datasource";
 import UserServices from "./User.services";
 import CityServices from "./City.services";
@@ -26,16 +26,22 @@ export default class RoleServices {
 		return await this.db.save(newRole);
 	}
 
-	async deleteRoles(userId: string): Promise<Role> {
+	async deleteRoles({
+		userId,
+		label,
+	}: {
+		userId: string;
+		label: Label;
+	}): Promise<Role> {
 		const role = await this.db.findOneOrFail({
-			where: { user: { id: userId } },
+			where: { user: { id: userId }, label: label },
 		});
 		return await this.db.remove(role);
 	}
 
-	async deleteRoleByCity(userId: string, cityId: string) {
+	async deleteRoleByCity(userId: string, cityId: string, label: Label) {
 		const role = await this.db.findOneOrFail({
-			where: { user: { id: userId }, city: { id: cityId } },
+			where: { user: { id: userId }, city: { id: cityId }, label: label },
 		});
 		return await this.db.remove(role);
 	}

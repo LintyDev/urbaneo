@@ -67,7 +67,7 @@ function UpdateCat({
 			icon: category?.icon,
 		});
 		setCurrIcon(category?.icon as IconProps["name"]);
-	}, [category]);
+	}, [category, reset]);
 
 	return (
 		<div className="w-full">

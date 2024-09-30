@@ -10,3 +10,52 @@ query GetLastUsers($limit: Float) {
 		role
 	}
 }
+
+query GetUsers {
+	getUsers {
+		id
+		email
+		firstName
+		lastName
+		location
+		avatar
+		isValid
+		role
+		cityRole {
+			city {
+				name
+				id
+			}
+			label
+			id
+		}
+	}
+}
+
+mutation UpdateUser($data: UserUpdateInput!) {
+	updateUser(data: $data) {
+		id
+		email
+		firstName
+		lastName
+		location
+		avatar
+		isValid
+		role
+		cityRole {
+			id
+			label
+			city {
+				id
+				name
+			}
+		}
+	}
+}
+
+mutation DeleteUser($deleteUserId: String!) {
+	deleteUser(id: $deleteUserId) {
+		success
+		message
+	}
+}

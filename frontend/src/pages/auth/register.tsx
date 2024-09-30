@@ -143,11 +143,16 @@ function Register() {
 									autoComplete="avatar"
 									className="hidden"
 									accept="image/*"
-									{...register("avatar")}
+									// {...register("avatar")}
 									onChange={changeProfil}
 								/>
 								Choisir une photo de profil
 							</label>
+							{errors.avatar && (
+								<p className="mt-2 text-sm text-red-600">
+									{errors.avatar.message}
+								</p>
+							)}
 						</div>
 					</div>
 
@@ -292,7 +297,11 @@ function Register() {
 					</div>
 
 					<div className="self-end mt-2 md:mt-0">
-						<button className="relative inline-block group">
+						<button
+							className="relative inline-block group"
+							type="submit"
+							onClick={() => console.log("je clique sur creer compte")}
+						>
 							<span className="relative z-10 block p-2 overflow-hidden font-medium leading-tight text-black transition-colors duration-300 ease-out border-2 border-black rounded-lg group-hover:text-white">
 								<span className="absolute inset-0 w-full h-full p-2 rounded-lg bg-white"></span>
 								<span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-black group-hover:-rotate-180 ease"></span>
