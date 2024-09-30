@@ -72,3 +72,7 @@ mutation UpdatePOI($data: POIUpdateInput!) {
 		}
 	}
 }
+
+mutation DeletePOI($deletePoiId: String!) {
+	deletePOI(id: $deletePoiId)
+}

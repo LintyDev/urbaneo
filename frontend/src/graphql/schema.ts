@@ -76,7 +76,7 @@ export type Mutation = {
   delereRoles: Message;
   deleteCategory: Scalars['Boolean']['output'];
   deleteCity: Scalars['Boolean']['output'];
-  deletePOI: Message;
+  deletePOI: Scalars['Boolean']['output'];
   deleteReview: Message;
   deleteUser: Message;
   register: Message;
@@ -529,6 +529,13 @@ export type UpdatePoiMutationVariables = Exact<{
 
 
 export type UpdatePoiMutation = { __typename?: 'Mutation', updatePOI: { __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, address: string, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> } };
+
+export type DeletePoiMutationVariables = Exact<{
+  deletePoiId: Scalars['String']['input'];
+}>;
+
+
+export type DeletePoiMutation = { __typename?: 'Mutation', deletePOI: boolean };
 
 export type GetLastUsersQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']['input']>;
@@ -1305,6 +1312,37 @@ export function useUpdatePoiMutation(baseOptions?: Apollo.MutationHookOptions<Up
 export type UpdatePoiMutationHookResult = ReturnType<typeof useUpdatePoiMutation>;
 export type UpdatePoiMutationResult = Apollo.MutationResult<UpdatePoiMutation>;
 export type UpdatePoiMutationOptions = Apollo.BaseMutationOptions<UpdatePoiMutation, UpdatePoiMutationVariables>;
+export const DeletePoiDocument = gql`
+    mutation DeletePOI($deletePoiId: String!) {
+  deletePOI(id: $deletePoiId)
+}
+    `;
+export type DeletePoiMutationFn = Apollo.MutationFunction<DeletePoiMutation, DeletePoiMutationVariables>;
+
+/**
+ * __useDeletePoiMutation__
+ *
+ * To run a mutation, you first call `useDeletePoiMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePoiMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePoiMutation, { data, loading, error }] = useDeletePoiMutation({
+ *   variables: {
+ *      deletePoiId: // value for 'deletePoiId'
+ *   },
+ * });
+ */
+export function useDeletePoiMutation(baseOptions?: Apollo.MutationHookOptions<DeletePoiMutation, DeletePoiMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeletePoiMutation, DeletePoiMutationVariables>(DeletePoiDocument, options);
+      }
+export type DeletePoiMutationHookResult = ReturnType<typeof useDeletePoiMutation>;
+export type DeletePoiMutationResult = Apollo.MutationResult<DeletePoiMutation>;
+export type DeletePoiMutationOptions = Apollo.BaseMutationOptions<DeletePoiMutation, DeletePoiMutationVariables>;
 export const GetLastUsersDocument = gql`
     query GetLastUsers($limit: Float) {
   getUsers(limit: $limit) {

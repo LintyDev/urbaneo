@@ -9,10 +9,12 @@ function ListPOIs({
 	showAll,
 	modal,
 	setPoi,
+	deletePoi,
 }: {
 	showAll: boolean;
 	modal: string;
 	setPoi: (poi: Query["getPOIs"][number]) => void;
+	deletePoi: (poi: Query["getPOIs"][number]) => void;
 }) {
 	const { data, loading, error } = useGetPoIsQuery();
 
@@ -79,6 +81,10 @@ function ListPOIs({
 							className={`cursor-pointer hover:text-red-600 justify-self-center ${
 								showAll ? "" : "hidden"
 							}`}
+							onClick={(e) => {
+								e.stopPropagation();
+								deletePoi(poi as Query["getPOIs"][number]);
+							}}
 						/>
 					</div>
 				))}

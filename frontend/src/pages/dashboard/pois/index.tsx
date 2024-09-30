@@ -1,5 +1,6 @@
 import CreateUpdatePOI from "@/components/dashboard/pois/CreatePOI";
 import ListPOIs from "@/components/dashboard/pois/ListPOIs";
+import ModalDeletePOI from "@/components/dashboard/pois/ModalDeletePOI";
 import { Query } from "@/graphql/schema";
 import { Plus, Search } from "lucide-react";
 import React from "react";
@@ -9,6 +10,7 @@ function POIs() {
 	const [showAllPOIs, setShowAllPOIs] = useState<boolean>(true);
 	const [modal, setModal] = useState<"add" | "update">("add");
 	const [poi, setPoi] = useState<Query["getPOIs"][number]>();
+	const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
 
 	const handleCreatePOI = () => {
 		setShowAllPOIs(true);
@@ -22,6 +24,11 @@ function POIs() {
 		setPoi(poi);
 		setModal("update");
 		setShowAllPOIs(false);
+	};
+
+	const handleDeletePOI = (poi: Query["getPOIs"][number]) => {
+		setPoi(poi);
+		setShowDeleteModal(true);
 	};
 
 	return (
@@ -55,16 +62,24 @@ function POIs() {
 						showAll={showAllPOIs}
 						modal={modal}
 						setPoi={handleUpdatePOI}
+						deletePoi={handleDeletePOI}
 					/>
 					{!showAllPOIs && (
 						<CreateUpdatePOI
 							closeCreatePOI={setShowAllPOIs}
 							modal={modal}
 							poiUpdate={poi}
+							deletePoi={handleDeletePOI}
 						/>
 					)}
 				</div>
 			</section>
+			<ModalDeletePOI
+				poi={{ id: poi?.id ?? "", name: poi?.name ?? "" }}
+				openModal={showDeleteModal}
+				setOpenModal={setShowDeleteModal}
+				setShowAll={setShowAllPOIs}
+			/>
 		</>
 	);
 }

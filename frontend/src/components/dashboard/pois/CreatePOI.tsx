@@ -2,6 +2,7 @@
 import DynamicIcon, { IconProps } from "@/components/common/DynamicIcon";
 import {
 	GetPoIsDocument,
+	Poi,
 	PoiBudget,
 	Query,
 	useCreatePoiMutation,
@@ -14,7 +15,7 @@ import axiosImg from "@/lib/axiosImg";
 import { getImageUrl } from "@/lib/getImagesUrl";
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-import { Save, ScanEye, X } from "lucide-react";
+import { Save, ScanEye, Trash2, X } from "lucide-react";
 import {
 	ChangeEvent,
 	Dispatch,
@@ -30,10 +31,12 @@ function CreateUpdatePOI({
 	closeCreatePOI,
 	modal,
 	poiUpdate,
+	deletePoi,
 }: {
 	closeCreatePOI: Dispatch<SetStateAction<boolean>>;
 	modal: "add" | "update";
 	poiUpdate?: Query["getPOIs"][number];
+	deletePoi: (poi: Query["getPOIs"][number]) => void;
 }) {
 	const [latLong, setLatLong] = useState({ y: 50.633333, x: 3.066667 });
 	const [photos, setPhotos] = useState<{ url: string; file: File }[]>([]);
@@ -264,6 +267,10 @@ function CreateUpdatePOI({
 			});
 		}
 	});
+
+	const handleDeletePOI = async (poi: Query["getPOIs"][number]) => {
+		deletePoi(poi);
+	};
 
 	useEffect(() => {
 		reset();
@@ -702,6 +709,15 @@ function CreateUpdatePOI({
 				</div>
 
 				<div className="flex justify-between">
+					{modal === "update" && (
+						<button
+							type="button"
+							className="flex items-center gap-2 rounded-md bg-red-600 px-2.5 py-1.5 text-sm font-semibold text-white ring-1 ring-inset ring-red-300 hover:bg-red-900 hover:text-red-400"
+							onClick={() => handleDeletePOI(poiUpdate as Poi)}
+						>
+							<Trash2 size={15} /> Supprimer : {poiUpdate?.name}
+						</button>
+					)}
 					<button
 						type="button"
 						className="flex items-center gap-2 rounded-md bg-black px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-900 hover:bg-gray-900 hover:text-gray-400"

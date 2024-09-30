@@ -91,16 +91,25 @@ export default class POIResolver {
 		}
 	}
 
-	@Mutation(() => Message)
-	async deletePOI(@Arg("id") id: string) {
-		const msg = new Message();
+	@Authorized(UserRole.ADMIN, UserRole.USER, UserRole.USER_PREMIUM)
+	@Mutation(() => Boolean)
+	async deletePOI(@Ctx() ctx: MyContext, @Arg("id") id: string) {
+		if (
+			ctx.user?.role === UserRole.USER ||
+			ctx.user?.role === UserRole.USER_PREMIUM
+		) {
+			const isAuthorized = ctx.user?.cityRole.filter((r) => r.id === id) ?? [];
+			if (!isAuthorized?.length) {
+				throw new Error(
+					"Vous n'avez pas les droits pour effectuer cette action !"
+				);
+			}
+		}
 		try {
-			await new POIServices().deletePOI(id);
-			msg.success = true;
-			msg.message = "POI supprimé avec succès";
+			const result = await new POIServices().deletePOI(id);
+			return result ? true : false;
 		} catch (error: any) {
 			throw new Error("Erreur lors de la suppression du POI");
 		}
-		return msg;
 	}
 }
