@@ -94,4 +94,9 @@ export default class POIServices {
 		const poi = await this.db.findOneOrFail({ where: { id } });
 		return await this.db.remove(poi);
 	}
+
+	async nbPoi(): Promise<number> {
+		const nbPoi = await this.db.count();
+		return nbPoi;
+	}
 }

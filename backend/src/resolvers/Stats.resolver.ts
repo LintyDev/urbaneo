@@ -2,6 +2,7 @@ import { Authorized, Field, ObjectType, Query, Resolver } from "type-graphql";
 import { UserRole } from "../entities/User.entity";
 import CityServices from "../services/City.services";
 import CategoryServices from "../services/Category.services";
+import POIServices from "../services/POI.services";
 
 @ObjectType()
 export class StatsWeb {
@@ -23,7 +24,10 @@ export default class StatsResolver {
 
 		const nbCategories = await new CategoryServices().nbCategories();
 		nb.push({ label: "catégories", nb: nbCategories });
-		nb.push({ label: "points d'intérêts", nb: 124 });
+
+		const nbPOI = await new POIServices().nbPoi();
+		nb.push({ label: "points d'intérêts", nb: nbPOI });
+
 		nb.push({ label: "utilisateurs", nb: 103 });
 		nb.push({ label: "reviews", nb: 103 });
 
