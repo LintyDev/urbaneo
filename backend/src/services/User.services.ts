@@ -68,4 +68,9 @@ export default class UserServices {
 
 		return token;
 	}
+
+	async nbUsers(): Promise<number> {
+		const nbUsers = this.db.count();
+		return nbUsers;
+	}
 }

@@ -3,6 +3,7 @@ import { UserRole } from "../entities/User.entity";
 import CityServices from "../services/City.services";
 import CategoryServices from "../services/Category.services";
 import POIServices from "../services/POI.services";
+import UserServices from "../services/User.services";
 
 @ObjectType()
 export class StatsWeb {
@@ -28,7 +29,8 @@ export default class StatsResolver {
 		const nbPOI = await new POIServices().nbPoi();
 		nb.push({ label: "points d'intérêts", nb: nbPOI });
 
-		nb.push({ label: "utilisateurs", nb: 103 });
+		const nbUsers = await new UserServices().nbUsers();
+		nb.push({ label: "utilisateurs", nb: nbUsers });
 		nb.push({ label: "reviews", nb: 103 });
 
 		return nb;

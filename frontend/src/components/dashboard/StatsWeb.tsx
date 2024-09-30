@@ -16,7 +16,9 @@ function StatsWeb() {
 				<p className="font-thin text-xs pl-2 pb-3 text-gray-200">Web Stats</p>
 				<div className="flex items-center justify-between">
 					<p className="flex items-center gap-1">
-						<span className="text-4xl font-medium">104</span>
+						<span className="text-4xl font-medium">
+							{data?.getWebStats.find((w) => w.label === "utilisateurs")?.nb}
+						</span>
 						<span className="flex text-[10px] italic">
 							utilisateurs ont rejoint
 							<br /> la communauté Urbaneo !
