@@ -82,7 +82,7 @@ export type Mutation = {
   register: Message;
   updateCategory: Category;
   updateCity: City;
-  updatePOI: Message;
+  updatePOI: Poi;
   updateReview: Review;
   updateRole: Message;
   updateUser: Message;
@@ -511,12 +511,24 @@ export type DeleteCityMutationVariables = Exact<{
 
 export type DeleteCityMutation = { __typename?: 'Mutation', deleteCity: boolean };
 
+export type GetPoIsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPoIsQuery = { __typename?: 'Query', getPOIs: Array<{ __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, address: string, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> }> };
+
 export type CreatePoiMutationVariables = Exact<{
   data: PoiCreateInput;
 }>;
 
 
 export type CreatePoiMutation = { __typename?: 'Mutation', createPOI: { __typename?: 'POI', id: string, name: string, description: string, address: string, slug: string, photos: Array<string>, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> } };
+
+export type UpdatePoiMutationVariables = Exact<{
+  data: PoiUpdateInput;
+}>;
+
+
+export type UpdatePoiMutation = { __typename?: 'Mutation', updatePOI: { __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, address: string, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> } };
 
 export type GetLastUsersQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']['input']>;
@@ -1131,6 +1143,64 @@ export function useDeleteCityMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteCityMutationHookResult = ReturnType<typeof useDeleteCityMutation>;
 export type DeleteCityMutationResult = Apollo.MutationResult<DeleteCityMutation>;
 export type DeleteCityMutationOptions = Apollo.BaseMutationOptions<DeleteCityMutation, DeleteCityMutationVariables>;
+export const GetPoIsDocument = gql`
+    query GetPOIs {
+  getPOIs {
+    id
+    name
+    description
+    photos
+    slug
+    coordinates {
+      x
+      y
+    }
+    address
+    budget
+    city {
+      id
+      name
+    }
+    categories {
+      id
+      icon
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPoIsQuery__
+ *
+ * To run a query within a React component, call `useGetPoIsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPoIsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPoIsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPoIsQuery(baseOptions?: Apollo.QueryHookOptions<GetPoIsQuery, GetPoIsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPoIsQuery, GetPoIsQueryVariables>(GetPoIsDocument, options);
+      }
+export function useGetPoIsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPoIsQuery, GetPoIsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPoIsQuery, GetPoIsQueryVariables>(GetPoIsDocument, options);
+        }
+export function useGetPoIsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetPoIsQuery, GetPoIsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPoIsQuery, GetPoIsQueryVariables>(GetPoIsDocument, options);
+        }
+export type GetPoIsQueryHookResult = ReturnType<typeof useGetPoIsQuery>;
+export type GetPoIsLazyQueryHookResult = ReturnType<typeof useGetPoIsLazyQuery>;
+export type GetPoIsSuspenseQueryHookResult = ReturnType<typeof useGetPoIsSuspenseQuery>;
+export type GetPoIsQueryResult = Apollo.QueryResult<GetPoIsQuery, GetPoIsQueryVariables>;
 export const CreatePoiDocument = gql`
     mutation CreatePOI($data: POICreateInput!) {
   createPOI(data: $data) {
@@ -1183,6 +1253,58 @@ export function useCreatePoiMutation(baseOptions?: Apollo.MutationHookOptions<Cr
 export type CreatePoiMutationHookResult = ReturnType<typeof useCreatePoiMutation>;
 export type CreatePoiMutationResult = Apollo.MutationResult<CreatePoiMutation>;
 export type CreatePoiMutationOptions = Apollo.BaseMutationOptions<CreatePoiMutation, CreatePoiMutationVariables>;
+export const UpdatePoiDocument = gql`
+    mutation UpdatePOI($data: POIUpdateInput!) {
+  updatePOI(data: $data) {
+    id
+    name
+    description
+    photos
+    slug
+    coordinates {
+      x
+      y
+    }
+    address
+    budget
+    city {
+      id
+      name
+    }
+    categories {
+      id
+      icon
+      name
+    }
+  }
+}
+    `;
+export type UpdatePoiMutationFn = Apollo.MutationFunction<UpdatePoiMutation, UpdatePoiMutationVariables>;
+
+/**
+ * __useUpdatePoiMutation__
+ *
+ * To run a mutation, you first call `useUpdatePoiMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePoiMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePoiMutation, { data, loading, error }] = useUpdatePoiMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useUpdatePoiMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePoiMutation, UpdatePoiMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePoiMutation, UpdatePoiMutationVariables>(UpdatePoiDocument, options);
+      }
+export type UpdatePoiMutationHookResult = ReturnType<typeof useUpdatePoiMutation>;
+export type UpdatePoiMutationResult = Apollo.MutationResult<UpdatePoiMutation>;
+export type UpdatePoiMutationOptions = Apollo.BaseMutationOptions<UpdatePoiMutation, UpdatePoiMutationVariables>;
 export const GetLastUsersDocument = gql`
     query GetLastUsers($limit: Float) {
   getUsers(limit: $limit) {

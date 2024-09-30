@@ -1,24 +1,39 @@
 /* eslint-disable @next/next/no-img-element */
 import DynamicIcon, { IconProps } from "@/components/common/DynamicIcon";
 import {
+	GetPoIsDocument,
 	PoiBudget,
 	Query,
 	useCreatePoiMutation,
 	useSearchCategoriesLazyQuery,
 	useSearchCitiesLazyQuery,
+	useUpdatePoiMutation,
 } from "@/graphql/schema";
 import { formats } from "@/lib/acceptedFormats";
 import axiosImg from "@/lib/axiosImg";
+import { getImageUrl } from "@/lib/getImagesUrl";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { DollarSign, Save, ScanEye, X } from "lucide-react";
-import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react";
+import axios from "axios";
+import { Save, ScanEye, X } from "lucide-react";
+import {
+	ChangeEvent,
+	Dispatch,
+	SetStateAction,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import { array, mixed, number, object, string } from "yup";
 
-function CreatePOI({
+function CreateUpdatePOI({
 	closeCreatePOI,
+	modal,
+	poiUpdate,
 }: {
 	closeCreatePOI: Dispatch<SetStateAction<boolean>>;
+	modal: "add" | "update";
+	poiUpdate?: Query["getPOIs"][number];
 }) {
 	const [latLong, setLatLong] = useState({ y: 50.633333, x: 3.066667 });
 	const [photos, setPhotos] = useState<{ url: string; file: File }[]>([]);
@@ -47,6 +62,17 @@ function CreatePOI({
 		},
 	});
 	const [createPOI] = useCreatePoiMutation({
+		refetchQueries: [{ query: GetPoIsDocument }],
+		onError(error, clientOptions) {
+			console.log(error);
+		},
+		onCompleted(data, clientOptions) {
+			closeCreatePOI(true);
+			reset();
+		},
+	});
+	const [updatePOI] = useUpdatePoiMutation({
+		refetchQueries: [{ query: GetPoIsDocument }],
 		onError(error, clientOptions) {
 			console.log(error);
 		},
@@ -125,13 +151,11 @@ function CreatePOI({
 	};
 
 	const onSubmit = handleSubmit(async (data) => {
-		console.log(data);
 		let fileNames: string[] = [];
 
-		if (data.photos?.length) {
+		if (data.photos?.length && modal === "add") {
 			const formImgs = new FormData();
 			Array.from(data.photos).forEach((f) => formImgs.append("picturePOI", f));
-			formImgs.append("namePOI", slug);
 			try {
 				const res = await axiosImg.post("/imgPOI", formImgs);
 				if (res.data.success && res.data.fileNames) {
@@ -142,32 +166,166 @@ function CreatePOI({
 				console.log("error when saving img");
 				return;
 			}
+		} else if (modal === "update") {
+			const updatePhotosUrl = photos.map(
+				(p) => p.url.split("/").pop() as string
+			);
+			const deletedPhotos = poiUpdate?.photos.filter(
+				(p) => !updatePhotosUrl.includes(p)
+			);
+
+			try {
+				const deletePromises = deletedPhotos?.map((p) =>
+					axios
+						.post(
+							"/deleteImg",
+							{ pictureName: p },
+							{
+								baseURL: process.env.NEXT_PUBLIC_IMAGES_URL,
+								withCredentials: true,
+							}
+						)
+						.then((resDelete) => {
+							console.log(resDelete);
+							if (resDelete.data.success) {
+								console.log(p, " deleted!");
+							}
+						})
+				);
+
+				if (deletePromises) {
+					await Promise.all(deletePromises);
+				}
+			} catch (error) {
+				console.log("Error when deleting picture");
+				return;
+			}
+
+			const newPhotoToSave = photos.filter((p) => p.url.startsWith("blob"));
+			if (newPhotoToSave.length) {
+				const formImgsUpdate = new FormData();
+				newPhotoToSave.forEach((f) =>
+					formImgsUpdate.append("picturePOI", f.file)
+				);
+				try {
+					const resUpdatePoi = await axiosImg.post("/imgPOI", formImgsUpdate);
+					if (resUpdatePoi.data.success && resUpdatePoi.data.fileNames) {
+						fileNames = [...fileNames, ...resUpdatePoi.data.fileNames];
+						console.log("image updated");
+					}
+				} catch (error) {
+					console.log("error when saving img");
+					return;
+				}
+			}
+
+			const updateStatePhotos = updatePhotosUrl.filter((p) =>
+				p.startsWith("picture")
+			);
+			fileNames = [...fileNames, ...updateStatePhotos];
 		}
 
-		createPOI({
-			variables: {
-				data: {
-					name: data.name,
-					description: data.description,
-					address: data.adress,
-					gps_coordinates: {
-						type: "Point",
-						coordinates: [data.latitude, data.longitude],
+		if (modal === "add") {
+			createPOI({
+				variables: {
+					data: {
+						name: data.name,
+						description: data.description,
+						address: data.adress,
+						gps_coordinates: {
+							type: "Point",
+							coordinates: [data.latitude, data.longitude],
+						},
+						cityId: data.cityId,
+						categoryIds: data.categories.map((c) => c.id),
+						photos: fileNames,
+						budget: data.budget as PoiBudget,
 					},
-					cityId: data.cityId,
-					categoryIds: data.categories.map((c) => c.id),
-					photos: fileNames,
-					budget: data.budget as PoiBudget,
 				},
-			},
-		});
+			});
+		} else if (modal === "update") {
+			updatePOI({
+				variables: {
+					data: {
+						id: poiUpdate!.id,
+						name: data.name,
+						description: data.description,
+						address: data.adress,
+						gps_coordinates: {
+							type: "Point",
+							coordinates: [data.latitude, data.longitude],
+						},
+						cityId: data.cityId,
+						categoryIds: data.categories.map((c) => c.id),
+						photos: fileNames,
+						budget: data.budget as PoiBudget,
+					},
+				},
+			});
+		}
 	});
+
+	useEffect(() => {
+		reset();
+		if (poiUpdate !== undefined) {
+			reset({
+				name: poiUpdate.name,
+				description: poiUpdate.description,
+				adress: poiUpdate.address,
+				latitude: poiUpdate.coordinates.x,
+				longitude: poiUpdate.coordinates.y,
+				budget: poiUpdate.budget,
+				cityId: poiUpdate.city.id,
+				categories: poiUpdate.categories,
+			});
+			setSelectedCats((prev) => [...poiUpdate.categories]);
+
+			const newFileList = new DataTransfer();
+			const photosPOI = poiUpdate.photos.map((p) => {
+				const fakeFile = new File(["foo"], p, {
+					type: "image/png",
+				});
+				newFileList.items.add(fakeFile);
+				return {
+					url: getImageUrl(p),
+					file: fakeFile,
+				};
+			});
+			setValue("photos", newFileList.files);
+			setPhotos((prev) => [...photosPOI]);
+			setSlug(
+				poiUpdate.name
+					.toLowerCase()
+					.normalize("NFD")
+					.replace(/[\u0300-\u036f]/g, "")
+					.replace(/ /g, "-")
+			);
+			inputCity.current!.value = poiUpdate.city.name;
+		} else {
+			reset({
+				name: "",
+				description: "",
+				adress: "",
+				latitude: 0,
+				longitude: 0,
+				budget: "none",
+				cityId: "",
+				categories: [],
+				photos: undefined,
+			});
+			setSlug("");
+			setSelectedCats([]);
+			setPhotos([]);
+		}
+	}, [poiUpdate, reset, setValue]);
 
 	return (
 		<div className="flex flex-col w-full bg-white rounded-2xl shadow-md p-5 flex-grow overflow-visible">
 			<div className="flex items-center justify-between">
 				<p className="font-thin text-xs mb-0">
-					Ajouter un point d&apos;interêt
+					{modal === "add"
+						? "Ajouter un point d'interêt"
+						: "Modifier un point d'interêt : " + poiUpdate?.name}
 				</p>
 				<X
 					className="cursor-pointer text-gray-500 hover:text-black"
@@ -411,6 +569,7 @@ function CreatePOI({
 								type="text"
 								className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 								placeholder="Lille"
+								autoComplete="off"
 								onChange={(e) => {
 									if (e.target.value === "") {
 										setResultCities([]);
@@ -553,7 +712,8 @@ function CreatePOI({
 						type="submit"
 						className="flex items-center gap-2 rounded-md bg-blue-600 px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-blue-300 hover:bg-blue-900 hover:text-blue-400"
 					>
-						<Save size={15} /> Enregistrer
+						<Save size={15} />{" "}
+						{modal === "add" ? "Enregister" : "Enregistrer la modification"}
 					</button>
 				</div>
 			</form>
@@ -561,4 +721,4 @@ function CreatePOI({
 	);
 }
 
-export default CreatePOI;
+export default CreateUpdatePOI;

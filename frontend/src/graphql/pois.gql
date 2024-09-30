@@ -1,3 +1,28 @@
+query GetPOIs {
+	getPOIs {
+		id
+		name
+		description
+		photos
+		slug
+		coordinates {
+			x
+			y
+		}
+		address
+		budget
+		city {
+			id
+			name
+		}
+		categories {
+			id
+			icon
+			name
+		}
+	}
+}
+
 mutation CreatePOI($data: POICreateInput!) {
 	createPOI(data: $data) {
 		id
@@ -20,5 +45,30 @@ mutation CreatePOI($data: POICreateInput!) {
 			name
 		}
 		budget
+	}
+}
+
+mutation UpdatePOI($data: POIUpdateInput!) {
+	updatePOI(data: $data) {
+		id
+		name
+		description
+		photos
+		slug
+		coordinates {
+			x
+			y
+		}
+		address
+		budget
+		city {
+			id
+			name
+		}
+		categories {
+			id
+			icon
+			name
+		}
 	}
 }

@@ -10,7 +10,6 @@ import cookieParser from "cookie-parser";
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 app.use(
 	cors({
@@ -74,6 +73,21 @@ app.post("/imgPoi", function (req, res) {
 			success: true,
 			fileNames: fileNames,
 		});
+	});
+});
+
+app.post("/deleteImg", function (req, res) {
+	console.log(req.body);
+	const path = `/images/img/${req.body.pictureName}`;
+	fs.unlink(path, (err) => {
+		if (err) {
+			return res.json({ message: err.message, success: false });
+		} else {
+			console.log("the file was deleted");
+			return res.json({
+				success: true,
+			});
+		}
 	});
 });
 

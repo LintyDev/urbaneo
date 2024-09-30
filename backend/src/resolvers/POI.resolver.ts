@@ -22,7 +22,10 @@ export default class POIResolver {
 		@Ctx() ctx: MyContext,
 		@Arg("limit", { nullable: true }) limit?: number
 	) {
-		if (ctx.user?.role === UserRole.USER || UserRole.USER_PREMIUM) {
+		if (
+			ctx.user?.role === UserRole.USER ||
+			ctx.user?.role === UserRole.USER_PREMIUM
+		) {
 			const authorizedCitiesIds = ctx.user?.cityRole.map((c) => c.id) ?? [];
 			const poisCityAdmin = await new POIServices().getPOIs(
 				limit,
@@ -64,17 +67,28 @@ export default class POIResolver {
 		}
 	}
 
-	@Mutation(() => Message)
-	async updatePOI(@Arg("data") data: POIUpdateInput) {
-		const msg = new Message();
+	@Authorized(UserRole.ADMIN, UserRole.USER, UserRole.USER_PREMIUM)
+	@Mutation(() => POI)
+	async updatePOI(@Ctx() ctx: MyContext, @Arg("data") data: POIUpdateInput) {
+		if (
+			ctx.user?.role === UserRole.USER ||
+			ctx.user?.role === UserRole.USER_PREMIUM
+		) {
+			const isAuthorized =
+				ctx.user?.cityRole.filter((r) => r.id === data.cityId) ?? [];
+			if (!isAuthorized?.length) {
+				throw new Error(
+					"Vous n'avez pas les droits pour effectuer cette action !"
+				);
+			}
+		}
+
 		try {
 			const poi = await new POIServices().updatePOI(data);
-			msg.success = true;
-			msg.message = "POI modifié avec succès";
+			return poi;
 		} catch (error: any) {
 			throw new Error("Erreur lors de la modification du POI");
 		}
-		return msg;
 	}
 
 	@Mutation(() => Message)

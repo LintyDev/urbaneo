@@ -1,5 +1,6 @@
-import CreatePOI from "@/components/dashboard/pois/CreatePOI";
+import CreateUpdatePOI from "@/components/dashboard/pois/CreatePOI";
 import ListPOIs from "@/components/dashboard/pois/ListPOIs";
+import { Query } from "@/graphql/schema";
 import { Plus, Search } from "lucide-react";
 import React from "react";
 import { useState } from "react";
@@ -7,10 +8,20 @@ import { useState } from "react";
 function POIs() {
 	const [showAllPOIs, setShowAllPOIs] = useState<boolean>(true);
 	const [modal, setModal] = useState<"add" | "update">("add");
+	const [poi, setPoi] = useState<Query["getPOIs"][number]>();
 
 	const handleCreatePOI = () => {
-		setShowAllPOIs(false);
+		setShowAllPOIs(true);
+		setPoi(undefined);
 		setModal("add");
+		setShowAllPOIs(false);
+	};
+
+	const handleUpdatePOI = (poi: Query["getPOIs"][number]) => {
+		setShowAllPOIs(true);
+		setPoi(poi);
+		setModal("update");
+		setShowAllPOIs(false);
 	};
 
 	return (
@@ -40,11 +51,17 @@ function POIs() {
 							: "flex gap-3 pt-3 overflow-hidden pb-5"
 					}
 				>
-					<ListPOIs showAll={showAllPOIs} />
-					{!showAllPOIs && modal === "add" ? (
-						<CreatePOI closeCreatePOI={setShowAllPOIs} />
-					) : (
-						!showAllPOIs && modal === "update" && <p>je suis le update</p>
+					<ListPOIs
+						showAll={showAllPOIs}
+						modal={modal}
+						setPoi={handleUpdatePOI}
+					/>
+					{!showAllPOIs && (
+						<CreateUpdatePOI
+							closeCreatePOI={setShowAllPOIs}
+							modal={modal}
+							poiUpdate={poi}
+						/>
 					)}
 				</div>
 			</section>
