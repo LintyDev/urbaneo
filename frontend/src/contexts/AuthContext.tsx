@@ -10,7 +10,9 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import {
 	createContext,
+	Dispatch,
 	PropsWithChildren,
+	SetStateAction,
 	useContext,
 	useEffect,
 	useState,
@@ -22,6 +24,7 @@ interface AuthContextType {
 	login: (data: UserLoginInput) => Promise<void>;
 	logout: () => Promise<void>;
 	loading: boolean;
+	setUser: Dispatch<SetStateAction<MeQuery["me"] | null | undefined>>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -30,6 +33,7 @@ const AuthContext = createContext<AuthContextType>({
 	login: async () => {},
 	logout: async () => {},
 	loading: true,
+	setUser: async () => {},
 });
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
@@ -128,8 +132,17 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pathname]);
 
+	useEffect(() => {
+		const forbidenRoutes = ["/account", "/dashboard"];
+		if (!loading && !user && forbidenRoutes.includes(pathname)) {
+			router.push("/");
+		}
+	}, [pathname, loading]);
+
 	return (
-		<AuthContext.Provider value={{ user, loading, register, login, logout }}>
+		<AuthContext.Provider
+			value={{ user, loading, register, login, logout, setUser }}
+		>
 			{children}
 		</AuthContext.Provider>
 	);
