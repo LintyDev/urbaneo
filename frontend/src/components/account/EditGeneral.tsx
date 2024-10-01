@@ -148,7 +148,7 @@ function EditGeneral({ user }: { user: MyAccountQuery["me"] }) {
 			});
 			setTempUser(user);
 		}
-	}, [user]);
+	}, [reset, user]);
 
 	return (
 		<div className="border border-gray-200 rounded-xl p-4 mb-6">
