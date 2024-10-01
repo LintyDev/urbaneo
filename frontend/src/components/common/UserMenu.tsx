@@ -24,13 +24,13 @@ const linkAdmin = [
 		name: "Editer mon profil",
 		href: "/account",
 		icon: UserPen,
-		color: "hover:bg-[#ffffff1a]",
+		color: "hover:bg-[#0000001a]",
 	},
 	{
 		name: "Comment ça marche ?",
 		href: "/about",
 		icon: CircleHelp,
-		color: "hover:bg-[#ffffff1a]",
+		color: "hover:bg-[#0000001a]",
 	},
 	{
 		name: "Administration",
@@ -51,13 +51,13 @@ const linkUser = [
 		name: "Editer mon profil",
 		href: "/account",
 		icon: UserPen,
-		color: "hover:bg-[#ffffff1a]",
+		color: "hover:bg-[#0000001a]",
 	},
 	{
 		name: "Comment ça marche ?",
 		href: "/about",
 		icon: CircleHelp,
-		color: "hover:bg-[#ffffff1a]",
+		color: "hover:bg-[#0000001a]",
 	},
 ];
 
