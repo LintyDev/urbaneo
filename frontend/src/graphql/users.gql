@@ -96,3 +96,7 @@ mutation DeleteUser($deleteUserId: String!) {
 mutation EditPassword($password: String!) {
 	editPassword(password: $password)
 }
+
+mutation SelfDelete {
+	selfDelete
+}

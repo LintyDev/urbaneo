@@ -1,4 +1,7 @@
+import { useAuth } from "@/contexts/AuthContext";
+import { useSelfDeleteMutation } from "@/graphql/schema";
 import { TriangleAlert } from "lucide-react";
+import { useRouter } from "next/router";
 import { Dispatch, SetStateAction } from "react";
 
 function ModalDeleteAccount({
@@ -10,7 +13,18 @@ function ModalDeleteAccount({
 	closeModal: Dispatch<SetStateAction<boolean>>;
 	user: { id: string; name: string };
 }) {
-	const handleDeleteAccount = () => {};
+	const [selfDelete] = useSelfDeleteMutation();
+	const router = useRouter();
+	const { setUser } = useAuth();
+
+	const handleDeleteAccount = () => {
+		selfDelete({
+			onCompleted(data, clientOptions) {
+				setUser(undefined);
+				router.push("/");
+			},
+		});
+	};
 
 	if (!openModal) return null;
 	return (

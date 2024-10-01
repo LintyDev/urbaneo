@@ -185,4 +185,19 @@ export default class UserResolver {
 		await new UserServices().updateUser(user);
 		return true;
 	}
+
+	@Mutation(() => Boolean)
+	async selfDelete(@Ctx() ctx: MyContext) {
+		if (!ctx.user) {
+			throw new Error("Vous devez être connecté");
+		}
+		try {
+			await new UserServices().deleteUser(ctx.user.id);
+			let cookies = new Cookies(ctx.req, ctx.res);
+			cookies.set("token");
+			return true;
+		} catch (error) {
+			throw new Error("Erreur lors de la suppression de l'utilisateur");
+		}
+	}
 }

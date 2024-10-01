@@ -88,6 +88,7 @@ export type Mutation = {
   editPassword: Scalars['Boolean']['output'];
   editUser: UserWithoutPassword;
   register: Message;
+  selfDelete: Scalars['Boolean']['output'];
   updateCategory: Category;
   updateCity: City;
   updatePOI: Poi;
@@ -641,6 +642,11 @@ export type EditPasswordMutationVariables = Exact<{
 
 
 export type EditPasswordMutation = { __typename?: 'Mutation', editPassword: boolean };
+
+export type SelfDeleteMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SelfDeleteMutation = { __typename?: 'Mutation', selfDelete: boolean };
 
 export type GetWebStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1879,6 +1885,36 @@ export function useEditPasswordMutation(baseOptions?: Apollo.MutationHookOptions
 export type EditPasswordMutationHookResult = ReturnType<typeof useEditPasswordMutation>;
 export type EditPasswordMutationResult = Apollo.MutationResult<EditPasswordMutation>;
 export type EditPasswordMutationOptions = Apollo.BaseMutationOptions<EditPasswordMutation, EditPasswordMutationVariables>;
+export const SelfDeleteDocument = gql`
+    mutation SelfDelete {
+  selfDelete
+}
+    `;
+export type SelfDeleteMutationFn = Apollo.MutationFunction<SelfDeleteMutation, SelfDeleteMutationVariables>;
+
+/**
+ * __useSelfDeleteMutation__
+ *
+ * To run a mutation, you first call `useSelfDeleteMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSelfDeleteMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [selfDeleteMutation, { data, loading, error }] = useSelfDeleteMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useSelfDeleteMutation(baseOptions?: Apollo.MutationHookOptions<SelfDeleteMutation, SelfDeleteMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SelfDeleteMutation, SelfDeleteMutationVariables>(SelfDeleteDocument, options);
+      }
+export type SelfDeleteMutationHookResult = ReturnType<typeof useSelfDeleteMutation>;
+export type SelfDeleteMutationResult = Apollo.MutationResult<SelfDeleteMutation>;
+export type SelfDeleteMutationOptions = Apollo.BaseMutationOptions<SelfDeleteMutation, SelfDeleteMutationVariables>;
 export const GetWebStatsDocument = gql`
     query GetWebStats {
   getWebStats {
