@@ -85,6 +85,7 @@ export type Mutation = {
   deleteReview: Message;
   deleteRoles: Message;
   deleteUser: Message;
+  editPassword: Scalars['Boolean']['output'];
   editUser: UserWithoutPassword;
   register: Message;
   updateCategory: Category;
@@ -148,6 +149,11 @@ export type MutationDeleteRolesArgs = {
 
 export type MutationDeleteUserArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type MutationEditPasswordArgs = {
+  password: Scalars['String']['input'];
 };
 
 
@@ -248,6 +254,7 @@ export type PointObject = {
 
 export type Query = {
   __typename?: 'Query';
+  checkPassword: Scalars['Boolean']['output'];
   getAllReviewsByUser: Array<Review>;
   getCategories: Array<Category>;
   getCities: Array<City>;
@@ -263,6 +270,11 @@ export type Query = {
   me?: Maybe<UserWithoutPassword>;
   searchCategories: Array<Category>;
   searchCities: Array<City>;
+};
+
+
+export type QueryCheckPasswordArgs = {
+  data: UserLoginInput;
 };
 
 
@@ -595,6 +607,13 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetUsersQuery = { __typename?: 'Query', getUsers: Array<{ __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', label: Label, id: any, city: { __typename?: 'City', name: string, id: any } }> }> };
 
+export type CheckPasswordQueryVariables = Exact<{
+  data: UserLoginInput;
+}>;
+
+
+export type CheckPasswordQuery = { __typename?: 'Query', checkPassword: boolean };
+
 export type UpdateUserMutationVariables = Exact<{
   data: UserUpdateInput;
 }>;
@@ -615,6 +634,13 @@ export type DeleteUserMutationVariables = Exact<{
 
 
 export type DeleteUserMutation = { __typename?: 'Mutation', deleteUser: { __typename?: 'Message', success: boolean, message: string } };
+
+export type EditPasswordMutationVariables = Exact<{
+  password: Scalars['String']['input'];
+}>;
+
+
+export type EditPasswordMutation = { __typename?: 'Mutation', editPassword: boolean };
 
 export type GetWebStatsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1646,6 +1672,44 @@ export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
 export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
 export type GetUsersSuspenseQueryHookResult = ReturnType<typeof useGetUsersSuspenseQuery>;
 export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
+export const CheckPasswordDocument = gql`
+    query checkPassword($data: UserLoginInput!) {
+  checkPassword(data: $data)
+}
+    `;
+
+/**
+ * __useCheckPasswordQuery__
+ *
+ * To run a query within a React component, call `useCheckPasswordQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckPasswordQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckPasswordQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useCheckPasswordQuery(baseOptions: Apollo.QueryHookOptions<CheckPasswordQuery, CheckPasswordQueryVariables> & ({ variables: CheckPasswordQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckPasswordQuery, CheckPasswordQueryVariables>(CheckPasswordDocument, options);
+      }
+export function useCheckPasswordLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckPasswordQuery, CheckPasswordQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckPasswordQuery, CheckPasswordQueryVariables>(CheckPasswordDocument, options);
+        }
+export function useCheckPasswordSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<CheckPasswordQuery, CheckPasswordQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<CheckPasswordQuery, CheckPasswordQueryVariables>(CheckPasswordDocument, options);
+        }
+export type CheckPasswordQueryHookResult = ReturnType<typeof useCheckPasswordQuery>;
+export type CheckPasswordLazyQueryHookResult = ReturnType<typeof useCheckPasswordLazyQuery>;
+export type CheckPasswordSuspenseQueryHookResult = ReturnType<typeof useCheckPasswordSuspenseQuery>;
+export type CheckPasswordQueryResult = Apollo.QueryResult<CheckPasswordQuery, CheckPasswordQueryVariables>;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($data: UserUpdateInput!) {
   updateUser(data: $data) {
@@ -1784,6 +1848,37 @@ export function useDeleteUserMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeleteUserMutationHookResult = ReturnType<typeof useDeleteUserMutation>;
 export type DeleteUserMutationResult = Apollo.MutationResult<DeleteUserMutation>;
 export type DeleteUserMutationOptions = Apollo.BaseMutationOptions<DeleteUserMutation, DeleteUserMutationVariables>;
+export const EditPasswordDocument = gql`
+    mutation EditPassword($password: String!) {
+  editPassword(password: $password)
+}
+    `;
+export type EditPasswordMutationFn = Apollo.MutationFunction<EditPasswordMutation, EditPasswordMutationVariables>;
+
+/**
+ * __useEditPasswordMutation__
+ *
+ * To run a mutation, you first call `useEditPasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditPasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editPasswordMutation, { data, loading, error }] = useEditPasswordMutation({
+ *   variables: {
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useEditPasswordMutation(baseOptions?: Apollo.MutationHookOptions<EditPasswordMutation, EditPasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditPasswordMutation, EditPasswordMutationVariables>(EditPasswordDocument, options);
+      }
+export type EditPasswordMutationHookResult = ReturnType<typeof useEditPasswordMutation>;
+export type EditPasswordMutationResult = Apollo.MutationResult<EditPasswordMutation>;
+export type EditPasswordMutationOptions = Apollo.BaseMutationOptions<EditPasswordMutation, EditPasswordMutationVariables>;
 export const GetWebStatsDocument = gql`
     query GetWebStats {
   getWebStats {

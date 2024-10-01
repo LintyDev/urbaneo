@@ -38,6 +38,7 @@ function EditSecurity({ user }: { user: MyAccountQuery["me"] }) {
 			<ModalEditPassword
 				openModal={openModalPass}
 				closeModal={setOpenModalPass}
+				emailUser={user?.email ?? ""}
 			/>
 			<ModalDeleteAccount
 				openModal={openModalAccount}

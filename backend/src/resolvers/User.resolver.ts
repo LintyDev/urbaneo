@@ -67,6 +67,27 @@ export default class UserResolver {
 		return msg;
 	}
 
+	@Query(() => Boolean)
+	async checkPassword(
+		@Ctx() ctx: MyContext,
+		@Arg("data") data: UserLoginInput
+	) {
+		if (!ctx.user) {
+			throw new Error("Mot de passe incorrect");
+		}
+		const user = await new UserServices().findUserByEmail(data.email);
+		if (!user || !user.isValid) {
+			throw new Error("Mot de passe incorrect");
+		}
+
+		const isPasswordValid = await argon2.verify(user.password, data.password);
+		if (isPasswordValid) {
+			return true;
+		} else {
+			throw new Error("Mot de passe incorrect");
+		}
+	}
+
 	@Query(() => Message)
 	async logout(@Ctx() ctx: MyContext) {
 		if (ctx.user) {
@@ -116,7 +137,22 @@ export default class UserResolver {
 		}
 
 		try {
-			return await new UserServices().editUser(data);
+			const newUser = await new UserServices().editUser(data);
+
+			const token = await new SignJWT({
+				email: newUser.email,
+				role: newUser.role,
+			})
+				.setProtectedHeader({ alg: "HS256", typ: "jwt" })
+				.setExpirationTime("1h")
+				.sign(new TextEncoder().encode(`${process.env.SECRET_KEY}`));
+
+			let cookies = new Cookies(ctx.req, ctx.res);
+			cookies.set("token", token, {
+				httpOnly: true,
+			});
+
+			return newUser;
 		} catch (error) {
 			throw new Error("Erreur lors de la création de l'utilisateur");
 		}
@@ -134,5 +170,19 @@ export default class UserResolver {
 			throw new Error("Erreur lors de la suppression de l'utilisateur");
 		}
 		return msg;
+	}
+
+	@Mutation(() => Boolean)
+	async editPassword(@Ctx() ctx: MyContext, @Arg("password") password: string) {
+		if (!ctx.user) {
+			throw new Error("Vous devez être connecté");
+		}
+		const user = await new UserServices().findUserByEmail(ctx.user.email);
+		if (!user) {
+			throw new Error("Vous devez être connecté");
+		}
+		user.password = await argon2.hash(password);
+		await new UserServices().updateUser(user);
+		return true;
 	}
 }

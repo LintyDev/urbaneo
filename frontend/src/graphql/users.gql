@@ -32,6 +32,10 @@ query GetUsers {
 	}
 }
 
+query checkPassword($data: UserLoginInput!) {
+	checkPassword(data: $data)
+}
+
 mutation UpdateUser($data: UserUpdateInput!) {
 	updateUser(data: $data) {
 		id
@@ -87,4 +91,8 @@ mutation DeleteUser($deleteUserId: String!) {
 		success
 		message
 	}
+}
+
+mutation EditPassword($password: String!) {
+	editPassword(password: $password)
 }
