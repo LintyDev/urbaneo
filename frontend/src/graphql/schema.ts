@@ -85,6 +85,7 @@ export type Mutation = {
   deleteReview: Message;
   deleteRoles: Message;
   deleteUser: Message;
+  editUser: UserWithoutPassword;
   register: Message;
   updateCategory: Category;
   updateCity: City;
@@ -147,6 +148,11 @@ export type MutationDeleteRolesArgs = {
 
 export type MutationDeleteUserArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type MutationEditUserArgs = {
+  data: UserEditInput;
 };
 
 
@@ -389,6 +395,15 @@ export type UserCreateInput = {
   password: Scalars['String']['input'];
 };
 
+export type UserEditInput = {
+  avatar?: InputMaybe<Scalars['String']['input']>;
+  email: Scalars['EmailAddress']['input'];
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['UUID']['input'];
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  location?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UserLoginInput = {
   email: Scalars['EmailAddress']['input'];
   password: Scalars['String']['input'];
@@ -430,6 +445,11 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', id: any, label: Label }> } | null };
+
+export type MyAccountQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyAccountQuery = { __typename?: 'Query', me?: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', label: Label, city: { __typename?: 'City', name: string } }>, reviews: Array<{ __typename?: 'Review', date: any, comment: string, note: number, id: string, POI: { __typename?: 'POI', name: string, slug: string } }> } | null };
 
 export type RegisterMutationVariables = Exact<{
   data: UserCreateInput;
@@ -582,6 +602,13 @@ export type UpdateUserMutationVariables = Exact<{
 
 export type UpdateUserMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', id: any, label: Label, city: { __typename?: 'City', id: any, name: string } }> } };
 
+export type EditUserMutationVariables = Exact<{
+  data: UserEditInput;
+}>;
+
+
+export type EditUserMutation = { __typename?: 'Mutation', editUser: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', label: Label, city: { __typename?: 'City', name: string } }>, reviews: Array<{ __typename?: 'Review', date: any, comment: string, note: number, id: string, POI: { __typename?: 'POI', name: string, slug: string } }> } };
+
 export type DeleteUserMutationVariables = Exact<{
   deleteUserId: Scalars['String']['input'];
 }>;
@@ -645,6 +672,68 @@ export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const MyAccountDocument = gql`
+    query MyAccount {
+  me {
+    id
+    email
+    firstName
+    lastName
+    location
+    avatar
+    isValid
+    role
+    cityRole {
+      label
+      city {
+        name
+      }
+    }
+    reviews {
+      POI {
+        name
+        slug
+      }
+      date
+      comment
+      note
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useMyAccountQuery__
+ *
+ * To run a query within a React component, call `useMyAccountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMyAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMyAccountQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMyAccountQuery(baseOptions?: Apollo.QueryHookOptions<MyAccountQuery, MyAccountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MyAccountQuery, MyAccountQueryVariables>(MyAccountDocument, options);
+      }
+export function useMyAccountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MyAccountQuery, MyAccountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MyAccountQuery, MyAccountQueryVariables>(MyAccountDocument, options);
+        }
+export function useMyAccountSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<MyAccountQuery, MyAccountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<MyAccountQuery, MyAccountQueryVariables>(MyAccountDocument, options);
+        }
+export type MyAccountQueryHookResult = ReturnType<typeof useMyAccountQuery>;
+export type MyAccountLazyQueryHookResult = ReturnType<typeof useMyAccountLazyQuery>;
+export type MyAccountSuspenseQueryHookResult = ReturnType<typeof useMyAccountSuspenseQuery>;
+export type MyAccountQueryResult = Apollo.QueryResult<MyAccountQuery, MyAccountQueryVariables>;
 export const RegisterDocument = gql`
     mutation Register($data: UserCreateInput!) {
   register(data: $data) {
@@ -1605,6 +1694,62 @@ export function useUpdateUserMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateUserMutationHookResult = ReturnType<typeof useUpdateUserMutation>;
 export type UpdateUserMutationResult = Apollo.MutationResult<UpdateUserMutation>;
 export type UpdateUserMutationOptions = Apollo.BaseMutationOptions<UpdateUserMutation, UpdateUserMutationVariables>;
+export const EditUserDocument = gql`
+    mutation EditUser($data: UserEditInput!) {
+  editUser(data: $data) {
+    id
+    email
+    firstName
+    lastName
+    location
+    avatar
+    isValid
+    role
+    cityRole {
+      label
+      city {
+        name
+      }
+    }
+    reviews {
+      POI {
+        name
+        slug
+      }
+      date
+      comment
+      note
+      id
+    }
+  }
+}
+    `;
+export type EditUserMutationFn = Apollo.MutationFunction<EditUserMutation, EditUserMutationVariables>;
+
+/**
+ * __useEditUserMutation__
+ *
+ * To run a mutation, you first call `useEditUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editUserMutation, { data, loading, error }] = useEditUserMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useEditUserMutation(baseOptions?: Apollo.MutationHookOptions<EditUserMutation, EditUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EditUserMutation, EditUserMutationVariables>(EditUserDocument, options);
+      }
+export type EditUserMutationHookResult = ReturnType<typeof useEditUserMutation>;
+export type EditUserMutationResult = Apollo.MutationResult<EditUserMutation>;
+export type EditUserMutationOptions = Apollo.BaseMutationOptions<EditUserMutation, EditUserMutationVariables>;
 export const DeleteUserDocument = gql`
     mutation DeleteUser($deleteUserId: String!) {
   deleteUser(id: $deleteUserId) {

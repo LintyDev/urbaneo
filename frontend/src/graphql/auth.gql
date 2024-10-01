@@ -15,6 +15,35 @@ query Me {
 	}
 }
 
+query MyAccount {
+	me {
+		id
+		email
+		firstName
+		lastName
+		location
+		avatar
+		isValid
+		role
+		cityRole {
+			label
+			city {
+				name
+			}
+		}
+		reviews {
+			POI {
+				name
+				slug
+			}
+			date
+			comment
+			note
+			id
+		}
+	}
+}
+
 mutation Register($data: UserCreateInput!) {
 	register(data: $data) {
 		message

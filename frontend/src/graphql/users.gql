@@ -53,6 +53,35 @@ mutation UpdateUser($data: UserUpdateInput!) {
 	}
 }
 
+mutation EditUser($data: UserEditInput!) {
+	editUser(data: $data) {
+		id
+		email
+		firstName
+		lastName
+		location
+		avatar
+		isValid
+		role
+		cityRole {
+			label
+			city {
+				name
+			}
+		}
+		reviews {
+			POI {
+				name
+				slug
+			}
+			date
+			comment
+			note
+			id
+		}
+	}
+}
+
 mutation DeleteUser($deleteUserId: String!) {
 	deleteUser(id: $deleteUserId) {
 		success

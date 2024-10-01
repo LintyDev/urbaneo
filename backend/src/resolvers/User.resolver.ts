@@ -3,6 +3,7 @@ import * as argon2 from "argon2";
 import {
 	User,
 	UserCreateInput,
+	UserEditInput,
 	UserLoginInput,
 	UserRole,
 	UserUpdateInput,
@@ -102,6 +103,22 @@ export default class UserResolver {
 			return await new UserServices().updateUser(data);
 		} catch (error: any) {
 			throw new Error("Erreur lors de la modification de l'utilisateur");
+		}
+	}
+
+	@Mutation(() => UserWithoutPassword)
+	async editUser(@Ctx() ctx: MyContext, @Arg("data") data: UserEditInput) {
+		if (!ctx.user) {
+			throw new Error("Vous devez être connecté");
+		}
+		if (ctx && ctx.user.id !== data.id) {
+			throw new Error("Vous n'avez pas les droits pour performer cette action");
+		}
+
+		try {
+			return await new UserServices().editUser(data);
+		} catch (error) {
+			throw new Error("Erreur lors de la création de l'utilisateur");
 		}
 	}
 

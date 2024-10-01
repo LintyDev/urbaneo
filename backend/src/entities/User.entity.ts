@@ -174,3 +174,24 @@ export class UserUpdateInput {
 	@Field((type) => UserRole, { nullable: true })
 	role: UserRole;
 }
+
+@InputType()
+export class UserEditInput {
+	@Field(() => GraphQLUUID)
+	id: string;
+
+	@Field({ nullable: true })
+	firstName?: string;
+
+	@Field({ nullable: true })
+	lastName?: string;
+
+	@Field(() => GraphQLEmailAddress)
+	email?: string;
+
+	@Field({ nullable: true })
+	location?: string;
+
+	@Field({ nullable: true })
+	avatar?: string;
+}

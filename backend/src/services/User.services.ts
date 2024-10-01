@@ -2,6 +2,7 @@ import { Repository } from "typeorm";
 import {
 	User,
 	UserCreateInput,
+	UserEditInput,
 	UserUpdateInput,
 } from "../entities/User.entity";
 import datasource from "../lib/datasource";
@@ -27,6 +28,19 @@ export default class UserServices {
 	}
 
 	async updateUser(data: UserUpdateInput): Promise<User> {
+		const errors = await validate(data);
+		if (errors.length) {
+			throw new Error("Le formulaire ne peut pas être envoyé en l'état");
+		}
+		const user = await this.db.findOneOrFail({
+			where: { id: data.id },
+			relations: ["cityRole.city", "reviews"],
+		});
+		const userNewInfos = this.db.merge(user, data);
+		return await this.db.save(userNewInfos);
+	}
+
+	async editUser(data: UserEditInput): Promise<User> {
 		const errors = await validate(data);
 		if (errors.length) {
 			throw new Error("Le formulaire ne peut pas être envoyé en l'état");
