@@ -27,7 +27,7 @@ const linkAdmin = [
 		color: "hover:bg-[#0000001a]",
 	},
 	{
-		name: "Comment ça marche ?",
+		name: "À propos",
 		href: "/about",
 		icon: CircleHelp,
 		color: "hover:bg-[#0000001a]",
@@ -54,7 +54,7 @@ const linkUser = [
 		color: "hover:bg-[#0000001a]",
 	},
 	{
-		name: "Comment ça marche ?",
+		name: "À propos",
 		href: "/about",
 		icon: CircleHelp,
 		color: "hover:bg-[#0000001a]",

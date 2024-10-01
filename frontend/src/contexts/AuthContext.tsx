@@ -137,7 +137,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 		if (!loading && !user && forbidenRoutes.includes(pathname)) {
 			router.push("/");
 		}
-	}, [pathname, loading]);
+	}, [pathname, loading, user, router]);
 
 	return (
 		<AuthContext.Provider
