@@ -10,7 +10,6 @@ import { UserRole } from "../entities/User.entity";
 
 @Resolver()
 export default class CategoryResolver {
-	@Authorized(UserRole.ADMIN)
 	@Query(() => [Category])
 	async getCategories() {
 		const categories = await new CategoryServices().getCategories();

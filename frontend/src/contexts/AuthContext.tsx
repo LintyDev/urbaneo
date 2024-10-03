@@ -49,12 +49,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [getUser, { data }] = useMeLazyQuery({
 		fetchPolicy: "no-cache",
 		onCompleted(data) {
-			setUser(data.me);
+			setUser(data.me ?? undefined);
 			if (
 				data.me &&
 				(pathname === "/auth/login" || pathname === "/auth/register")
 			) {
 				router.push("/");
+			} else if (!data.me) {
+				console.log("je te redirect");
 			}
 		},
 		onError(error) {

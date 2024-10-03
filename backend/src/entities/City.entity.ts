@@ -8,7 +8,7 @@ import {
 	OneToMany,
 	PrimaryGeneratedColumn,
 } from "typeorm";
-import { POI } from "./POI.entity";
+import { POI, POIBudget } from "./POI.entity";
 import { Role } from "./Role.entity";
 import { Point } from "geojson";
 import { PointInput, PointObject } from "./Point.entity";
@@ -20,7 +20,14 @@ export class City {
 	@BeforeUpdate()
 	protected async createSlug() {
 		if (this.name && this.zip_code) {
-			this.slug = this.name.toLowerCase() + "-" + this.zip_code;
+			this.slug =
+				this.name
+					.toLowerCase()
+					.normalize("NFD")
+					.replace(/[\u0300-\u036f]/g, "")
+					.replace(/ /g, "-") +
+				"-" +
+				this.zip_code;
 		}
 	}
 
@@ -87,4 +94,22 @@ export class CityUpdateInput {
 
 	@Field({ nullable: true })
 	zip_code?: number;
+}
+
+@ObjectType()
+export class CityWithPOI extends City {
+	@Field(() => [POI])
+	pois: POI[];
+}
+
+@InputType()
+export class InputSearchCity {
+	@Field()
+	slug: string;
+
+	@Field(() => [String], { nullable: true })
+	categoriesId?: string[];
+
+	@Field((type) => POIBudget, { nullable: true })
+	budget?: POIBudget;
 }

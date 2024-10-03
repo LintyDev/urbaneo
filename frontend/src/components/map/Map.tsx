@@ -1,9 +1,20 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import {
+	MapContainer,
+	TileLayer,
+	Marker,
+	Popup,
+	useMap,
+	MapContainerProps,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet";
 import "@/lib/SmoothWheelZoom";
 
-const MapComponent = () => {
+const MapComponent = ({
+	className,
+}: {
+	className?: MapContainerProps["className"];
+}) => {
 	// https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png
 	return (
 		<MapContainer
@@ -14,6 +25,7 @@ const MapComponent = () => {
 			// @ts-ignore
 			smoothSensitivity={1.5}
 			smoothWheelZoom={true}
+			className={className}
 		>
 			<TileLayer url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png" />
 		</MapContainer>

@@ -34,7 +34,11 @@ export class POI {
 	@BeforeUpdate()
 	protected async createSlug() {
 		if (this.name) {
-			this.slug = this.name.toLowerCase().replace(/ /g, "-");
+			this.slug = this.name
+				.toLowerCase()
+				.normalize("NFD")
+				.replace(/[\u0300-\u036f]/g, "")
+				.replace(/ /g, "-");
 		}
 	}
 

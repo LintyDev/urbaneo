@@ -37,6 +37,34 @@ query SearchCities($text: String!) {
 	}
 }
 
+query GetCityFromSearch($data: InputSearchCity!) {
+	getCityFromSearch(data: $data) {
+		id
+		name
+		coordinates {
+			x
+			y
+		}
+		zip_code
+		slug
+		pois {
+			id
+			name
+			photos
+			slug
+			coordinates {
+				x
+				y
+			}
+			address
+			budget
+			categories {
+				icon
+			}
+		}
+	}
+}
+
 mutation CreateCity($data: CityCreateInput!) {
 	createCity(data: $data) {
 		id

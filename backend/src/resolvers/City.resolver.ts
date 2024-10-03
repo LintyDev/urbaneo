@@ -3,6 +3,8 @@ import {
 	City,
 	CityCreateInput,
 	CityUpdateInput,
+	CityWithPOI,
+	InputSearchCity,
 } from "../entities/City.entity";
 import CityServices from "../services/City.services";
 import { Message } from "../entities/Message.entity";
@@ -31,6 +33,12 @@ export default class CityResolver {
 	async searchCities(@Arg("text") text: string) {
 		const cities = await new CityServices().searchCities(text);
 		return cities;
+	}
+
+	@Query(() => CityWithPOI)
+	async getCityFromSearch(@Arg("data") data: InputSearchCity) {
+		const city = await new CityServices().getCityFromSearch(data);
+		return city;
 	}
 
 	@Authorized(UserRole.ADMIN)

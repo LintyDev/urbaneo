@@ -1,11 +1,14 @@
-import { Like, Repository } from "typeorm";
+import { FindOptionsWhere, In, Like, Repository } from "typeorm";
 import datasource from "../lib/datasource";
 import {
 	City,
 	CityCreateInput,
 	CityUpdateInput,
+	CityWithPOI,
+	InputSearchCity,
 } from "../entities/City.entity";
 import { Point } from "geojson";
+import { POI, POIBudget } from "../entities/POI.entity";
 
 export default class CityServices {
 	db: Repository<City>;
@@ -29,6 +32,41 @@ export default class CityServices {
 			},
 		});
 		return cities;
+	}
+
+	async getCityFromSearch({
+		slug,
+		categoriesId,
+		budget,
+	}: InputSearchCity): Promise<City> {
+		const city = await this.db.findOneByOrFail({ slug });
+
+		const customWhere: FindOptionsWhere<POI> = {
+			city: {
+				id: city.id,
+			},
+		};
+
+		if (categoriesId?.length) {
+			customWhere.categories = {
+				id: In(categoriesId),
+			};
+		}
+
+		if (budget) {
+			customWhere.budget = budget;
+		}
+
+		const pois = await datasource.getRepository(POI).find({
+			relations: {
+				categories: true,
+			},
+			where: customWhere,
+		});
+
+		city.pois = pois;
+
+		return city;
 	}
 
 	async createCity(data: CityCreateInput): Promise<City> {

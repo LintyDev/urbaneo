@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react";
+import { Heart, MapPinned } from "lucide-react";
 import Link from "next/link";
 import UserMenu from "./UserMenu";
 
@@ -7,7 +7,9 @@ function NavBar() {
 		<nav>
 			{/* Desktop Navbar */}
 			<div className="flex justify-between p-5">
-				<Link href={"/"}>Urbaneo.tech</Link>
+				<Link href={"/"} className="flex items-center gap-2">
+					<MapPinned /> Urbaneo.tech
+				</Link>
 				<div className="flex gap-4">
 					<Link href={"/favorites"}>
 						<Heart className="cursor-pointer hover:text-red-500" />

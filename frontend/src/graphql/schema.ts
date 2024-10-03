@@ -60,6 +60,22 @@ export type CityUpdateInput = {
   zip_code?: InputMaybe<Scalars['Float']['input']>;
 };
 
+export type CityWithPoi = {
+  __typename?: 'CityWithPOI';
+  coordinates: PointObject;
+  id: Scalars['UUID']['output'];
+  name: Scalars['String']['output'];
+  pois: Array<Poi>;
+  slug: Scalars['String']['output'];
+  zip_code: Scalars['Float']['output'];
+};
+
+export type InputSearchCity = {
+  budget?: InputMaybe<PoiBudget>;
+  categoriesId?: InputMaybe<Array<Scalars['String']['input']>>;
+  slug: Scalars['String']['input'];
+};
+
 /** User's access levels and permissions for cities */
 export const enum Label {
   CityAdmin = 'CITY_ADMIN',
@@ -260,6 +276,7 @@ export type Query = {
   getCategories: Array<Category>;
   getCities: Array<City>;
   getCity: City;
+  getCityFromSearch: CityWithPoi;
   getPOI: Poi;
   getPOIs: Array<Poi>;
   getReview: Review;
@@ -291,6 +308,11 @@ export type QueryGetCitiesArgs = {
 
 export type QueryGetCityArgs = {
   id: Scalars['String']['input'];
+};
+
+
+export type QueryGetCityFromSearchArgs = {
+  data: InputSearchCity;
 };
 
 
@@ -534,6 +556,13 @@ export type SearchCitiesQueryVariables = Exact<{
 
 
 export type SearchCitiesQuery = { __typename?: 'Query', searchCities: Array<{ __typename?: 'City', id: any, name: string, slug: string, zip_code: number, coordinates: { __typename?: 'PointObject', x: number, y: number } }> };
+
+export type GetCityFromSearchQueryVariables = Exact<{
+  data: InputSearchCity;
+}>;
+
+
+export type GetCityFromSearchQuery = { __typename?: 'Query', getCityFromSearch: { __typename?: 'CityWithPOI', id: any, name: string, zip_code: number, slug: string, coordinates: { __typename?: 'PointObject', x: number, y: number }, pois: Array<{ __typename?: 'POI', id: string, name: string, photos: Array<string>, slug: string, address: string, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, categories: Array<{ __typename?: 'Category', icon: string }> }> } };
 
 export type CreateCityMutationVariables = Exact<{
   data: CityCreateInput;
@@ -1205,6 +1234,68 @@ export type SearchCitiesQueryHookResult = ReturnType<typeof useSearchCitiesQuery
 export type SearchCitiesLazyQueryHookResult = ReturnType<typeof useSearchCitiesLazyQuery>;
 export type SearchCitiesSuspenseQueryHookResult = ReturnType<typeof useSearchCitiesSuspenseQuery>;
 export type SearchCitiesQueryResult = Apollo.QueryResult<SearchCitiesQuery, SearchCitiesQueryVariables>;
+export const GetCityFromSearchDocument = gql`
+    query GetCityFromSearch($data: InputSearchCity!) {
+  getCityFromSearch(data: $data) {
+    id
+    name
+    coordinates {
+      x
+      y
+    }
+    zip_code
+    slug
+    pois {
+      id
+      name
+      photos
+      slug
+      coordinates {
+        x
+        y
+      }
+      address
+      budget
+      categories {
+        icon
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCityFromSearchQuery__
+ *
+ * To run a query within a React component, call `useGetCityFromSearchQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCityFromSearchQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCityFromSearchQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useGetCityFromSearchQuery(baseOptions: Apollo.QueryHookOptions<GetCityFromSearchQuery, GetCityFromSearchQueryVariables> & ({ variables: GetCityFromSearchQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCityFromSearchQuery, GetCityFromSearchQueryVariables>(GetCityFromSearchDocument, options);
+      }
+export function useGetCityFromSearchLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCityFromSearchQuery, GetCityFromSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCityFromSearchQuery, GetCityFromSearchQueryVariables>(GetCityFromSearchDocument, options);
+        }
+export function useGetCityFromSearchSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetCityFromSearchQuery, GetCityFromSearchQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCityFromSearchQuery, GetCityFromSearchQueryVariables>(GetCityFromSearchDocument, options);
+        }
+export type GetCityFromSearchQueryHookResult = ReturnType<typeof useGetCityFromSearchQuery>;
+export type GetCityFromSearchLazyQueryHookResult = ReturnType<typeof useGetCityFromSearchLazyQuery>;
+export type GetCityFromSearchSuspenseQueryHookResult = ReturnType<typeof useGetCityFromSearchSuspenseQuery>;
+export type GetCityFromSearchQueryResult = Apollo.QueryResult<GetCityFromSearchQuery, GetCityFromSearchQueryVariables>;
 export const CreateCityDocument = gql`
     mutation CreateCity($data: CityCreateInput!) {
   createCity(data: $data) {
