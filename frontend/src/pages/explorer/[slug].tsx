@@ -2,20 +2,31 @@ import ErrorBox from "@/components/common/ErrorBox";
 import LoadingBox from "@/components/common/LoadingBox";
 import ExplorerFilter from "@/components/explorer/ExplorerFilter";
 import ExplorerMap from "@/components/explorer/ExplorerMap";
-import { useGetCityFromSearchQuery } from "@/graphql/schema";
+import {
+	InputSearchCity,
+	PoiBudget,
+	useGetCityFromSearchQuery,
+} from "@/graphql/schema";
 import { useRouter } from "next/router";
 
 function Explorer() {
 	const router = useRouter();
-	const { loading, data, error } = useGetCityFromSearchQuery({
+	const filters: InputSearchCity = {
+		slug: (router.query.slug as string) || "none",
+	};
+	if (router.query.f && typeof router.query.f === "string") {
+		const query = JSON.parse(Buffer.from(router.query.f, "base64").toString());
+		filters.budget =
+			typeof query.budget === "string"
+				? (query.budget.toUpperCase() as PoiBudget)
+				: null;
+		filters.categoriesId = query.categoriesId;
+	}
+	const { loading, data, error, refetch } = useGetCityFromSearchQuery({
 		variables: {
-			data: {
-				slug: (router.query.slug as string) || "none",
-			},
+			data: filters,
 		},
 	});
-	console.log(router.query.f);
-	// console.log(Buffer.from(router.query.f as string, "base64").toString());
 
 	if (error) return <ErrorBox />;
 	if (loading) return <LoadingBox />;
@@ -25,7 +36,11 @@ function Explorer() {
 	}
 	return (
 		<section className="grid grid-cols-[auto_1fr] mx-5">
-			<ExplorerFilter city={data!.getCityFromSearch} />
+			<ExplorerFilter
+				city={data!.getCityFromSearch}
+				filters={filters}
+				refetch={refetch}
+			/>
 			<ExplorerMap city={data!.getCityFromSearch} />
 		</section>
 	);
