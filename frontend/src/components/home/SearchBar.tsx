@@ -1,3 +1,8 @@
+import {
+	SearchCitiesQuery,
+	useGetCategoriesQuery,
+	useSearchCitiesLazyQuery,
+} from "@/graphql/schema";
 import { Field, Input, Label, Select } from "@headlessui/react";
 import clsx from "clsx";
 import {
@@ -10,8 +15,24 @@ import {
 	Users,
 	UtensilsCrossed,
 } from "lucide-react";
+import { useState } from "react";
+import DynamicIcon, { IconProps } from "../common/DynamicIcon";
+import { useRouter } from "next/router";
 
 function SearchBar() {
+	const router = useRouter();
+	const [cities, setCities] = useState<SearchCitiesQuery["searchCities"]>([]);
+	const [searchCities] = useSearchCitiesLazyQuery({
+		fetchPolicy: "no-cache",
+		onCompleted(data) {
+			setCities(data.searchCities);
+		},
+		onError(error) {
+			console.log(error.message);
+		},
+	});
+	const { loading, data, error } = useGetCategoriesQuery();
+
 	return (
 		<div className="h-full flex flex-col justify-center items-center mx-3 md:mx-0">
 			<h1 className="text-6xl">Découvrez Lille</h1>
@@ -19,18 +40,58 @@ function SearchBar() {
 				Faites l&apos;expérience Urbaneo !
 			</p>
 			<div className="bg-[rgba(0,0,0,0.58)] p-5 rounded-2xl w-full md:w-fit">
+				<div className="hidden md:flex">
+					<Field className="w-full mr-2">
+						<Label className="text-sm/6 font-medium text-white">Filtres:</Label>
+					</Field>
+					<div className="flex gap-2 whitespace-nowrap">
+						{data &&
+							data.getCategories.length > 0 &&
+							data.getCategories.slice(0, 7).map((c) => (
+								<p
+									key={c.id}
+									className="flex items-center gap-2 rounded-3xl py-1 px-2 border-[1px] text-xs border-black cursor-pointer bg-black hover:bg-[rgba(0,0,0,0.8)] hover:border-white"
+								>
+									<DynamicIcon name={c.icon as IconProps["name"]} size={12} />
+									{c.name}
+								</p>
+							))}
+					</div>
+				</div>
 				<div className="md:flex md:gap-3 md:items-center">
-					<Field className="w-full">
+					<Field className="w-full relative">
 						<Label className="text-sm/6 font-medium text-white">
 							Choissisez une ville
 						</Label>
 						<Input
 							className={clsx(
-								"mt-3 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white",
+								`mt-3 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white`,
 								"focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
 							)}
 							placeholder="ex: Paris"
+							onChange={(e) => {
+								if (e.target.value === "") {
+									setCities([]);
+								} else {
+									searchCities({
+										variables: { text: e.target.value },
+									});
+								}
+							}}
 						/>
+						{cities && cities.length > 0 && (
+							<div className="absolute w-full bg-white/5 rounded-b-lg py-3 max-h-[500px] overflow-y-auto">
+								{cities.map((c) => (
+									<p
+										key={c.id}
+										className="px-3 cursor-pointer hover:bg-[rgba(0,0,0,0.88)] p-5"
+										onClick={() => router.push(`/explorer/${c.slug}`)}
+									>
+										{c.name}
+									</p>
+								))}
+							</div>
+						)}
 					</Field>
 					<Field className="w-full">
 						<Label className="text-sm/6 font-medium text-white">
@@ -57,40 +118,7 @@ function SearchBar() {
 					</Field>
 				</div>
 
-				<div className="flex gap-5 justify-between items-center mt-3">
-					<div className="hidden md:flex">
-						<Field className="w-full mr-2">
-							<Label className="text-sm/6 font-medium text-white">
-								Filtres:
-							</Label>
-						</Field>
-						<div className="flex gap-2 whitespace-nowrap">
-							<p className="flex items-center gap-2 rounded-3xl py-1 px-2 border-[1px] text-xs border-black cursor-pointer bg-black hover:bg-[rgba(0,0,0,0.8)] hover:border-white">
-								<Castle size={12} />
-								Monuments
-							</p>
-							<p className="flex items-center gap-2 rounded-3xl py-1 px-2 border-[1px] text-xs border-black cursor-pointer bg-black hover:bg-[rgba(0,0,0,0.8)] hover:border-white">
-								<UtensilsCrossed size={12} />
-								Restaurant
-							</p>
-							<p className="flex items-center gap-2 rounded-3xl py-1 px-2 border-[1px] text-xs border-black cursor-pointer bg-black hover:bg-[rgba(0,0,0,0.8)] hover:border-white">
-								<Hotel size={12} />
-								Hotels
-							</p>
-							<p className="flex items-center gap-2 rounded-3xl py-1 px-2 border-[1px] text-xs border-black cursor-pointer bg-black hover:bg-[rgba(0,0,0,0.8)] hover:border-white">
-								<Hand size={12} />
-								Activités manuelles
-							</p>
-							<p className="flex items-center gap-2 rounded-3xl py-1 px-2 border-[1px] text-xs border-black cursor-pointer bg-black hover:bg-[rgba(0,0,0,0.8)] hover:border-white">
-								<Dices size={12} />
-								Loisirs
-							</p>
-							<p className="flex items-center gap-2 rounded-3xl py-1 px-2 border-[1px] text-xs border-black cursor-pointer bg-black hover:bg-[rgba(0,0,0,0.8)] hover:border-white">
-								<Users size={12} />
-								Famille
-							</p>
-						</div>
-					</div>
+				<div className="flex justify-end mt-3">
 					<button className="relative inline-block group">
 						<span className="relative z-10 block p-2 overflow-hidden font-medium leading-tight text-black transition-colors duration-300 ease-out border-2 border-black rounded-lg group-hover:text-white">
 							<span className="absolute inset-0 w-full h-full p-2 rounded-lg bg-white"></span>
