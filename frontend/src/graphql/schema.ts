@@ -279,6 +279,7 @@ export type Query = {
   getCityFromSearch: CityWithPoi;
   getPOI: Poi;
   getPOIs: Array<Poi>;
+  getPOIsBySlug: Array<Poi>;
   getReview: Review;
   getUserById: UserWithoutPassword;
   getUsers: Array<UserWithoutPassword>;
@@ -323,6 +324,11 @@ export type QueryGetPoiArgs = {
 
 export type QueryGetPoIsArgs = {
   limit?: InputMaybe<Scalars['Float']['input']>;
+};
+
+
+export type QueryGetPoIsBySlugArgs = {
+  slug: Array<Scalars['String']['input']>;
 };
 
 
@@ -603,6 +609,13 @@ export type GetPoIsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetPoIsQuery = { __typename?: 'Query', getPOIs: Array<{ __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, address: string, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> }> };
+
+export type GetPoIsBySlugQueryVariables = Exact<{
+  slug: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type GetPoIsBySlugQuery = { __typename?: 'Query', getPOIsBySlug: Array<{ __typename?: 'POI', name: string, description: string, photos: Array<string>, slug: string, budget: PoiBudget, city: { __typename?: 'City', name: string }, categories: Array<{ __typename?: 'Category', icon: string }>, reviews?: Array<{ __typename?: 'Review', note: number }> | null }> };
 
 export type CreatePoiMutationVariables = Exact<{
   data: PoiCreateInput;
@@ -1533,6 +1546,59 @@ export type GetPoIsQueryHookResult = ReturnType<typeof useGetPoIsQuery>;
 export type GetPoIsLazyQueryHookResult = ReturnType<typeof useGetPoIsLazyQuery>;
 export type GetPoIsSuspenseQueryHookResult = ReturnType<typeof useGetPoIsSuspenseQuery>;
 export type GetPoIsQueryResult = Apollo.QueryResult<GetPoIsQuery, GetPoIsQueryVariables>;
+export const GetPoIsBySlugDocument = gql`
+    query GetPOIsBySlug($slug: [String!]!) {
+  getPOIsBySlug(slug: $slug) {
+    name
+    description
+    photos
+    slug
+    budget
+    city {
+      name
+    }
+    categories {
+      icon
+    }
+    reviews {
+      note
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPoIsBySlugQuery__
+ *
+ * To run a query within a React component, call `useGetPoIsBySlugQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPoIsBySlugQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPoIsBySlugQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useGetPoIsBySlugQuery(baseOptions: Apollo.QueryHookOptions<GetPoIsBySlugQuery, GetPoIsBySlugQueryVariables> & ({ variables: GetPoIsBySlugQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPoIsBySlugQuery, GetPoIsBySlugQueryVariables>(GetPoIsBySlugDocument, options);
+      }
+export function useGetPoIsBySlugLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPoIsBySlugQuery, GetPoIsBySlugQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPoIsBySlugQuery, GetPoIsBySlugQueryVariables>(GetPoIsBySlugDocument, options);
+        }
+export function useGetPoIsBySlugSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetPoIsBySlugQuery, GetPoIsBySlugQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPoIsBySlugQuery, GetPoIsBySlugQueryVariables>(GetPoIsBySlugDocument, options);
+        }
+export type GetPoIsBySlugQueryHookResult = ReturnType<typeof useGetPoIsBySlugQuery>;
+export type GetPoIsBySlugLazyQueryHookResult = ReturnType<typeof useGetPoIsBySlugLazyQuery>;
+export type GetPoIsBySlugSuspenseQueryHookResult = ReturnType<typeof useGetPoIsBySlugSuspenseQuery>;
+export type GetPoIsBySlugQueryResult = Apollo.QueryResult<GetPoIsBySlugQuery, GetPoIsBySlugQueryVariables>;
 export const CreatePoiDocument = gql`
     mutation CreatePOI($data: POICreateInput!) {
   createPOI(data: $data) {

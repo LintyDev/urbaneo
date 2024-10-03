@@ -16,6 +16,12 @@ export default class POIResolver {
 		return poi;
 	}
 
+	@Query(() => [POI])
+	async getPOIsBySlug(@Arg("slug", () => [String]) slug: string[]) {
+		const poi = await new POIServices().getPOIsbySlug(slug);
+		return poi;
+	}
+
 	@Authorized(UserRole.ADMIN, UserRole.USER, UserRole.USER_PREMIUM)
 	@Query(() => [POI])
 	async getPOIs(

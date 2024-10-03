@@ -46,6 +46,13 @@ export default class POIServices {
 		});
 	}
 
+	async getPOIsbySlug(slug: string[]): Promise<POI[]> {
+		return await this.db.find({
+			where: { slug: In(slug) },
+			relations: ["city", "categories", "reviews"],
+		});
+	}
+
 	async createPOI(data: POICreateInput): Promise<POI> {
 		const city = await new CityServices().getCity(data.cityId);
 		const categories = await new CategoryServices().getCategories();

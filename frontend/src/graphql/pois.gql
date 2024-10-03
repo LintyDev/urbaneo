@@ -23,6 +23,25 @@ query GetPOIs {
 	}
 }
 
+query GetPOIsBySlug($slug: [String!]!) {
+	getPOIsBySlug(slug: $slug) {
+		name
+		description
+		photos
+		slug
+		budget
+		city {
+			name
+		}
+		categories {
+			icon
+		}
+		reviews {
+			note
+		}
+	}
+}
+
 mutation CreatePOI($data: POICreateInput!) {
 	createPOI(data: $data) {
 		id
