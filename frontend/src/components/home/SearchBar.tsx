@@ -1,4 +1,5 @@
 import {
+	PoiBudget,
 	SearchCitiesQuery,
 	useGetCategoriesQuery,
 	useSearchCitiesLazyQuery,
@@ -15,13 +16,19 @@ import {
 	Users,
 	UtensilsCrossed,
 } from "lucide-react";
-import { useState } from "react";
+import { SyntheticEvent, useRef, useState } from "react";
 import DynamicIcon, { IconProps } from "../common/DynamicIcon";
 import { useRouter } from "next/router";
 
 function SearchBar() {
 	const router = useRouter();
+	const inputSearch = useRef<HTMLInputElement>(null);
 	const [cities, setCities] = useState<SearchCitiesQuery["searchCities"]>([]);
+	const [filters, setFilters] = useState<{
+		categoriesIds: string[];
+		budget: PoiBudget | null;
+		slug: string | null;
+	}>({ categoriesIds: [], budget: null, slug: null });
 	const [searchCities] = useSearchCitiesLazyQuery({
 		fetchPolicy: "no-cache",
 		onCompleted(data) {
@@ -32,6 +39,65 @@ function SearchBar() {
 		},
 	});
 	const { loading, data, error } = useGetCategoriesQuery();
+
+	const handleSetSlug = (slug: string, name: string) => {
+		const newFilter = {
+			...filters,
+			slug,
+		};
+		setFilters(newFilter);
+		inputSearch.current!.value = name;
+		setCities([]);
+	};
+
+	const handleSelectBudget = (e: SyntheticEvent<HTMLSelectElement, Event>) => {
+		const newFilters = {
+			...filters,
+			budget:
+				e.currentTarget.value === "all"
+					? null
+					: (e.currentTarget.value as PoiBudget),
+		};
+		setFilters(newFilters);
+	};
+
+	const handleSelectCategories = ({ id }: { id: string }) => {
+		const indexOfCat = filters.categoriesIds.indexOf(id);
+
+		if (indexOfCat === -1) {
+			const newCat = [...filters.categoriesIds, id];
+			const newFilter = {
+				...filters,
+				categoriesIds: newCat,
+			};
+			setFilters(newFilter);
+		} else {
+			const newCat = [...filters.categoriesIds];
+			newCat.splice(indexOfCat, 1);
+			const newFilter = {
+				...filters,
+				categoriesIds: newCat,
+			};
+			setFilters(newFilter);
+		}
+	};
+
+	const handleSearch = () => {
+		if (!filters.slug) {
+			inputSearch.current?.focus();
+			return;
+		}
+
+		const filtersQuery = {
+			budget: filters.budget,
+			categoriesId: filters.categoriesIds,
+		};
+		let link = `/explorer/${filters.slug}`;
+		if (filters.budget || filters.categoriesIds.length) {
+			link = link + "?&f=" + btoa(JSON.stringify(filtersQuery));
+		}
+		router.push(link);
+	};
 
 	return (
 		<div className="h-full flex flex-col justify-center items-center mx-3 md:mx-0">
@@ -47,15 +113,23 @@ function SearchBar() {
 					<div className="flex gap-2 whitespace-nowrap">
 						{data &&
 							data.getCategories.length > 0 &&
-							data.getCategories.slice(0, 7).map((c) => (
-								<p
-									key={c.id}
-									className="flex items-center gap-2 rounded-3xl py-1 px-2 border-[1px] text-xs border-black cursor-pointer bg-black hover:bg-[rgba(0,0,0,0.8)] hover:border-white"
-								>
-									<DynamicIcon name={c.icon as IconProps["name"]} size={12} />
-									{c.name}
-								</p>
-							))}
+							data.getCategories.slice(0, 7).map((c) => {
+								const selected = filters.categoriesIds.includes(c.id);
+								return (
+									<p
+										key={c.id}
+										className={`flex items-center gap-2 rounded-3xl py-1 px-2 border-[1px] text-xs cursor-pointer bg-black hover:bg-[rgba(0,0,0,0.8)]  ${
+											selected
+												? "border-white"
+												: "border-black hover:border-white"
+										}`}
+										onClick={() => handleSelectCategories({ id: c.id })}
+									>
+										<DynamicIcon name={c.icon as IconProps["name"]} size={12} />
+										{c.name}
+									</p>
+								);
+							})}
 					</div>
 				</div>
 				<div className="md:flex md:gap-3 md:items-center">
@@ -64,6 +138,7 @@ function SearchBar() {
 							Choissisez une ville
 						</Label>
 						<Input
+							ref={inputSearch}
 							className={clsx(
 								`mt-3 block w-full rounded-lg border-none bg-white/5 py-1.5 px-3 text-sm/6 text-white`,
 								"focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25"
@@ -85,7 +160,7 @@ function SearchBar() {
 									<p
 										key={c.id}
 										className="px-3 cursor-pointer hover:bg-[rgba(0,0,0,0.88)] p-5"
-										onClick={() => router.push(`/explorer/${c.slug}`)}
+										onClick={() => handleSetSlug(c.slug, c.name)}
 									>
 										{c.name}
 									</p>
@@ -104,6 +179,7 @@ function SearchBar() {
 									"focus:outline-none data-[focus]:outline-2 data-[focus]:-outline-offset-2 data-[focus]:outline-white/25",
 									"*:text-black"
 								)}
+								onChange={handleSelectBudget}
 							>
 								<option value="all">Tous les budgets</option>
 								<option value="low">Bas</option>
@@ -119,7 +195,10 @@ function SearchBar() {
 				</div>
 
 				<div className="flex justify-end mt-3">
-					<button className="relative inline-block group">
+					<button
+						className="relative inline-block group"
+						onClick={handleSearch}
+					>
 						<span className="relative z-10 block p-2 overflow-hidden font-medium leading-tight text-black transition-colors duration-300 ease-out border-2 border-black rounded-lg group-hover:text-white">
 							<span className="absolute inset-0 w-full h-full p-2 rounded-lg bg-white"></span>
 							<span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-black group-hover:-rotate-180 ease"></span>
