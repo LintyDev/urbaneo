@@ -1,6 +1,6 @@
 import { GetCityFromSearchQuery, PoiBudget } from "@/graphql/schema";
 import { getImageUrl } from "@/lib/getImagesUrl";
-import { DollarSign, MapPin } from "lucide-react";
+import { DollarSign, Heart, MapPin } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import DynamicIcon, { IconProps } from "../common/DynamicIcon";
@@ -25,14 +25,20 @@ function ExplorerMap({
 			<div className="flex gap-3 overflow-x-auto mt-6">
 				{city.pois.map((poi) => (
 					<div key={poi.id} className="flex flex-col cursor-pointer">
-						<Image
-							src={getImageUrl(poi.photos[0])}
-							alt={`${poi.name} representative`}
-							width={250}
-							height={150}
-							className="w-[250px] h-[150px] object-cover object-center rounded-lg"
-							unoptimized={true}
-						/>
+						<div className="w-[250px] h-[150px] relative">
+							<Image
+								src={getImageUrl(poi.photos[0])}
+								alt={`${poi.name} representative`}
+								width={250}
+								height={150}
+								className="w-[250px] h-[150px] object-cover object-center rounded-lg"
+								unoptimized={true}
+							/>
+							<p className="absolute top-1 right-1 p-2 bg-white rounded-full hover:bg-white/80 hover:text-red-700">
+								<Heart size={20} />
+							</p>
+						</div>
+
 						<p className="font-medium">{poi.name}</p>
 						<div className="flex items-center justify-between">
 							<p className="flex gap-1 font-light">
