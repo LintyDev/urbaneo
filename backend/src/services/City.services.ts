@@ -1,4 +1,4 @@
-import { FindOptionsWhere, In, Like, Repository } from "typeorm";
+import { FindOptionsWhere, ILike, In, Repository } from "typeorm";
 import datasource from "../lib/datasource";
 import {
 	City,
@@ -28,7 +28,7 @@ export default class CityServices {
 	async searchCities(text: string): Promise<City[]> {
 		const cities = await this.db.find({
 			where: {
-				name: Like(`%${text}%`),
+				name: ILike(`%${text}%`),
 			},
 		});
 		return cities;

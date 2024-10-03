@@ -15,7 +15,7 @@ function Explorer() {
 		},
 	});
 	console.log(router.query.f);
-	console.log(Buffer.from(router.query.f as string, "base64").toString());
+	// console.log(Buffer.from(router.query.f as string, "base64").toString());
 
 	if (error) return <ErrorBox />;
 	if (loading) return <LoadingBox />;

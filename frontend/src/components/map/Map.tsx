@@ -12,13 +12,17 @@ import "@/lib/SmoothWheelZoom";
 
 const MapComponent = ({
 	className,
+	x,
+	y,
 }: {
 	className?: MapContainerProps["className"];
+	x?: number;
+	y?: number;
 }) => {
 	// https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png
 	return (
 		<MapContainer
-			center={[50.633333, 3.066667]}
+			center={x && y ? [y, x] : [50.633333, 3.066667]}
 			zoom={14}
 			style={{ height: "100%", width: "100%" }}
 			scrollWheelZoom={false}

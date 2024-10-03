@@ -5,7 +5,6 @@ import {
 	CategoryUpdateInput,
 } from "../entities/Category.entity";
 import CategoryServices from "../services/Category.services";
-import { Message } from "../entities/Message.entity";
 import { UserRole } from "../entities/User.entity";
 
 @Resolver()

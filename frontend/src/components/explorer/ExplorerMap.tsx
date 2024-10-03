@@ -17,7 +17,11 @@ function ExplorerMap({
 	return (
 		<div className="grid grid-rows-[auto_1fr_auto] ml-5">
 			<p className="text-2xl font-medium">{city.pois.length} Résultat(s)</p>
-			<Map className={"rounded-2xl mt-3"} />
+			<Map
+				className={"rounded-2xl mt-3"}
+				x={city.coordinates.x}
+				y={city.coordinates.y}
+			/>
 			<div className="flex gap-3 overflow-x-auto mt-6">
 				{city.pois.map((poi) => (
 					<div key={poi.id} className="flex flex-col cursor-pointer">

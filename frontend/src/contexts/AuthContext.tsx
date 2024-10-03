@@ -56,7 +56,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 			) {
 				router.push("/");
 			} else if (!data.me) {
-				console.log("je te redirect");
 			}
 		},
 		onError(error) {

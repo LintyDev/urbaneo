@@ -7,7 +7,6 @@ import {
 	InputSearchCity,
 } from "../entities/City.entity";
 import CityServices from "../services/City.services";
-import { Message } from "../entities/Message.entity";
 import { UserRole } from "../entities/User.entity";
 
 @Resolver()
@@ -28,7 +27,6 @@ export default class CityResolver {
 		return cities;
 	}
 
-	@Authorized(UserRole.ADMIN)
 	@Query(() => [City])
 	async searchCities(@Arg("text") text: string) {
 		const cities = await new CityServices().searchCities(text);
