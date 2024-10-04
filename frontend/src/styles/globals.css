@@ -52,3 +52,25 @@ input[type="text"] {
 .shadow-top {
 	box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
 }
+
+.map-marker {
+	width: 70px !important;
+	height: 70px;
+	object-fit: cover;
+	object-position: center;
+	border-radius: 100px;
+	background: white;
+	padding: 5px !important;
+	overflow: hidden;
+	transform: scale(1.2);
+}
+
+.leaflet-popup-content {
+	margin: 0 !important;
+	width: auto !important;
+	padding: 10px;
+}
+
+.leaflet-popup-content p {
+	margin: 0 !important;
+}

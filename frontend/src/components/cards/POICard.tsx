@@ -4,10 +4,12 @@ import {
 	PoiBudget,
 } from "@/graphql/schema";
 import { getImageUrl } from "@/lib/getImagesUrl";
-import { DollarSign, Heart, MapPin } from "lucide-react";
+import { DollarSign, Heart, MapPin, X } from "lucide-react";
 import Image from "next/image";
 import DynamicIcon, { IconProps } from "../common/DynamicIcon";
 import { useState } from "react";
+import { Map } from "leaflet";
+import { useRouter } from "next/router";
 
 interface POICard {
 	poi:
@@ -18,12 +20,15 @@ interface POICard {
 function POICard({
 	poi,
 	cityName,
+	map,
 }: {
 	poi:
 		| GetCityFromSearchQuery["getCityFromSearch"]["pois"][number]
 		| GetPoIsBySlugQuery["getPOIsBySlug"][number];
 	cityName: string;
+	map?: Map;
 }) {
+	const router = useRouter();
 	const [favorites, setFavorites] = useState<string[]>(
 		JSON.parse(localStorage.getItem("favorite") ?? "[]")
 	);
@@ -50,8 +55,18 @@ function POICard({
 		//add toaster
 	};
 
+	const handleGoToDiscover = () => {
+		if (map) {
+			router.push(`/discover/${poi.slug}`);
+		}
+	};
+
 	return (
-		<div key={poi.slug} className="flex flex-col cursor-pointer">
+		<div
+			key={poi.slug}
+			className="flex flex-col cursor-pointer"
+			onClick={handleGoToDiscover}
+		>
 			<div className="w-[250px] h-[150px] relative">
 				<Image
 					src={getImageUrl(poi.photos[0])}
@@ -62,7 +77,9 @@ function POICard({
 					unoptimized={true}
 				/>
 				<p
-					className="absolute top-1 right-1 p-2 bg-white rounded-full hover:bg-white/80 hover:text-red-700"
+					className={`absolute top-1 ${
+						map ? "right-11" : "right-1"
+					} p-2 bg-white rounded-full hover:bg-white/80 hover:text-red-700`}
 					onClick={() => handleAddFavorite(poi)}
 				>
 					{favorites.includes(poi.slug) ? (
@@ -71,11 +88,19 @@ function POICard({
 						<Heart size={20} />
 					)}
 				</p>
+				{map && (
+					<p
+						className="absolute top-1 right-1 p-2 bg-white rounded-full hover:bg-white/80"
+						onClick={() => map.closePopup()}
+					>
+						<X size={20} />
+					</p>
+				)}
 			</div>
 
 			<p className="font-medium">{poi.name}</p>
 			<div className="flex items-center justify-between">
-				<p className="flex gap-1 font-light">
+				<p className="flex gap-1 items-center font-light">
 					<MapPin strokeWidth={0.5} />
 					<span>{cityName}</span>
 				</p>

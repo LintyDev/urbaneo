@@ -22,6 +22,8 @@ function ExplorerMap({
 				className={"rounded-2xl mt-3"}
 				x={city.coordinates.x}
 				y={city.coordinates.y}
+				marker={city.pois}
+				cityName={city.name}
 			/>
 			<div className="flex gap-3 overflow-x-auto mt-6">
 				{city.pois.map((poi) => (

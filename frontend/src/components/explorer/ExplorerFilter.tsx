@@ -11,6 +11,7 @@ import DynamicIcon, { IconProps } from "../common/DynamicIcon";
 import { SyntheticEvent, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { ApolloQueryResult } from "@apollo/client";
+import { CheckCheck } from "lucide-react";
 
 function ExplorerFilter({
 	city,
@@ -105,12 +106,12 @@ function ExplorerFilter({
 		switch (filtersQuery) {
 			case true:
 				console.log("perform search");
-				const filtersQuery = {
+				const filtersQuerys = {
 					budget: currFilters.budget,
 					categoriesId: currFilters.categoriesIds,
 				};
 				let query = `?&f=${btoa(JSON.stringify(filtersQuery))}`;
-				if (!filtersQuery.budget && !filtersQuery.categoriesId.length) {
+				if (!filtersQuerys.budget && !filtersQuerys.categoriesId.length) {
 					query = "";
 				}
 				await refetch({
@@ -138,7 +139,14 @@ function ExplorerFilter({
 	return (
 		<div className="grid grid-rows-[auto_auto_1fr_auto] w-[300px]">
 			<div className="flex gap-3 justify-between items-center mb-5">
-				<p className="text-2xl font-medium">Filtres</p>
+				<p className="text-2xl font-medium flex items-center gap-2">
+					Filtres
+					{(currFilters.budget || currFilters.categoriesIds.length > 0) && (
+						<span>
+							<CheckCheck />
+						</span>
+					)}
+				</p>
 				{filtersQuery === true && (
 					<p
 						className="text-blue-400 cursor-pointer hover:underline"
