@@ -1,0 +1,18 @@
+query GetReviewsByPOISlug($slug: String!) {
+	getReviewsByPOISlug(slug: $slug) {
+		id
+		note
+		comment
+		date
+		user {
+			firstName
+			avatar
+		}
+	}
+}
+
+mutation AddReview($data: ReviewCreateInput!) {
+	addReview(data: $data) {
+		id
+	}
+}

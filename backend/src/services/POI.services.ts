@@ -4,6 +4,7 @@ import datasource from "../lib/datasource";
 import CityServices from "./City.services";
 import CategoryServices from "./Category.services";
 import { Point } from "geojson";
+import { Review } from "../entities/Review.entity";
 
 export default class POIServices {
 	db: Repository<POI>;
@@ -47,8 +48,16 @@ export default class POIServices {
 	}
 
 	async getPOIsbySlug(slug: string[]): Promise<POI[]> {
-		return await this.db.find({
+		const pois = await this.db.find({
 			where: { slug: In(slug) },
+			relations: ["city", "categories", "reviews"],
+		});
+		return pois;
+	}
+
+	async getPOIbySlug(slug: string) {
+		const city = await this.db.find({
+			where: { slug },
 			relations: ["city", "categories", "reviews"],
 		});
 	}

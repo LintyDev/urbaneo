@@ -36,9 +36,27 @@ query GetPOIsBySlug($slug: [String!]!) {
 		categories {
 			icon
 		}
-		reviews {
-			note
+		averageNote
+	}
+}
+
+query GetPOIsBySlugDiscover($slug: [String!]!) {
+	getPOIsBySlug(slug: $slug) {
+		id
+		name
+		description
+		photos
+		slug
+		budget
+		city {
+			name
 		}
+		categories {
+			icon
+			name
+		}
+		address
+		averageNote
 	}
 }
 

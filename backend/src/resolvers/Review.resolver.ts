@@ -1,4 +1,4 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Mutation, Query, Resolver } from "type-graphql";
 import {
 	Review,
 	ReviewCreateInput,
@@ -6,6 +6,7 @@ import {
 } from "../entities/Review.entity";
 import ReviewServices from "../services/Review.services";
 import { Message } from "../entities/Message.entity";
+import { UserRole } from "../entities/User.entity";
 
 @Resolver()
 export default class ReviewResolver {
@@ -30,13 +31,20 @@ export default class ReviewResolver {
 		return review;
 	}
 
+	@Query(() => [Review])
+	async getReviewsByPOISlug(@Arg("slug") slug: string) {
+		const reviews = await new ReviewServices().findByPOISlug(slug);
+		return reviews;
+	}
+
+	@Authorized(UserRole.ADMIN, UserRole.USER, UserRole.USER_PREMIUM)
 	@Mutation(() => Review)
 	async addReview(@Arg("data") data: ReviewCreateInput) {
-		const msg = new Message();
+		if (data.note < 1 || data.note > 5) {
+			throw new Error("La note doit être comprise entre 1 et 10");
+		}
 		try {
-			await new ReviewServices().addReview(data);
-			msg.success = true;
-			msg.message = "Review créée avec succès";
+			return await new ReviewServices().addReview(data);
 		} catch (error: any) {
 			throw new Error("Erreur lors de la création de la review");
 		}

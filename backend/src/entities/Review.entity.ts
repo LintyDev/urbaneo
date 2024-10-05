@@ -1,5 +1,6 @@
 import { Field, InputType, ObjectType } from "type-graphql";
 import {
+	BeforeInsert,
 	Column,
 	Entity,
 	JoinColumn,
@@ -13,6 +14,11 @@ import { GraphQLUUID } from "graphql-scalars";
 @ObjectType()
 @Entity()
 export class Review {
+	@BeforeInsert()
+	protected async setDate() {
+		this.date = new Date();
+	}
+
 	@PrimaryGeneratedColumn("uuid")
 	@Field()
 	id: string;
@@ -50,9 +56,6 @@ export class ReviewCreateInput {
 
 	@Field()
 	comment: string;
-
-	@Field()
-	date: Date;
 
 	@Field(() => GraphQLUUID)
 	userId: string;

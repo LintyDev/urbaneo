@@ -15,7 +15,6 @@ export default class ReviewServices {
 		this.db = datasource.getRepository(Review);
 	}
 
-	// Récupère les reviews d'un utilisateur
 	async list(userId: string): Promise<Review[]> {
 		const reviews = await this.db.find({
 			where: { user: { id: userId } },
@@ -26,7 +25,6 @@ export default class ReviewServices {
 		return reviews;
 	}
 
-	// Récupère une review spécifique par son id avec l'utilisateur associé
 	async find(id: string) {
 		const review = await this.db.findOne({
 			where: { id },
@@ -39,11 +37,22 @@ export default class ReviewServices {
 		return review;
 	}
 
+	async findByPOISlug(slug: string): Promise<Review[]> {
+		const reviews = await this.db.find({
+			relations: { POI: true, user: true },
+			where: {
+				POI: {
+					slug,
+				},
+			},
+		});
+		return reviews;
+	}
+
 	async addReview(data: ReviewCreateInput) {
 		const review = new Review();
 		review.comment = data.comment;
 		review.note = data.note;
-		review.date = data.date;
 		review.user = await new UserServices().getUser(data.userId);
 		review.POI = await new POIServices().getPOI(data.POIId);
 		const newReview = this.db.create(review);

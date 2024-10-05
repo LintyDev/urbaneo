@@ -216,6 +216,7 @@ export type MutationUpdateUserArgs = {
 export type Poi = {
   __typename?: 'POI';
   address: Scalars['String']['output'];
+  averageNote?: Maybe<Scalars['Float']['output']>;
   budget: PoiBudget;
   categories: Array<Category>;
   city: City;
@@ -281,6 +282,7 @@ export type Query = {
   getPOIs: Array<Poi>;
   getPOIsBySlug: Array<Poi>;
   getReview: Review;
+  getReviewsByPOISlug: Array<Review>;
   getUserById: UserWithoutPassword;
   getUsers: Array<UserWithoutPassword>;
   getWebStats: Array<StatsWeb>;
@@ -337,6 +339,11 @@ export type QueryGetReviewArgs = {
 };
 
 
+export type QueryGetReviewsByPoiSlugArgs = {
+  slug: Scalars['String']['input'];
+};
+
+
 export type QueryGetUserByIdArgs = {
   id: Scalars['String']['input'];
 };
@@ -374,7 +381,6 @@ export type Review = {
 export type ReviewCreateInput = {
   POIId: Scalars['UUID']['input'];
   comment: Scalars['String']['input'];
-  date: Scalars['DateTimeISO']['input'];
   note: Scalars['Float']['input'];
   userId: Scalars['UUID']['input'];
 };
@@ -615,7 +621,14 @@ export type GetPoIsBySlugQueryVariables = Exact<{
 }>;
 
 
-export type GetPoIsBySlugQuery = { __typename?: 'Query', getPOIsBySlug: Array<{ __typename?: 'POI', name: string, description: string, photos: Array<string>, slug: string, budget: PoiBudget, city: { __typename?: 'City', name: string }, categories: Array<{ __typename?: 'Category', icon: string }>, reviews?: Array<{ __typename?: 'Review', note: number }> | null }> };
+export type GetPoIsBySlugQuery = { __typename?: 'Query', getPOIsBySlug: Array<{ __typename?: 'POI', name: string, description: string, photos: Array<string>, slug: string, budget: PoiBudget, averageNote?: number | null, city: { __typename?: 'City', name: string }, categories: Array<{ __typename?: 'Category', icon: string }> }> };
+
+export type GetPoIsBySlugDiscoverQueryVariables = Exact<{
+  slug: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type GetPoIsBySlugDiscoverQuery = { __typename?: 'Query', getPOIsBySlug: Array<{ __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, budget: PoiBudget, address: string, averageNote?: number | null, city: { __typename?: 'City', name: string }, categories: Array<{ __typename?: 'Category', icon: string, name: string }> }> };
 
 export type CreatePoiMutationVariables = Exact<{
   data: PoiCreateInput;
@@ -637,6 +650,20 @@ export type DeletePoiMutationVariables = Exact<{
 
 
 export type DeletePoiMutation = { __typename?: 'Mutation', deletePOI: boolean };
+
+export type GetReviewsByPoiSlugQueryVariables = Exact<{
+  slug: Scalars['String']['input'];
+}>;
+
+
+export type GetReviewsByPoiSlugQuery = { __typename?: 'Query', getReviewsByPOISlug: Array<{ __typename?: 'Review', id: string, note: number, comment: string, date: any, user: { __typename?: 'User', firstName: string, avatar: string } }> };
+
+export type AddReviewMutationVariables = Exact<{
+  data: ReviewCreateInput;
+}>;
+
+
+export type AddReviewMutation = { __typename?: 'Mutation', addReview: { __typename?: 'Review', id: string } };
 
 export type GetLastUsersQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Float']['input']>;
@@ -1560,9 +1587,7 @@ export const GetPoIsBySlugDocument = gql`
     categories {
       icon
     }
-    reviews {
-      note
-    }
+    averageNote
   }
 }
     `;
@@ -1599,6 +1624,60 @@ export type GetPoIsBySlugQueryHookResult = ReturnType<typeof useGetPoIsBySlugQue
 export type GetPoIsBySlugLazyQueryHookResult = ReturnType<typeof useGetPoIsBySlugLazyQuery>;
 export type GetPoIsBySlugSuspenseQueryHookResult = ReturnType<typeof useGetPoIsBySlugSuspenseQuery>;
 export type GetPoIsBySlugQueryResult = Apollo.QueryResult<GetPoIsBySlugQuery, GetPoIsBySlugQueryVariables>;
+export const GetPoIsBySlugDiscoverDocument = gql`
+    query GetPOIsBySlugDiscover($slug: [String!]!) {
+  getPOIsBySlug(slug: $slug) {
+    id
+    name
+    description
+    photos
+    slug
+    budget
+    city {
+      name
+    }
+    categories {
+      icon
+      name
+    }
+    address
+    averageNote
+  }
+}
+    `;
+
+/**
+ * __useGetPoIsBySlugDiscoverQuery__
+ *
+ * To run a query within a React component, call `useGetPoIsBySlugDiscoverQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPoIsBySlugDiscoverQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPoIsBySlugDiscoverQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useGetPoIsBySlugDiscoverQuery(baseOptions: Apollo.QueryHookOptions<GetPoIsBySlugDiscoverQuery, GetPoIsBySlugDiscoverQueryVariables> & ({ variables: GetPoIsBySlugDiscoverQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPoIsBySlugDiscoverQuery, GetPoIsBySlugDiscoverQueryVariables>(GetPoIsBySlugDiscoverDocument, options);
+      }
+export function useGetPoIsBySlugDiscoverLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPoIsBySlugDiscoverQuery, GetPoIsBySlugDiscoverQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPoIsBySlugDiscoverQuery, GetPoIsBySlugDiscoverQueryVariables>(GetPoIsBySlugDiscoverDocument, options);
+        }
+export function useGetPoIsBySlugDiscoverSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetPoIsBySlugDiscoverQuery, GetPoIsBySlugDiscoverQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPoIsBySlugDiscoverQuery, GetPoIsBySlugDiscoverQueryVariables>(GetPoIsBySlugDiscoverDocument, options);
+        }
+export type GetPoIsBySlugDiscoverQueryHookResult = ReturnType<typeof useGetPoIsBySlugDiscoverQuery>;
+export type GetPoIsBySlugDiscoverLazyQueryHookResult = ReturnType<typeof useGetPoIsBySlugDiscoverLazyQuery>;
+export type GetPoIsBySlugDiscoverSuspenseQueryHookResult = ReturnType<typeof useGetPoIsBySlugDiscoverSuspenseQuery>;
+export type GetPoIsBySlugDiscoverQueryResult = Apollo.QueryResult<GetPoIsBySlugDiscoverQuery, GetPoIsBySlugDiscoverQueryVariables>;
 export const CreatePoiDocument = gql`
     mutation CreatePOI($data: POICreateInput!) {
   createPOI(data: $data) {
@@ -1734,6 +1813,86 @@ export function useDeletePoiMutation(baseOptions?: Apollo.MutationHookOptions<De
 export type DeletePoiMutationHookResult = ReturnType<typeof useDeletePoiMutation>;
 export type DeletePoiMutationResult = Apollo.MutationResult<DeletePoiMutation>;
 export type DeletePoiMutationOptions = Apollo.BaseMutationOptions<DeletePoiMutation, DeletePoiMutationVariables>;
+export const GetReviewsByPoiSlugDocument = gql`
+    query GetReviewsByPOISlug($slug: String!) {
+  getReviewsByPOISlug(slug: $slug) {
+    id
+    note
+    comment
+    date
+    user {
+      firstName
+      avatar
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetReviewsByPoiSlugQuery__
+ *
+ * To run a query within a React component, call `useGetReviewsByPoiSlugQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetReviewsByPoiSlugQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetReviewsByPoiSlugQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useGetReviewsByPoiSlugQuery(baseOptions: Apollo.QueryHookOptions<GetReviewsByPoiSlugQuery, GetReviewsByPoiSlugQueryVariables> & ({ variables: GetReviewsByPoiSlugQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetReviewsByPoiSlugQuery, GetReviewsByPoiSlugQueryVariables>(GetReviewsByPoiSlugDocument, options);
+      }
+export function useGetReviewsByPoiSlugLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetReviewsByPoiSlugQuery, GetReviewsByPoiSlugQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetReviewsByPoiSlugQuery, GetReviewsByPoiSlugQueryVariables>(GetReviewsByPoiSlugDocument, options);
+        }
+export function useGetReviewsByPoiSlugSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetReviewsByPoiSlugQuery, GetReviewsByPoiSlugQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetReviewsByPoiSlugQuery, GetReviewsByPoiSlugQueryVariables>(GetReviewsByPoiSlugDocument, options);
+        }
+export type GetReviewsByPoiSlugQueryHookResult = ReturnType<typeof useGetReviewsByPoiSlugQuery>;
+export type GetReviewsByPoiSlugLazyQueryHookResult = ReturnType<typeof useGetReviewsByPoiSlugLazyQuery>;
+export type GetReviewsByPoiSlugSuspenseQueryHookResult = ReturnType<typeof useGetReviewsByPoiSlugSuspenseQuery>;
+export type GetReviewsByPoiSlugQueryResult = Apollo.QueryResult<GetReviewsByPoiSlugQuery, GetReviewsByPoiSlugQueryVariables>;
+export const AddReviewDocument = gql`
+    mutation AddReview($data: ReviewCreateInput!) {
+  addReview(data: $data) {
+    id
+  }
+}
+    `;
+export type AddReviewMutationFn = Apollo.MutationFunction<AddReviewMutation, AddReviewMutationVariables>;
+
+/**
+ * __useAddReviewMutation__
+ *
+ * To run a mutation, you first call `useAddReviewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddReviewMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addReviewMutation, { data, loading, error }] = useAddReviewMutation({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAddReviewMutation(baseOptions?: Apollo.MutationHookOptions<AddReviewMutation, AddReviewMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddReviewMutation, AddReviewMutationVariables>(AddReviewDocument, options);
+      }
+export type AddReviewMutationHookResult = ReturnType<typeof useAddReviewMutation>;
+export type AddReviewMutationResult = Apollo.MutationResult<AddReviewMutation>;
+export type AddReviewMutationOptions = Apollo.BaseMutationOptions<AddReviewMutation, AddReviewMutationVariables>;
 export const GetLastUsersDocument = gql`
     query GetLastUsers($limit: Float) {
   getUsers(limit: $limit) {

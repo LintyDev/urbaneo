@@ -1,5 +1,12 @@
-import { Field, InputType, ObjectType, registerEnumType } from "type-graphql";
 import {
+	Field,
+	Float,
+	InputType,
+	ObjectType,
+	registerEnumType,
+} from "type-graphql";
+import {
+	AfterLoad,
 	BeforeInsert,
 	BeforeUpdate,
 	Column,
@@ -15,6 +22,7 @@ import { Category } from "./Category.entity";
 import { Review } from "./Review.entity";
 import { Point } from "geojson";
 import { PointInput, PointObject } from "./Point.entity";
+import datasource from "../lib/datasource";
 
 export enum POIBudget {
 	HIGH = "HIGH",
@@ -103,6 +111,21 @@ export class POI {
 	@OneToMany(() => Review, (review) => review.POI)
 	@Field(() => [Review], { nullable: true })
 	reviews: Review[];
+
+	@Field(() => Float, { nullable: true })
+	averageNote?: number;
+
+	@AfterLoad()
+	async calculateAverageNote() {
+		const avgNote = await datasource
+			.getRepository(Review)
+			.createQueryBuilder("review")
+			.select("AVG(review.note)", "avg")
+			.where("review.POIId = :id", { id: this.id })
+			.getRawOne();
+
+		this.averageNote = parseFloat(avgNote.avg) || 0;
+	}
 }
 
 @InputType()

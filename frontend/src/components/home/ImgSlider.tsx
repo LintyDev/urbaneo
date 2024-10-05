@@ -30,7 +30,7 @@ function ImgSlider() {
 		}, 10000);
 
 		return () => {
-			document.body.style.backgroundColor = "white";
+			document.body.style.backgroundColor = "#fafafa";
 			document.body.style.color = "black";
 			clearInterval(interval);
 		};

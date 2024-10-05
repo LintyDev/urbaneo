@@ -35,7 +35,7 @@ function Explorer() {
 		return null;
 	}
 	return (
-		<section className="grid grid-cols-[auto_1fr] mx-5">
+		<section className="grid grid-cols-[auto_1fr] mx-16">
 			<ExplorerFilter
 				city={data!.getCityFromSearch}
 				filters={filters}

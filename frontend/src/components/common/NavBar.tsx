@@ -8,7 +8,7 @@ function NavBar() {
 	return (
 		<nav>
 			{/* Desktop Navbar */}
-			<div className="flex justify-between items-center p-5">
+			<div className="flex justify-between items-center py-5 px-16">
 				<Link href={"/"} className="flex items-center gap-2">
 					<MapPinned /> Urbaneo.tech
 				</Link>
