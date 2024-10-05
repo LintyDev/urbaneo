@@ -36,12 +36,14 @@ const AuthContext = createContext<AuthContextType>({
 	setUser: async () => {},
 });
 
+const protectedRoutes = ["/account", "/dashboard", "/moderation"];
+
 export const AuthProvider = ({ children }: PropsWithChildren) => {
 	const router = useRouter();
 	const pathname = usePathname();
 
 	const [loading, setLoading] = useState<boolean>(true);
-	const [user, setUser] = useState<MeQuery["me"] | null>(null);
+	const [user, setUser] = useState<MeQuery["me"]>(null);
 
 	const [registerUser] = useRegisterMutation();
 	const [loginUser] = useLoginLazyQuery();
@@ -49,13 +51,14 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	const [getUser, { data }] = useMeLazyQuery({
 		fetchPolicy: "no-cache",
 		onCompleted(data) {
-			setUser(data.me ?? undefined);
+			setUser(data.me);
 			if (
 				data.me &&
 				(pathname === "/auth/login" || pathname === "/auth/register")
 			) {
 				router.push("/");
-			} else if (!data.me) {
+			} else if (!data.me && protectedRoutes.includes(pathname)) {
+				router.push("/");
 			}
 		},
 		onError(error) {
@@ -119,7 +122,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 	};
 
 	const checkUser = async () => {
-		if (!user) {
+		if (!user || protectedRoutes.includes(pathname)) {
 			await getUser();
 		}
 		if (user && pathname.startsWith("/auth")) {
@@ -132,13 +135,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 		checkUser();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [pathname]);
-
-	useEffect(() => {
-		const forbidenRoutes = ["/account", "/dashboard"];
-		if (!loading && !user && forbidenRoutes.includes(pathname)) {
-			router.push("/");
-		}
-	}, [pathname, loading, user, router]);
 
 	return (
 		<AuthContext.Provider
