@@ -4,6 +4,7 @@ query GetReviewsByPOISlug($slug: String!) {
 		note
 		comment
 		date
+		nbReviewsPerUser
 		user {
 			firstName
 			avatar

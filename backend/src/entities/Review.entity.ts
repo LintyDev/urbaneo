@@ -1,5 +1,6 @@
-import { Field, InputType, ObjectType } from "type-graphql";
+import { Field, Float, InputType, ObjectType } from "type-graphql";
 import {
+	AfterLoad,
 	BeforeInsert,
 	Column,
 	Entity,
@@ -10,6 +11,7 @@ import {
 import { User } from "./User.entity";
 import { POI } from "./POI.entity";
 import { GraphQLUUID } from "graphql-scalars";
+import datasource from "../lib/datasource";
 
 @ObjectType()
 @Entity()
@@ -47,6 +49,17 @@ export class Review {
 	@JoinColumn({ name: "POIId" })
 	@Field(() => POI)
 	POI: POI;
+
+	@Field(() => Float, { nullable: true })
+	nbReviewsPerUser?: number;
+
+	@AfterLoad()
+	async calculateNbReviews() {
+		const nbReviews = await datasource
+			.getRepository(Review)
+			.count({ where: { user: this.user } });
+		this.nbReviewsPerUser = nbReviews ?? 0;
+	}
 }
 
 @InputType()

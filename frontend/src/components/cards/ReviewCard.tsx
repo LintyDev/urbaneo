@@ -23,7 +23,13 @@ function ReviewCard({
 						className="w-[50px] h-[50px] object-cover object-center rounded-full"
 					/>
 					<div className="flex flex-col">
-						<p>{review.user.firstName}</p>
+						<p className="flex items-center gap-1">
+							<span>{review.user.firstName}</span>
+							<span className="text-sm font-light">
+								{" "}
+								- {review.nbReviewsPerUser} avis
+							</span>
+						</p>
 						<Notes note={review.note} />
 					</div>
 				</div>

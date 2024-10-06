@@ -381,6 +381,7 @@ export type Review = {
   comment: Scalars['String']['output'];
   date: Scalars['DateTimeISO']['output'];
   id: Scalars['String']['output'];
+  nbReviewsPerUser?: Maybe<Scalars['Float']['output']>;
   note: Scalars['Float']['output'];
   user: User;
 };
@@ -581,7 +582,7 @@ export type GetCityFromSearchQueryVariables = Exact<{
 }>;
 
 
-export type GetCityFromSearchQuery = { __typename?: 'Query', getCityFromSearch: { __typename?: 'CityWithPOI', id: any, name: string, zip_code: number, slug: string, coordinates: { __typename?: 'PointObject', x: number, y: number }, pois: Array<{ __typename?: 'POI', id: string, name: string, photos: Array<string>, slug: string, address: string, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, categories: Array<{ __typename?: 'Category', icon: string }> }> } };
+export type GetCityFromSearchQuery = { __typename?: 'Query', getCityFromSearch: { __typename?: 'CityWithPOI', id: any, name: string, zip_code: number, slug: string, coordinates: { __typename?: 'PointObject', x: number, y: number }, pois: Array<{ __typename?: 'POI', id: string, name: string, photos: Array<string>, slug: string, averageNote?: number | null, address: string, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, categories: Array<{ __typename?: 'Category', icon: string }> }> } };
 
 export type CreateCityMutationVariables = Exact<{
   data: CityCreateInput;
@@ -670,7 +671,7 @@ export type GetReviewsByPoiSlugQueryVariables = Exact<{
 }>;
 
 
-export type GetReviewsByPoiSlugQuery = { __typename?: 'Query', getReviewsByPOISlug: Array<{ __typename?: 'Review', id: string, note: number, comment: string, date: any, user: { __typename?: 'User', firstName: string, avatar: string } }> };
+export type GetReviewsByPoiSlugQuery = { __typename?: 'Query', getReviewsByPOISlug: Array<{ __typename?: 'Review', id: string, note: number, comment: string, date: any, nbReviewsPerUser?: number | null, user: { __typename?: 'User', firstName: string, avatar: string } }> };
 
 export type AddReviewMutationVariables = Exact<{
   data: ReviewCreateInput;
@@ -1309,6 +1310,7 @@ export const GetCityFromSearchDocument = gql`
       name
       photos
       slug
+      averageNote
       coordinates {
         x
         y
@@ -1890,6 +1892,7 @@ export const GetReviewsByPoiSlugDocument = gql`
     note
     comment
     date
+    nbReviewsPerUser
     user {
       firstName
       avatar

@@ -11,9 +11,9 @@ import "leaflet";
 import "@/lib/SmoothWheelZoom";
 import { Heart, icons, LeafIcon, X } from "lucide-react";
 import { GetCityFromSearchQuery, Poi } from "@/graphql/schema";
-import { Icon, IconOptions, Map } from "leaflet";
+import { Icon, IconOptions, LatLngExpression, Map } from "leaflet";
 import { getImageUrl } from "@/lib/getImagesUrl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import POICard from "../cards/POICard";
 
@@ -26,19 +26,37 @@ const MapComponent = ({
 	x,
 	y,
 	marker,
+	trigger,
 }: {
 	cityName?: string;
 	className?: MapContainerProps["className"];
 	x?: number;
 	y?: number;
 	marker?: GetCityFromSearchQuery["getCityFromSearch"]["pois"];
+	trigger?: { LatLng: [number, number]; id: string };
 }) => {
 	const [map, setMap] = useState<Map | null>(null);
+	const [goToMarker, setGoToMarker] = useState<LatLngExpression | null>(null);
 
 	const handleClosePopUp = () => {
 		if (!map) return;
 		map.closePopup();
 	};
+
+	const openPopUp = (marker: LatLngExpression) => {
+		if (!map) return;
+		if (!marker) return;
+
+		map.flyTo(marker, 16);
+	};
+
+	useEffect(() => {
+		if (trigger && trigger.LatLng[0] !== 0 && trigger.LatLng[1] !== 0) {
+			console.log("go to marler");
+			openPopUp(trigger.LatLng);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [trigger]);
 
 	return (
 		<MapContainer
@@ -74,11 +92,6 @@ const MapComponent = ({
 									cityName={cityName ?? ""}
 									map={map as Map}
 								/>
-								{/* <div className="flex flex-col">
-									<p>
-										<X onClick={handleClosePopUp} />
-									</p>
-								</div> */}
 							</Popup>
 						</Marker>
 					);

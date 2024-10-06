@@ -52,6 +52,7 @@ query GetCityFromSearch($data: InputSearchCity!) {
 			name
 			photos
 			slug
+			averageNote
 			coordinates {
 				x
 				y

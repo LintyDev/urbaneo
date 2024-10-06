@@ -21,7 +21,12 @@ function Favorites() {
 				{data &&
 					data.getPOIsBySlug &&
 					data.getPOIsBySlug.map((poi) => (
-						<POICard key={poi.slug} poi={poi} cityName={poi.city.name} />
+						<POICard
+							key={poi.slug}
+							poi={poi}
+							cityName={poi.city.name}
+							goTo={`/discover/${poi.slug}`}
+						/>
 					))}
 			</div>
 		</section>

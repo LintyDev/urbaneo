@@ -4,19 +4,14 @@ import {
 	PoiBudget,
 } from "@/graphql/schema";
 import { getImageUrl } from "@/lib/getImagesUrl";
-import { DollarSign, Heart, MapPin, X } from "lucide-react";
+import { DollarSign, Heart, MapPin, Star, X } from "lucide-react";
 import Image from "next/image";
 import DynamicIcon, { IconProps } from "../common/DynamicIcon";
 import { useState } from "react";
 import { Map } from "leaflet";
 import { useRouter } from "next/router";
 import Link from "next/link";
-
-interface POICard {
-	poi:
-		| GetCityFromSearchQuery["getCityFromSearch"]["pois"][number]
-		| GetPoIsBySlugQuery["getPOIsBySlug"][number];
-}
+import Notes from "../common/Notes";
 
 function POICard({
 	poi,
@@ -116,6 +111,11 @@ function POICard({
 			</div>
 
 			<p className="font-medium">{poi.name}</p>
+			{typeof poi.averageNote === "number" && (
+				<div className="mb-1">
+					<Notes note={poi.averageNote} />
+				</div>
+			)}
 			<div className="flex items-center justify-between">
 				<p className="flex gap-1 items-center font-light">
 					<MapPin strokeWidth={0.5} />
