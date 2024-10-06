@@ -58,6 +58,12 @@ const MapComponent = ({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [trigger]);
 
+	useEffect(() => {
+		if (map && x && y) {
+			map.flyTo([y, x], 14);
+		}
+	}, [map, x, y]);
+
 	return (
 		<MapContainer
 			center={x && y ? [y, x] : [50.633333, 3.066667]}

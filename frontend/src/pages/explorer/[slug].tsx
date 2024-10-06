@@ -3,14 +3,18 @@ import LoadingBox from "@/components/common/LoadingBox";
 import ExplorerFilter from "@/components/explorer/ExplorerFilter";
 import ExplorerMap from "@/components/explorer/ExplorerMap";
 import {
+	GetCityFromSearchQuery,
 	InputSearchCity,
 	PoiBudget,
 	useGetCityFromSearchQuery,
 } from "@/graphql/schema";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 function Explorer() {
 	const router = useRouter();
+	const [city, setCity] =
+		useState<GetCityFromSearchQuery["getCityFromSearch"]>();
 	const filters: InputSearchCity = {
 		slug: (router.query.slug as string) || "none",
 	};
@@ -28,6 +32,12 @@ function Explorer() {
 		},
 	});
 
+	useEffect(() => {
+		if (data?.getCityFromSearch) {
+			setCity(data.getCityFromSearch);
+		}
+	}, [data]);
+
 	if (error) return <ErrorBox />;
 	if (loading) return <LoadingBox />;
 	if (!data && !loading && !error) {
@@ -41,7 +51,7 @@ function Explorer() {
 				filters={filters}
 				refetch={refetch}
 			/>
-			<ExplorerMap city={data!.getCityFromSearch} />
+			{city && <ExplorerMap city={city} />}
 		</section>
 	);
 }
