@@ -4,7 +4,7 @@ import { MoveLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { object, string } from "yup";
 
@@ -39,6 +39,14 @@ function Login() {
 	const handleBack = () => {
 		router.back();
 	};
+
+	useEffect(() => {
+		document.body.style.backgroundColor = "white";
+
+		return () => {
+			document.body.style.backgroundColor = "#fafafa";
+		};
+	}, []);
 
 	return (
 		<section className="w-full h-screen flex py-5 lg:pr-5 max-lg:place-content-center">

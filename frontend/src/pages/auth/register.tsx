@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { MoveLeft } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { mixed, object, string } from "yup";
 
@@ -105,6 +105,14 @@ function Register() {
 			setError(error.message);
 		}
 	});
+
+	useEffect(() => {
+		document.body.style.backgroundColor = "white";
+
+		return () => {
+			document.body.style.backgroundColor = "#fafafa";
+		};
+	}, []);
 
 	return (
 		<section className="w-full h-screen flex py-5 lg:pr-5 max-lg:place-content-center">
