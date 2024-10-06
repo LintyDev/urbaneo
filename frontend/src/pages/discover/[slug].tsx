@@ -9,17 +9,13 @@ import {
 	useGetPoIsBySlugDiscoverQuery,
 } from "@/graphql/schema";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Discover() {
 	const router = useRouter();
 	const { loading, data, error } = useGetPoIsBySlugDiscoverQuery({
 		variables: {
 			slug: router.query.slug as string,
-		},
-		skip: !router.query.slug,
-		onCompleted(data) {
-			setPoi(data.getPOIsBySlug[0]);
 		},
 	});
 	const [poi, setPoi] =
@@ -47,12 +43,18 @@ function Discover() {
 		});
 	};
 
+	useEffect(() => {
+		if (data?.getPOIsBySlug.length) {
+			setPoi(data.getPOIsBySlug[0]);
+		}
+	}, [data]);
+
 	if (loading) return <LoadingBox />;
 	if (error) return <ErrorBox />;
 	return (
 		<section className="flex flex-col h-full">
-			<div className="grid grid-cols-[3fr_1fr] mx-16 h-full">
-				<div className="flex flex-col gap-5">
+			<div className="grid grid-cols-[3fr_1fr] mx-16 h-full max-h-[800px]">
+				<div className="flex flex-col gap-5 h-full">
 					<DiscoverPhotos
 						photos={poi?.photos ?? []}
 						handleNext={handleNext}
@@ -60,7 +62,7 @@ function Discover() {
 					/>
 					<DiscoverDescription poi={poi} />
 				</div>
-				<div className="ml-5 h-[calc(100svh-100px)]">
+				<div className="ml-5 h-[calc(100svh-100px)] max-h-[800px]">
 					<ReviewsPOI poi={{ id: poi?.id ?? "", slug: poi?.slug ?? "" }} />
 					<hr />
 				</div>

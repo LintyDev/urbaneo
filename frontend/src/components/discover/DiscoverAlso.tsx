@@ -7,6 +7,7 @@ function DiscoverAlso({ slug }: { slug: string }) {
 	const { loading, data, error } = useGetNearPoIsQuery({
 		fetchPolicy: "no-cache",
 		variables: { slug },
+		skip: !slug,
 	});
 
 	if (loading) return <LoadingBox />;
