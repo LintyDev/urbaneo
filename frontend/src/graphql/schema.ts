@@ -496,7 +496,7 @@ export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'UserWithoutPa
 export type MyAccountQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyAccountQuery = { __typename?: 'Query', me?: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', label: Label, city: { __typename?: 'City', name: string } }>, reviews: Array<{ __typename?: 'Review', date: any, comment: string, note: number, id: string, POI: { __typename?: 'POI', name: string, slug: string } }> } | null };
+export type MyAccountQuery = { __typename?: 'Query', me?: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', label: Label, city: { __typename?: 'City', name: string } }>, reviews: Array<{ __typename?: 'Review', date: any, comment: string, note: number, id: string }> } | null };
 
 export type RegisterMutationVariables = Exact<{
   data: UserCreateInput;
@@ -791,10 +791,6 @@ export const MyAccountDocument = gql`
       }
     }
     reviews {
-      POI {
-        name
-        slug
-      }
       date
       comment
       note

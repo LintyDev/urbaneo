@@ -80,7 +80,10 @@ function POICard({
 					className={`absolute top-1 ${
 						map ? "right-11" : "right-1"
 					} p-2 bg-white rounded-full hover:bg-white/80 hover:text-red-700`}
-					onClick={() => handleAddFavorite(poi)}
+					onClick={(e) => {
+						e.stopPropagation();
+						handleAddFavorite(poi);
+					}}
 				>
 					{favorites.includes(poi.slug) ? (
 						<Heart size={20} fill="#b91c1c" color="#b91c1c" />
@@ -91,7 +94,10 @@ function POICard({
 				{map && (
 					<p
 						className="absolute top-1 right-1 p-2 bg-white rounded-full hover:bg-white/80"
-						onClick={() => map.closePopup()}
+						onClick={(e) => {
+							e.stopPropagation();
+							map.closePopup();
+						}}
 					>
 						<X size={20} />
 					</p>

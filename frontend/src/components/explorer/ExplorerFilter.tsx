@@ -190,7 +190,7 @@ function ExplorerFilter({
 						return (
 							<p
 								key={c.id}
-								className={`flex gap-1 items-center p-2 shadow-md rounded-xl cursor-pointer hover:outline hover:outline-1 ${
+								className={`bg-white flex gap-1 items-center p-2 shadow-md rounded-xl cursor-pointer hover:outline hover:outline-1 ${
 									selected && "outline outline-1"
 								}`}
 								onClick={() => handleSelectCategories({ id: c.id })}
