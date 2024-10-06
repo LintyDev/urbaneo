@@ -21,7 +21,7 @@ import { useEffect, useState } from "react";
 
 const linkAdmin = [
 	{
-		name: "Editer mon profil",
+		name: "Mon profil",
 		href: "/account",
 		icon: UserPen,
 		color: "hover:bg-[#0000001a]",
@@ -48,7 +48,7 @@ const linkAdmin = [
 
 const linkUser = [
 	{
-		name: "Editer mon profil",
+		name: "Mon profil",
 		href: "/account",
 		icon: UserPen,
 		color: "hover:bg-[#0000001a]",

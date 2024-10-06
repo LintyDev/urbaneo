@@ -23,7 +23,17 @@ export default class UserServices {
 	async findUserByEmail(email: string): Promise<User | null> {
 		return await this.db.findOne({
 			where: { email },
-			relations: ["cityRole.city", "reviews"],
+			relations: { cityRole: true },
+		});
+	}
+
+	async findUserByEmailWithReviews(email: string): Promise<User | null> {
+		return await this.db.findOne({
+			where: { email },
+			relations: {
+				reviews: { POI: true, user: true },
+				cityRole: { city: true, user: true },
+			},
 		});
 	}
 
@@ -47,7 +57,10 @@ export default class UserServices {
 		}
 		const user = await this.db.findOneOrFail({
 			where: { id: data.id },
-			relations: ["cityRole.city", "reviews"],
+			relations: {
+				reviews: { POI: true, user: true },
+				cityRole: { city: true, user: true },
+			},
 		});
 		const userNewInfos = this.db.merge(user, data);
 		return await this.db.save(userNewInfos);

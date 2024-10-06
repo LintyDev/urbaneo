@@ -290,6 +290,7 @@ export type Query = {
   login: Message;
   logout: Message;
   me?: Maybe<UserWithoutPassword>;
+  mePlus?: Maybe<UserWithoutPassword>;
   searchCategories: Array<Category>;
   searchCities: Array<City>;
 };
@@ -502,7 +503,7 @@ export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'UserWithoutPa
 export type MyAccountQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyAccountQuery = { __typename?: 'Query', me?: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', label: Label, city: { __typename?: 'City', name: string } }>, reviews: Array<{ __typename?: 'Review', date: any, comment: string, note: number, id: string }> } | null };
+export type MyAccountQuery = { __typename?: 'Query', mePlus?: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', label: Label, city: { __typename?: 'City', name: string, slug: string } }>, reviews: Array<{ __typename?: 'Review', id: string, note: number, comment: string, date: any, user: { __typename?: 'User', firstName: string, avatar: string }, POI: { __typename?: 'POI', name: string, slug: string } }> } | null };
 
 export type RegisterMutationVariables = Exact<{
   data: UserCreateInput;
@@ -709,7 +710,7 @@ export type EditUserMutationVariables = Exact<{
 }>;
 
 
-export type EditUserMutation = { __typename?: 'Mutation', editUser: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', label: Label, city: { __typename?: 'City', name: string } }>, reviews: Array<{ __typename?: 'Review', date: any, comment: string, note: number, id: string, POI: { __typename?: 'POI', name: string, slug: string } }> } };
+export type EditUserMutation = { __typename?: 'Mutation', editUser: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', label: Label, city: { __typename?: 'City', name: string, slug: string } }>, reviews: Array<{ __typename?: 'Review', id: string, note: number, comment: string, date: any, user: { __typename?: 'User', firstName: string, avatar: string }, POI: { __typename?: 'POI', name: string, slug: string } }> } };
 
 export type DeleteUserMutationVariables = Exact<{
   deleteUserId: Scalars['String']['input'];
@@ -788,7 +789,7 @@ export type MeSuspenseQueryHookResult = ReturnType<typeof useMeSuspenseQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const MyAccountDocument = gql`
     query MyAccount {
-  me {
+  mePlus {
     id
     email
     firstName
@@ -801,13 +802,22 @@ export const MyAccountDocument = gql`
       label
       city {
         name
+        slug
       }
     }
     reviews {
-      date
-      comment
-      note
       id
+      note
+      comment
+      date
+      user {
+        firstName
+        avatar
+      }
+      POI {
+        name
+        slug
+      }
     }
   }
 }
@@ -2155,17 +2165,22 @@ export const EditUserDocument = gql`
       label
       city {
         name
+        slug
       }
     }
     reviews {
+      id
+      note
+      comment
+      date
+      user {
+        firstName
+        avatar
+      }
       POI {
         name
         slug
       }
-      date
-      comment
-      note
-      id
     }
   }
 }

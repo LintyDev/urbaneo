@@ -16,7 +16,7 @@ query Me {
 }
 
 query MyAccount {
-	me {
+	mePlus {
 		id
 		email
 		firstName
@@ -29,17 +29,22 @@ query MyAccount {
 			label
 			city {
 				name
+				slug
 			}
 		}
 		reviews {
+			id
+			note
+			comment
+			date
+			user {
+				firstName
+				avatar
+			}
 			POI {
 				name
 				slug
 			}
-			date
-			comment
-			note
-			id
 		}
 	}
 }

@@ -27,11 +27,13 @@ function Account() {
 				<h1 className="font-helvetica font-medium text-3xl text-start mb-2">
 					Éditer mon profil
 				</h1>
-				<div className="w-full bg-white flex flex-col rounded-md shadow-md p-5">
-					<EditGeneral user={data?.me} />
-					<EditSecurity user={data?.me} />
-					<ViewRoles user={data?.me} />
-					<ViewReviews user={data?.me} />
+				<div className="w-full bg-white flex flex-col rounded-2xl shadow-md p-5">
+					<EditGeneral user={data?.mePlus} />
+					<div className="flex gap-6">
+						<EditSecurity user={data?.mePlus} />
+						<ViewRoles user={data?.mePlus} />
+					</div>
+					<ViewReviews user={data?.mePlus} />
 				</div>
 			</div>
 		</div>

@@ -1,6 +1,6 @@
 import { Label, MyAccountQuery, UserRole } from "@/graphql/schema";
 
-function ViewRoles({ user }: { user: MyAccountQuery["me"] }) {
+function ViewRoles({ user }: { user: MyAccountQuery["mePlus"] }) {
 	let status = "";
 	switch (user?.role) {
 		case UserRole.Admin:
@@ -15,7 +15,7 @@ function ViewRoles({ user }: { user: MyAccountQuery["me"] }) {
 	}
 
 	return (
-		<div className="border border-gray-200 rounded-xl p-4 mb-6">
+		<div className="border border-gray-200 rounded-xl p-4 mb-6 w-full">
 			<div className="flex justify-between items-center mb-2">
 				<p className="font-light">Status & Rôles</p>
 			</div>

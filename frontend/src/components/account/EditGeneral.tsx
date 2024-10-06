@@ -16,13 +16,13 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { mixed, object, string } from "yup";
 
-function EditGeneral({ user }: { user: MyAccountQuery["me"] }) {
+function EditGeneral({ user }: { user: MyAccountQuery["mePlus"] }) {
 	const [editMode, setEditMode] = useState(false);
 	const [editUser] = useEditUserMutation({
 		refetchQueries: [{ query: MyAccountDocument }, { query: MeDocument }],
 	});
 	const [errorEdit, setErrorEdit] = useState("");
-	const [tempUser, setTempUser] = useState<MyAccountQuery["me"]>();
+	const [tempUser, setTempUser] = useState<Partial<MyAccountQuery["mePlus"]>>();
 	const { setUser } = useAuth();
 
 	const schema = object({
@@ -169,12 +169,12 @@ function EditGeneral({ user }: { user: MyAccountQuery["me"] }) {
 					</p>
 				</div>
 				<div>
-					<div className="flex flex-col">
+					<div className="flex flex-col items-center">
 						<p className="font-thin">Photo de profil</p>
-						<div className="flex gap-2 items-center">
+						<div className="flex flex-col gap-2 items-center">
 							<Image
 								src={
-									tempUser?.avatar.startsWith("blob")
+									tempUser?.avatar?.startsWith("blob")
 										? tempUser?.avatar
 										: getImageUrl(tempUser?.avatar)
 								}
@@ -184,7 +184,7 @@ function EditGeneral({ user }: { user: MyAccountQuery["me"] }) {
 								className="object-cover object-center border rounded-full w-[100px] h-[100px]"
 								unoptimized={true}
 							/>
-							<label htmlFor="avatar" className={editMode ? "" : "hidden"}>
+							<label htmlFor="avatar" className={editMode ? "my-2" : "hidden"}>
 								<p className="flex cursor-pointer items-center gap-2 rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
 									Choisir une photo
 								</p>
@@ -202,51 +202,37 @@ function EditGeneral({ user }: { user: MyAccountQuery["me"] }) {
 					<div className="grid grid-cols-2 gap-x-2 mt-2">
 						<p className="font-thin">Nom</p>
 						<p className="font-thin">Prénom</p>
-						<p className={`${editMode ? "hidden" : ""}`}>
-							{tempUser?.lastName}
-						</p>
 						<input
 							id="lastname"
 							type="text"
-							className={`${
-								editMode ? "block" : "hidden"
-							} w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm z-10 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6`}
+							className={`w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm z-10 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6`}
 							{...register("lastname")}
+							disabled={!editMode}
 						/>
-						<p className={`${editMode ? "hidden" : ""}`}>
-							{tempUser?.firstName}
-						</p>
 						<input
 							id="firstname"
 							type="text"
-							className={`${
-								editMode ? "block" : "hidden"
-							} w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm z-10 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6`}
+							className={`w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm z-10 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6`}
 							{...register("firstname")}
+							disabled={!editMode}
 						/>
 					</div>
 					<div className="grid grid-cols-2 gap-x-2 mt-2">
 						<p className="font-thin">Email</p>
 						<p className="font-thin">Location</p>
-						<p className={`${editMode ? "hidden" : ""}`}>{tempUser?.email}</p>
 						<input
 							id="email"
 							type="email"
-							className={`${
-								editMode ? "block" : "hidden"
-							} w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm z-10 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6`}
+							className={`w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm z-10 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6`}
 							{...register("email")}
+							disabled={!editMode}
 						/>
-						<p className={`${editMode ? "hidden" : ""}`}>
-							{tempUser?.location}
-						</p>
 						<input
 							id="location"
 							type="text"
-							className={`${
-								editMode ? "block" : "hidden"
-							} w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm z-10 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6`}
+							className={`w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm z-10 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6`}
 							{...register("location")}
+							disabled={!editMode}
 						/>
 					</div>
 				</div>

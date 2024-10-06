@@ -39,6 +39,14 @@ export default class UserResolver {
 		return ctx.user;
 	}
 
+	@Query(() => UserWithoutPassword, { nullable: true })
+	async mePlus(@Ctx() ctx: MyContext) {
+		if (!ctx.user) {
+			throw new Error("");
+		}
+		return await new UserServices().findUserByEmailWithReviews(ctx.user.email);
+	}
+
 	@Query(() => Message)
 	async login(@Arg("data") data: UserLoginInput, @Ctx() ctx: MyContext) {
 		const user = await new UserServices().findUserByEmail(data.email);

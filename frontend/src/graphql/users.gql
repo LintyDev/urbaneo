@@ -71,17 +71,22 @@ mutation EditUser($data: UserEditInput!) {
 			label
 			city {
 				name
+				slug
 			}
 		}
 		reviews {
+			id
+			note
+			comment
+			date
+			user {
+				firstName
+				avatar
+			}
 			POI {
 				name
 				slug
 			}
-			date
-			comment
-			note
-			id
 		}
 	}
 }

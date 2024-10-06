@@ -113,7 +113,11 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 				state = error.message;
 			},
 			onCompleted(data) {
-				router.refresh();
+				if (protectedRoutes.includes(pathname)) {
+					router.push("/");
+				} else {
+					router.refresh();
+				}
 			},
 		});
 		if (state) {

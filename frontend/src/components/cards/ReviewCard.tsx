@@ -1,12 +1,14 @@
-import { GetReviewsByPoiSlugQuery } from "@/graphql/schema";
+import { GetReviewsByPoiSlugQuery, MyAccountQuery } from "@/graphql/schema";
 import { getImageUrl } from "@/lib/getImagesUrl";
 import Image from "next/image";
 import Notes from "../common/Notes";
 
 function ReviewCard({
 	review,
+	poiName,
 }: {
 	review: GetReviewsByPoiSlugQuery["getReviewsByPOISlug"][number];
+	poiName?: string;
 }) {
 	return (
 		<div className="flex flex-col">
@@ -25,7 +27,11 @@ function ReviewCard({
 						<Notes note={review.note} />
 					</div>
 				</div>
-				<p className="italic font-light text-sm">{review.date.slice(0, 10)}</p>
+
+				<p className="italic font-light text-sm">
+					{poiName && <span>{poiName} - </span>}
+					<span>{review.date.slice(0, 10)}</span>
+				</p>
 			</div>
 			<p className="mt-2">{review.comment}</p>
 		</div>

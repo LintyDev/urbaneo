@@ -5,7 +5,7 @@ import ModalEditPassword from "./ModalEditPassword";
 import { MyAccountQuery } from "@/graphql/schema";
 import ModalDeleteAccount from "./ModalDeleteAccount";
 
-function EditSecurity({ user }: { user: MyAccountQuery["me"] }) {
+function EditSecurity({ user }: { user: MyAccountQuery["mePlus"] }) {
 	const [openModalPass, setOpenModalPass] = useState(false);
 	const [openModalAccount, setOpenModalAccount] = useState(false);
 	return (
@@ -15,7 +15,7 @@ function EditSecurity({ user }: { user: MyAccountQuery["me"] }) {
 					<p className="font-light">Sécurité</p>
 				</div>
 				<div>
-					<div className="flex flex-col">
+					<div className="flex flex-col text-nowrap">
 						<p className="font-thin">Mot de passe</p>
 						<button
 							className="w-fit items-center gap-2 rounded-md bg-black px-2.5 py-1.5 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-900 hover:bg-gray-900 hover:text-gray-400"
