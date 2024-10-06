@@ -91,29 +91,34 @@ function ExplorerFilter({
 
 	const resetFilters = async () => {
 		setCurrFilter({ ...currFilters, budget: null, categoriesIds: [] });
+		window.history.replaceState(null, "", `/explorer/${filters.slug}`);
 		await refetch({
 			data: {
 				slug: filters.slug,
 			},
 		});
-		router.replace(`/explorer/${filters.slug}`, undefined, {
-			shallow: true,
-		});
+		setFiltersState("Choissiez un filtre");
+		setFiltersQuery(null);
+		selectInput.current!.value = "all";
 	};
 
 	const handleSearch = async () => {
-		console.log(currFilters);
 		switch (filtersQuery) {
 			case true:
-				console.log("perform search");
+				// console.log("perform search");
 				const filtersQuerys = {
 					budget: currFilters.budget,
 					categoriesId: currFilters.categoriesIds,
 				};
-				let query = `?&f=${btoa(JSON.stringify(filtersQuery))}`;
+				let query = `?&f=${btoa(JSON.stringify(filtersQuerys))}`;
 				if (!filtersQuerys.budget && !filtersQuerys.categoriesId.length) {
 					query = "";
 				}
+				window.history.replaceState(
+					null,
+					"",
+					`/explorer/${filters.slug}${query}`
+				);
 				await refetch({
 					data: {
 						slug: filters.slug,
@@ -121,16 +126,13 @@ function ExplorerFilter({
 						categoriesId: currFilters.categoriesIds,
 					},
 				});
-				router.replace(`/explorer/${filters.slug}${query}`, undefined, {
-					shallow: true,
-				});
 				break;
 			case false:
-				console.log("perform Réinitialiser");
+				// console.log("perform Réinitialiser");
 				await resetFilters();
 				break;
 			case null:
-				console.log("perform focus");
+				// console.log("perform focus");
 				selectInput.current?.focus();
 				break;
 		}

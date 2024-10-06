@@ -20,6 +20,7 @@ function Explorer() {
 	};
 	if (router.query.f && typeof router.query.f === "string") {
 		const query = JSON.parse(Buffer.from(router.query.f, "base64").toString());
+		console.log("query", query);
 		filters.budget =
 			typeof query.budget === "string"
 				? (query.budget.toUpperCase() as PoiBudget)
