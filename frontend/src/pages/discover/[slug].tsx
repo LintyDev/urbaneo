@@ -1,7 +1,6 @@
-import DynamicIcon, { IconProps } from "@/components/common/DynamicIcon";
 import ErrorBox from "@/components/common/ErrorBox";
 import LoadingBox from "@/components/common/LoadingBox";
-import Notes from "@/components/common/Notes";
+import DiscoverAlso from "@/components/discover/DiscoverAlso";
 import DiscoverDescription from "@/components/discover/DiscoverDescription";
 import DiscoverPhotos from "@/components/discover/DiscoverPhotos";
 import ReviewsPOI from "@/components/discover/ReviewsPOI";
@@ -9,9 +8,6 @@ import {
 	GetPoIsBySlugDiscoverQuery,
 	useGetPoIsBySlugDiscoverQuery,
 } from "@/graphql/schema";
-import { getImageUrl } from "@/lib/getImagesUrl";
-import { MapPin, Plus, Star } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
@@ -70,16 +66,7 @@ function Discover() {
 				</div>
 			</div>
 			<div className="flex flex-col mx-16">
-				<p className="font-light text-lg">Voir aussi..</p>
-				<p>Voir aussi</p>
-				<p>Voir aussi</p>
-				<p>Voir aussi</p>
-				<p>Voir aussi</p>
-				<p>Voir aussi</p>
-				<p>Voir aussi</p>
-				<p>Voir aussi</p>
-				<p>Voir aussi</p>
-				<p>Voir aussi</p>
+				<DiscoverAlso slug={poi?.slug ?? ""} />
 			</div>
 		</section>
 	);

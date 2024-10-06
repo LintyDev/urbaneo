@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useGetReviewsByPoiSlugQuery } from "@/graphql/schema";
-import { Pencil } from "lucide-react";
+import { MessageSquareDashed, Pencil } from "lucide-react";
 import LoadingBox from "../common/LoadingBox";
 import ErrorBox from "../common/ErrorBox";
 import ModalAddReviews from "./ModalAddReviews";
-import ReviewCard from "../common/ReviewCard";
+import ReviewCard from "../cards/ReviewCard";
 
 function ReviewsPOI({ poi }: { poi: { id: string; slug: string } }) {
 	const [modalAdd, setModalAdd] = useState(false);
@@ -48,7 +48,15 @@ function ReviewsPOI({ poi }: { poi: { id: string; slug: string } }) {
 						))}
 					</div>
 				) : (
-					<p>Pas d&apos;avis</p>
+					<div className="h-full flex flex-col">
+						<p className="font-light italic text-center text-sm">
+							Soyez le premier à rédiger un avis !
+						</p>
+						<MessageSquareDashed
+							className="h-full self-center text-gray-100"
+							size={100}
+						/>
+					</div>
 				)}
 			</div>
 			<ModalAddReviews

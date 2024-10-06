@@ -62,6 +62,32 @@ export default class POIServices {
 		});
 	}
 
+	async getNearByPOISlug(slug: string): Promise<POI[]> {
+		const poi = await this.db.findOne({
+			where: { slug },
+			relations: { city: true, categories: true, reviews: true },
+		});
+
+		const nearPois = this.db
+			.createQueryBuilder("poi")
+			.leftJoinAndSelect("poi.city", "city")
+			.leftJoinAndSelect("poi.categories", "categories")
+			.where(
+				`ST_DWithin(
+					poi.gps_coordinates::geography,
+					ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography, 
+          :radius
+        )`,
+				{
+					longitude: poi?.coordinates.x,
+					latitude: poi?.coordinates.y,
+					radius: 10000,
+				}
+			)
+			.getMany();
+		return nearPois;
+	}
+
 	async createPOI(data: POICreateInput): Promise<POI> {
 		const city = await new CityServices().getCity(data.cityId);
 		const categories = await new CategoryServices().getCategories();

@@ -43,6 +43,12 @@ export default class POIResolver {
 		return pois;
 	}
 
+	@Query(() => [POI])
+	async getNearPOIs(@Arg("slug") slug: string) {
+		const pois = await new POIServices().getNearByPOISlug(slug);
+		return pois;
+	}
+
 	@Authorized(UserRole.ADMIN, UserRole.USER, UserRole.USER_PREMIUM)
 	@Mutation(() => POI)
 	async createPOI(@Ctx() ctx: MyContext, @Arg("data") data: POICreateInput) {

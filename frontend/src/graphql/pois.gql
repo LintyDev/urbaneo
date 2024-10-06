@@ -26,7 +26,6 @@ query GetPOIs {
 query GetPOIsBySlug($slug: [String!]!) {
 	getPOIsBySlug(slug: $slug) {
 		name
-		description
 		photos
 		slug
 		budget
@@ -56,6 +55,24 @@ query GetPOIsBySlugDiscover($slug: [String!]!) {
 			name
 		}
 		address
+		averageNote
+	}
+}
+
+query GetNearPOIs($slug: String!) {
+	getNearPOIs(slug: $slug) {
+		id
+		name
+		photos
+		slug
+		budget
+		city {
+			name
+		}
+		categories {
+			icon
+			name
+		}
 		averageNote
 	}
 }

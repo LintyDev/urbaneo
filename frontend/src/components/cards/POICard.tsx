@@ -10,6 +10,7 @@ import DynamicIcon, { IconProps } from "../common/DynamicIcon";
 import { useState } from "react";
 import { Map } from "leaflet";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 interface POICard {
 	poi:
@@ -21,12 +22,14 @@ function POICard({
 	poi,
 	cityName,
 	map,
+	goTo,
 }: {
 	poi:
 		| GetCityFromSearchQuery["getCityFromSearch"]["pois"][number]
 		| GetPoIsBySlugQuery["getPOIsBySlug"][number];
 	cityName: string;
 	map?: Map;
+	goTo?: string;
 }) {
 	const router = useRouter();
 	const [favorites, setFavorites] = useState<string[]>(
@@ -58,14 +61,20 @@ function POICard({
 	const handleGoToDiscover = () => {
 		if (map) {
 			router.push(`/discover/${poi.slug}`);
+		} else if (goTo) {
+			router.push(goTo);
 		}
 	};
 
 	return (
-		<div
+		<Link
+			href={map ? `/discover/${poi.slug}` : goTo ? goTo : "#"}
 			key={poi.slug}
 			className="flex flex-col cursor-pointer"
-			onClick={handleGoToDiscover}
+			onClick={(e) => {
+				e.preventDefault();
+				handleGoToDiscover();
+			}}
 		>
 			<div className="w-[250px] h-[150px] relative">
 				<Image
@@ -81,6 +90,7 @@ function POICard({
 						map ? "right-11" : "right-1"
 					} p-2 bg-white rounded-full hover:bg-white/80 hover:text-red-700`}
 					onClick={(e) => {
+						e.preventDefault();
 						e.stopPropagation();
 						handleAddFavorite(poi);
 					}}
@@ -95,6 +105,7 @@ function POICard({
 					<p
 						className="absolute top-1 right-1 p-2 bg-white rounded-full hover:bg-white/80"
 						onClick={(e) => {
+							e.preventDefault();
 							e.stopPropagation();
 							map.closePopup();
 						}}
@@ -125,7 +136,7 @@ function POICard({
 					)}
 				</p>
 			</div>
-		</div>
+		</Link>
 	);
 }
 

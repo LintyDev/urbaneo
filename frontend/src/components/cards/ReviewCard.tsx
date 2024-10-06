@@ -1,7 +1,7 @@
 import { GetReviewsByPoiSlugQuery } from "@/graphql/schema";
 import { getImageUrl } from "@/lib/getImagesUrl";
 import Image from "next/image";
-import Notes from "./Notes";
+import Notes from "../common/Notes";
 
 function ReviewCard({
 	review,
