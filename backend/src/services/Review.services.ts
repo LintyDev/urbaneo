@@ -37,6 +37,10 @@ export default class ReviewServices {
 		return review;
 	}
 
+	async findAll(): Promise<Review[]> {
+		return await this.db.find({ relations: { user: true, POI: true } });
+	}
+
 	async findByPOISlug(slug: string): Promise<Review[]> {
 		const reviews = await this.db.find({
 			relations: { POI: true, user: true },

@@ -17,12 +17,12 @@ export default class ReviewResolver {
 		return reviews;
 	}
 
-	// Récupérer toutes les reviews
-	// @Query(() => [Review])
-	// async getAllReviews() {
-	// 	const reviews: Review[] = await new ReviewServices().list(userId);
-	// 	return reviews;
-	// }
+	@Authorized(UserRole.ADMIN)
+	@Query(() => [Review])
+	async getAllReviews() {
+		const reviews: Review[] = await new ReviewServices().findAll();
+		return reviews;
+	}
 
 	// Récupérer une review et son utilisateur
 	@Query(() => Review)
@@ -50,6 +50,7 @@ export default class ReviewResolver {
 		}
 	}
 
+	@Authorized(UserRole.ADMIN)
 	@Mutation(() => Review)
 	async updateReview(@Arg("data") data: ReviewUpdateInput) {
 		const msg = new Message();
@@ -62,6 +63,7 @@ export default class ReviewResolver {
 		}
 	}
 
+	@Authorized(UserRole.ADMIN)
 	@Mutation(() => Message)
 	async deleteReview(@Arg("id") id: string) {
 		const msg = new Message();

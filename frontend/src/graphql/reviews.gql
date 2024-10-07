@@ -12,8 +12,30 @@ query GetReviewsByPOISlug($slug: String!) {
 	}
 }
 
+query GetAllReviews {
+	getAllReviews {
+		id
+		note
+		comment
+		date
+		user {
+			email
+		}
+		POI {
+			name
+		}
+	}
+}
+
 mutation AddReview($data: ReviewCreateInput!) {
 	addReview(data: $data) {
 		id
+	}
+}
+
+mutation DeleteReview($deleteReviewId: String!) {
+	deleteReview(id: $deleteReviewId) {
+		success
+		message
 	}
 }

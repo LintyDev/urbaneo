@@ -77,8 +77,12 @@ function DashboardMenu() {
 							<Users size={19} /> Utilisateurs
 						</Link>
 						<Link
-							href={"#"}
-							className={`flex items-center gap-4 rounded-lg py-2 px-4 hover:bg-[#ebf2ff] hover:shadow-sm`}
+							href={"/dashboard/reviews"}
+							className={`flex items-center gap-4 rounded-lg py-2 px-4 ${
+								pathname === "/dashboard/reviews"
+									? "bg-[#ebf2ff] shadow-sm"
+									: ""
+							} hover:bg-[#ebf2ff] hover:shadow-sm`}
 						>
 							<Star size={19} /> Notes
 						</Link>
