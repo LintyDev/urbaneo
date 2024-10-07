@@ -115,6 +115,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 			onCompleted(data) {
 				if (protectedRoutes.includes(pathname)) {
 					router.push("/");
+					router.refresh();
 				} else {
 					router.refresh();
 				}

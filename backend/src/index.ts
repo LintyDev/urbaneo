@@ -51,6 +51,7 @@ const main = async () => {
 				"http://localhost:3000",
 				"https://studio.apollographql.com",
 				"https://urbaneo.lintyserver.cloud",
+				"https//urbaneo.tech",
 			],
 			credentials: true,
 		}),
