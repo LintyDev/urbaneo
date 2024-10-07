@@ -193,3 +193,12 @@ export class POIAndToken {
 	@Field()
 	token: string;
 }
+
+@InputType()
+export class SearchPOIS {
+	@Field()
+	text: string;
+
+	@Field()
+	cityId: string;
+}

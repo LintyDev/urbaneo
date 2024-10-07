@@ -1,7 +1,11 @@
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { POI, POICreateInput, POIUpdateInput } from "../entities/POI.entity";
+import {
+	POI,
+	POICreateInput,
+	POIUpdateInput,
+	SearchPOIS,
+} from "../entities/POI.entity";
 import POIServices from "../services/POI.services";
-import { Message } from "../entities/Message.entity";
 import { UserRole } from "../entities/User.entity";
 import MyContext from "../types/common.types";
 
@@ -47,6 +51,37 @@ export default class POIResolver {
 	@Query(() => [POI])
 	async getNearPOIs(@Arg("slug") slug: string) {
 		const pois = await new POIServices().getNearByPOISlug(slug);
+		return pois;
+	}
+
+	@Authorized(UserRole.ADMIN, UserRole.USER, UserRole.USER_PREMIUM)
+	@Query(() => [POI])
+	async getPOIsByCitySlug(
+		@Ctx() ctx: MyContext,
+		@Arg("citySlug") citySlug: string
+	) {
+		const isAuthorized = ctx.user?.cityRole.filter(
+			(c) => c.city.slug === citySlug
+		);
+
+		if (!isAuthorized?.length) {
+			throw new Error("Vous ne pouvez pas performer cette action");
+		}
+
+		const pois = await new POIServices().getPOIsByCitySlug(citySlug);
+		return pois;
+	}
+
+	@Authorized(UserRole.ADMIN, UserRole.USER, UserRole.USER_PREMIUM)
+	@Query(() => [POI])
+	async searchPOIs(@Ctx() ctx: MyContext, @Arg("data") data: SearchPOIS) {
+		const isAuthorized = ctx.user?.cityRole.filter(
+			(r) => r.city.id === data.cityId
+		);
+		if (!isAuthorized?.length) {
+			throw new Error("Vous ne pouvez pas performer cette action");
+		}
+		const pois = await new POIServices().searchPOIs(data.text, data.cityId);
 		return pois;
 	}
 

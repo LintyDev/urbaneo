@@ -13,6 +13,8 @@ query Me {
 			label
 			city {
 				id
+				slug
+				name
 			}
 		}
 	}

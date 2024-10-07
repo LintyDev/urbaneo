@@ -1,4 +1,5 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import ModerationLayout from "@/components/layout/ModerationLayout";
 import RootLayout from "@/components/layout/RootLayout";
 import { AuthProvider } from "@/contexts/AuthContext";
 import "@/styles/globals.css";
@@ -34,6 +35,10 @@ export default function App({
 		((page) => {
 			if (router.pathname.startsWith("/dashboard")) {
 				return <DashboardLayout>{page}</DashboardLayout>;
+			}
+
+			if (router.pathname.startsWith("/moderation")) {
+				return <ModerationLayout>{page}</ModerationLayout>;
 			}
 
 			if (router.pathname.startsWith("/auth")) {

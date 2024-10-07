@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import DynamicIcon, { IconProps } from "@/components/common/DynamicIcon";
 import {
+	GetPoIsByCitySlugDocument,
 	GetPoIsBySlugDiscoverDocument,
 	GetPoIsDocument,
 	Poi,
@@ -35,6 +36,7 @@ function CreateUpdatePOI({
 	deletePoi,
 	disableCity,
 	setCity,
+	inModal,
 }: {
 	closeCreatePOI: Dispatch<SetStateAction<boolean>>;
 	modal: "add" | "update";
@@ -42,6 +44,7 @@ function CreateUpdatePOI({
 	deletePoi?: (poi: Query["getPOIs"][number]) => void;
 	disableCity?: boolean;
 	setCity?: { cityId: string; cityName: string };
+	inModal?: boolean;
 }) {
 	const [latLong, setLatLong] = useState({ y: 50.633333, x: 3.066667 });
 	const [photos, setPhotos] = useState<{ url: string; file: File }[]>([]);
@@ -70,7 +73,13 @@ function CreateUpdatePOI({
 		},
 	});
 	const [createPOI] = useCreatePoiMutation({
-		refetchQueries: [{ query: GetPoIsDocument }],
+		refetchQueries: [
+			{ query: GetPoIsDocument },
+			{
+				query: GetPoIsByCitySlugDocument,
+				variables: { citySlug: poiUpdate?.city.slug },
+			},
+		],
 		onError(error, clientOptions) {
 			console.log(error);
 		},
@@ -86,11 +95,16 @@ function CreateUpdatePOI({
 				query: GetPoIsBySlugDiscoverDocument,
 				variables: { slug: poiUpdate?.slug },
 			},
+			{
+				query: GetPoIsByCitySlugDocument,
+				variables: { citySlug: poiUpdate?.city.slug },
+			},
 		],
 		onError(error, clientOptions) {
 			console.log(error);
 		},
 		onCompleted(data, clientOptions) {
+			console.log("slugggggg", poiUpdate?.slug);
 			closeCreatePOI(true);
 			reset();
 		},
@@ -345,17 +359,30 @@ function CreateUpdatePOI({
 	}, [setCity, setValue]);
 
 	return (
-		<div className="flex flex-col w-full bg-white rounded-2xl shadow-md p-5 flex-grow overflow-visible">
+		<div
+			className={`flex flex-col w-full ${
+				inModal ? "bg-transparent" : "bg-white shadow-md"
+			} rounded-2xl p-5 flex-grow overflow-visible`}
+		>
 			<div className="flex items-center justify-between">
 				<p className="font-thin text-xs mb-0">
 					{modal === "add"
 						? "Ajouter un point d'interêt"
 						: "Modifier un point d'interêt : " + poiUpdate?.name}
 				</p>
-				<X
-					className="cursor-pointer text-gray-500 hover:text-black"
-					onClick={() => closeCreatePOI(true)}
-				/>
+				{inModal ? (
+					<p
+						className="cursor-pointer text-gray-500 hover:text-black"
+						onClick={() => closeCreatePOI(true)}
+					>
+						Annuler
+					</p>
+				) : (
+					<X
+						className="cursor-pointer text-gray-500 hover:text-black"
+						onClick={() => closeCreatePOI(true)}
+					/>
+				)}
 			</div>
 			<form
 				className="h-full flex flex-col gap-3 overflow-scroll"

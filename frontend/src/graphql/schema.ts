@@ -282,6 +282,7 @@ export type Query = {
   getNearPOIs: Array<Poi>;
   getPOI: Poi;
   getPOIs: Array<Poi>;
+  getPOIsByCitySlug: Array<Poi>;
   getPOIsBySlug: Array<Poi>;
   getReview: Review;
   getReviewsByPOISlug: Array<Review>;
@@ -294,6 +295,7 @@ export type Query = {
   mePlus?: Maybe<UserWithoutPassword>;
   searchCategories: Array<Category>;
   searchCities: Array<City>;
+  searchPOIs: Array<Poi>;
 };
 
 
@@ -337,6 +339,11 @@ export type QueryGetPoIsArgs = {
 };
 
 
+export type QueryGetPoIsByCitySlugArgs = {
+  citySlug: Scalars['String']['input'];
+};
+
+
 export type QueryGetPoIsBySlugArgs = {
   slug: Array<Scalars['String']['input']>;
 };
@@ -374,6 +381,11 @@ export type QuerySearchCategoriesArgs = {
 
 export type QuerySearchCitiesArgs = {
   text: Scalars['String']['input'];
+};
+
+
+export type QuerySearchPoIsArgs = {
+  data: SearchPois;
 };
 
 export type Review = {
@@ -419,6 +431,11 @@ export type RoleUpdate = {
   id: Scalars['UUID']['input'];
   label: Label;
   userId: Scalars['UUID']['input'];
+};
+
+export type SearchPois = {
+  cityId: Scalars['String']['input'];
+  text: Scalars['String']['input'];
 };
 
 export type StatsWeb = {
@@ -500,7 +517,7 @@ export type UserWithoutPassword = {
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', id: any, label: Label, city: { __typename?: 'City', id: any } }> } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', id: any, label: Label, city: { __typename?: 'City', id: any, slug: string, name: string } }> } | null };
 
 export type MyAccountQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -653,6 +670,20 @@ export type GetNearPoIsQueryVariables = Exact<{
 
 export type GetNearPoIsQuery = { __typename?: 'Query', getNearPOIs: Array<{ __typename?: 'POI', id: string, name: string, photos: Array<string>, slug: string, budget: PoiBudget, averageNote?: number | null, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', icon: string, name: string }> }> };
 
+export type GetPoIsByCitySlugQueryVariables = Exact<{
+  citySlug: Scalars['String']['input'];
+}>;
+
+
+export type GetPoIsByCitySlugQuery = { __typename?: 'Query', getPOIsByCitySlug: Array<{ __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, averageNote?: number | null, address: string, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string, slug: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> }> };
+
+export type SearchPoIsQueryVariables = Exact<{
+  data: SearchPois;
+}>;
+
+
+export type SearchPoIsQuery = { __typename?: 'Query', searchPOIs: Array<{ __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, averageNote?: number | null, address: string, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string, slug: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> }> };
+
 export type CreatePoiMutationVariables = Exact<{
   data: PoiCreateInput;
 }>;
@@ -774,6 +805,8 @@ export const MeDocument = gql`
       label
       city {
         id
+        slug
+        name
       }
     }
   }
@@ -1837,6 +1870,128 @@ export type GetNearPoIsQueryHookResult = ReturnType<typeof useGetNearPoIsQuery>;
 export type GetNearPoIsLazyQueryHookResult = ReturnType<typeof useGetNearPoIsLazyQuery>;
 export type GetNearPoIsSuspenseQueryHookResult = ReturnType<typeof useGetNearPoIsSuspenseQuery>;
 export type GetNearPoIsQueryResult = Apollo.QueryResult<GetNearPoIsQuery, GetNearPoIsQueryVariables>;
+export const GetPoIsByCitySlugDocument = gql`
+    query GetPOIsByCitySlug($citySlug: String!) {
+  getPOIsByCitySlug(citySlug: $citySlug) {
+    id
+    name
+    description
+    photos
+    slug
+    averageNote
+    coordinates {
+      x
+      y
+    }
+    address
+    budget
+    city {
+      id
+      name
+      slug
+    }
+    categories {
+      id
+      icon
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPoIsByCitySlugQuery__
+ *
+ * To run a query within a React component, call `useGetPoIsByCitySlugQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPoIsByCitySlugQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPoIsByCitySlugQuery({
+ *   variables: {
+ *      citySlug: // value for 'citySlug'
+ *   },
+ * });
+ */
+export function useGetPoIsByCitySlugQuery(baseOptions: Apollo.QueryHookOptions<GetPoIsByCitySlugQuery, GetPoIsByCitySlugQueryVariables> & ({ variables: GetPoIsByCitySlugQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPoIsByCitySlugQuery, GetPoIsByCitySlugQueryVariables>(GetPoIsByCitySlugDocument, options);
+      }
+export function useGetPoIsByCitySlugLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPoIsByCitySlugQuery, GetPoIsByCitySlugQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPoIsByCitySlugQuery, GetPoIsByCitySlugQueryVariables>(GetPoIsByCitySlugDocument, options);
+        }
+export function useGetPoIsByCitySlugSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetPoIsByCitySlugQuery, GetPoIsByCitySlugQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPoIsByCitySlugQuery, GetPoIsByCitySlugQueryVariables>(GetPoIsByCitySlugDocument, options);
+        }
+export type GetPoIsByCitySlugQueryHookResult = ReturnType<typeof useGetPoIsByCitySlugQuery>;
+export type GetPoIsByCitySlugLazyQueryHookResult = ReturnType<typeof useGetPoIsByCitySlugLazyQuery>;
+export type GetPoIsByCitySlugSuspenseQueryHookResult = ReturnType<typeof useGetPoIsByCitySlugSuspenseQuery>;
+export type GetPoIsByCitySlugQueryResult = Apollo.QueryResult<GetPoIsByCitySlugQuery, GetPoIsByCitySlugQueryVariables>;
+export const SearchPoIsDocument = gql`
+    query SearchPOIs($data: SearchPOIS!) {
+  searchPOIs(data: $data) {
+    id
+    name
+    description
+    photos
+    slug
+    averageNote
+    coordinates {
+      x
+      y
+    }
+    address
+    budget
+    city {
+      id
+      name
+      slug
+    }
+    categories {
+      id
+      icon
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchPoIsQuery__
+ *
+ * To run a query within a React component, call `useSearchPoIsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchPoIsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchPoIsQuery({
+ *   variables: {
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useSearchPoIsQuery(baseOptions: Apollo.QueryHookOptions<SearchPoIsQuery, SearchPoIsQueryVariables> & ({ variables: SearchPoIsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchPoIsQuery, SearchPoIsQueryVariables>(SearchPoIsDocument, options);
+      }
+export function useSearchPoIsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchPoIsQuery, SearchPoIsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchPoIsQuery, SearchPoIsQueryVariables>(SearchPoIsDocument, options);
+        }
+export function useSearchPoIsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<SearchPoIsQuery, SearchPoIsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<SearchPoIsQuery, SearchPoIsQueryVariables>(SearchPoIsDocument, options);
+        }
+export type SearchPoIsQueryHookResult = ReturnType<typeof useSearchPoIsQuery>;
+export type SearchPoIsLazyQueryHookResult = ReturnType<typeof useSearchPoIsLazyQuery>;
+export type SearchPoIsSuspenseQueryHookResult = ReturnType<typeof useSearchPoIsSuspenseQuery>;
+export type SearchPoIsQueryResult = Apollo.QueryResult<SearchPoIsQuery, SearchPoIsQueryVariables>;
 export const CreatePoiDocument = gql`
     mutation CreatePOI($data: POICreateInput!) {
   createPOI(data: $data) {

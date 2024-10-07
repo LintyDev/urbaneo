@@ -1,4 +1,4 @@
-import { In, Repository } from "typeorm";
+import { ILike, In, Like, Repository } from "typeorm";
 import { POI, POICreateInput, POIUpdateInput } from "../entities/POI.entity";
 import datasource from "../lib/datasource";
 import CityServices from "./City.services";
@@ -88,6 +88,14 @@ export default class POIServices {
 		return nearPois;
 	}
 
+	async getPOIsByCitySlug(citySlug: string): Promise<POI[]> {
+		const pois = await this.db.find({
+			where: { city: { slug: citySlug } },
+			relations: { categories: true, city: true },
+		});
+		return pois;
+	}
+
 	async createPOI(data: POICreateInput): Promise<POI> {
 		const city = await new CityServices().getCity(data.cityId);
 		const categories = await new CategoryServices().getCategories();
@@ -130,6 +138,18 @@ export default class POIServices {
 		);
 
 		return await this.db.save(updatePOI);
+	}
+
+	async searchPOIs(text: string, cityId: string): Promise<POI[]> {
+		const pois = await this.db.find({
+			where: {
+				name: ILike(`%${text}%`),
+				city: { id: cityId },
+			},
+			relations: ["city", "categories", "reviews"],
+		});
+
+		return pois;
 	}
 
 	async deletePOI(id: string): Promise<POI> {

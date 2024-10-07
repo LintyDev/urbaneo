@@ -18,6 +18,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { getImageUrl } from "@/lib/getImagesUrl";
 import { useEffect, useState } from "react";
+import { UserRole } from "@/graphql/schema";
 
 const linkAdmin = [
 	{
@@ -37,6 +38,27 @@ const linkAdmin = [
 		href: "/dashboard",
 		icon: Settings,
 		color: "hover:bg-[#3b82f61a]",
+	},
+	{
+		name: "Modération",
+		href: "/moderation",
+		icon: MonitorCog,
+		color: "hover:bg-[#f973161a]",
+	},
+];
+
+const linkCityRole = [
+	{
+		name: "Mon profil",
+		href: "/account",
+		icon: UserPen,
+		color: "hover:bg-[#0000001a]",
+	},
+	{
+		name: "À propos",
+		href: "/about",
+		icon: CircleHelp,
+		color: "hover:bg-[#0000001a]",
 	},
 	{
 		name: "Modération",
@@ -79,6 +101,10 @@ function UserMenu() {
 	useEffect(() => {
 		if (user && user.role === "ADMIN") {
 			setLink(linkAdmin);
+		}
+
+		if (user && user.role !== UserRole.Admin && user.cityRole.length > 0) {
+			setLink(linkCityRole);
 		}
 	}, [user]);
 

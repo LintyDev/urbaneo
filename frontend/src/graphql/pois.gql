@@ -107,6 +107,60 @@ query GetNearPOIs($slug: String!) {
 	}
 }
 
+query GetPOIsByCitySlug($citySlug: String!) {
+	getPOIsByCitySlug(citySlug: $citySlug) {
+		id
+		name
+		description
+		photos
+		slug
+		averageNote
+		coordinates {
+			x
+			y
+		}
+		address
+		budget
+		city {
+			id
+			name
+			slug
+		}
+		categories {
+			id
+			icon
+			name
+		}
+	}
+}
+
+query SearchPOIs($data: SearchPOIS!) {
+	searchPOIs(data: $data) {
+		id
+		name
+		description
+		photos
+		slug
+		averageNote
+		coordinates {
+			x
+			y
+		}
+		address
+		budget
+		city {
+			id
+			name
+			slug
+		}
+		categories {
+			id
+			icon
+			name
+		}
+	}
+}
+
 mutation CreatePOI($data: POICreateInput!) {
 	createPOI(data: $data) {
 		id
