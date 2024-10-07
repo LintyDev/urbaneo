@@ -26,7 +26,10 @@ function StatsWeb() {
 					</p>
 
 					<p className="flex items-center gap-1">
-						<span className="text-4xl font-medium">405</span>
+						<span className="text-4xl font-medium">
+							{" "}
+							{data?.getWebStats.find((w) => w.label === "reviews")?.nb}
+						</span>
 						<span className="flex text-[10px] italic">
 							reviews
 							<br /> ont étés postés.

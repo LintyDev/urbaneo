@@ -79,4 +79,8 @@ export default class ReviewServices {
 		const review = await this.db.findOneOrFail({ where: { id: id } });
 		return await this.db.remove(review);
 	}
+
+	async nbReviews(): Promise<number> {
+		return await this.db.count();
+	}
 }

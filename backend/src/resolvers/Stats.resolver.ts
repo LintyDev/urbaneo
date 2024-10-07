@@ -4,6 +4,7 @@ import CityServices from "../services/City.services";
 import CategoryServices from "../services/Category.services";
 import POIServices from "../services/POI.services";
 import UserServices from "../services/User.services";
+import ReviewServices from "../services/Review.services";
 
 @ObjectType()
 export class StatsWeb {
@@ -31,7 +32,9 @@ export default class StatsResolver {
 
 		const nbUsers = await new UserServices().nbUsers();
 		nb.push({ label: "utilisateurs", nb: nbUsers });
-		nb.push({ label: "reviews", nb: 103 });
+
+		const nbReviews = await new ReviewServices().nbReviews();
+		nb.push({ label: "reviews", nb: nbReviews });
 
 		return nb;
 	}
