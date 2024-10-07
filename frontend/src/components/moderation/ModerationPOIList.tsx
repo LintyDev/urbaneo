@@ -7,8 +7,9 @@ import {
 import { getImageUrl } from "@/lib/getImagesUrl";
 import Image from "next/image";
 import Notes from "../common/Notes";
-import { Edit, Euro, Trash2, TriangleAlert } from "lucide-react";
+import { Edit, Euro, Monitor, Trash2, TriangleAlert } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 function ModerationPOIList({
 	poi,
@@ -57,6 +58,12 @@ function ModerationPOIList({
 					<div className="flex items-center justify-between">
 						<p className="text-lg font-light">{poi.name}</p>
 						<div className="flex items-center gap-2">
+							<Link
+								className="cursor-pointer text-gray-400 hover:text-black"
+								href={`/discover/${poi.slug}`}
+							>
+								<Monitor size={20} />
+							</Link>
 							<p
 								className="cursor-pointer text-gray-400 hover:text-black"
 								onClick={() => updatePOI(poi)}
