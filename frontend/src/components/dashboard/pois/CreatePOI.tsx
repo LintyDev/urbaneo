@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import DynamicIcon, { IconProps } from "@/components/common/DynamicIcon";
 import {
+	GetPoIsBySlugDiscoverDocument,
 	GetPoIsDocument,
 	Poi,
 	PoiBudget,
@@ -32,11 +33,13 @@ function CreateUpdatePOI({
 	modal,
 	poiUpdate,
 	deletePoi,
+	disableCity,
 }: {
 	closeCreatePOI: Dispatch<SetStateAction<boolean>>;
 	modal: "add" | "update";
-	poiUpdate?: Query["getPOIs"][number];
+	poiUpdate?: Query["getPOIs"][number] | Query["getPOIsBySlug"][number];
 	deletePoi: (poi: Query["getPOIs"][number]) => void;
+	disableCity?: boolean;
 }) {
 	const [latLong, setLatLong] = useState({ y: 50.633333, x: 3.066667 });
 	const [photos, setPhotos] = useState<{ url: string; file: File }[]>([]);
@@ -75,7 +78,13 @@ function CreateUpdatePOI({
 		},
 	});
 	const [updatePOI] = useUpdatePoiMutation({
-		refetchQueries: [{ query: GetPoIsDocument }],
+		refetchQueries: [
+			{ query: GetPoIsDocument },
+			{
+				query: GetPoIsBySlugDiscoverDocument,
+				variables: { slug: poiUpdate?.slug },
+			},
+		],
 		onError(error, clientOptions) {
 			console.log(error);
 		},
@@ -453,7 +462,7 @@ function CreateUpdatePOI({
 						/>
 					</div>
 					{resultCats && resultCats.length > 0 && (
-						<div className="absolute flex flex-col gap-3 w-full bg-white rounded-b-md shadow-sm max-h-40 py-2 overflow-y-auto border border-gray-50">
+						<div className="absolute flex flex-col gap-3 w-full bg-white rounded-b-md shadow-sm max-h-40 py-2 overflow-y-auto border border-gray-50 z-30">
 							{resultCats.map((c, i) => (
 								<p
 									key={i}
@@ -577,6 +586,7 @@ function CreateUpdatePOI({
 								className="block w-full rounded-md border-0 py-1.5 px-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 								placeholder="Lille"
 								autoComplete="off"
+								disabled={disableCity}
 								onChange={(e) => {
 									if (e.target.value === "") {
 										setResultCities([]);

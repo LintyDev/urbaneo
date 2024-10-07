@@ -5,6 +5,7 @@ query GetPOIs {
 		description
 		photos
 		slug
+		averageNote
 		coordinates {
 			x
 			y
@@ -30,6 +31,7 @@ query GetPOIsBySlug($slug: [String!]!) {
 		slug
 		budget
 		city {
+			id
 			name
 		}
 		categories {
@@ -48,6 +50,7 @@ query GetPOIsBySlugDiscover($slug: [String!]!) {
 		slug
 		budget
 		city {
+			id
 			name
 		}
 		categories {
@@ -59,6 +62,32 @@ query GetPOIsBySlugDiscover($slug: [String!]!) {
 	}
 }
 
+query GetPOIsBySlugDiscoverEdit($slug: [String!]!) {
+	getPOIsBySlug(slug: $slug) {
+		id
+		name
+		description
+		photos
+		slug
+		averageNote
+		coordinates {
+			x
+			y
+		}
+		address
+		budget
+		city {
+			id
+			name
+		}
+		categories {
+			id
+			icon
+			name
+		}
+	}
+}
+
 query GetNearPOIs($slug: String!) {
 	getNearPOIs(slug: $slug) {
 		id
@@ -67,6 +96,7 @@ query GetNearPOIs($slug: String!) {
 		slug
 		budget
 		city {
+			id
 			name
 		}
 		categories {

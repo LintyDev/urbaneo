@@ -623,28 +623,35 @@ export type DeleteRolesMutation = { __typename?: 'Mutation', deleteRoles: { __ty
 export type GetPoIsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetPoIsQuery = { __typename?: 'Query', getPOIs: Array<{ __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, address: string, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> }> };
+export type GetPoIsQuery = { __typename?: 'Query', getPOIs: Array<{ __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, averageNote?: number | null, address: string, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> }> };
 
 export type GetPoIsBySlugQueryVariables = Exact<{
   slug: Array<Scalars['String']['input']> | Scalars['String']['input'];
 }>;
 
 
-export type GetPoIsBySlugQuery = { __typename?: 'Query', getPOIsBySlug: Array<{ __typename?: 'POI', name: string, photos: Array<string>, slug: string, budget: PoiBudget, averageNote?: number | null, city: { __typename?: 'City', name: string }, categories: Array<{ __typename?: 'Category', icon: string }> }> };
+export type GetPoIsBySlugQuery = { __typename?: 'Query', getPOIsBySlug: Array<{ __typename?: 'POI', name: string, photos: Array<string>, slug: string, budget: PoiBudget, averageNote?: number | null, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', icon: string }> }> };
 
 export type GetPoIsBySlugDiscoverQueryVariables = Exact<{
   slug: Array<Scalars['String']['input']> | Scalars['String']['input'];
 }>;
 
 
-export type GetPoIsBySlugDiscoverQuery = { __typename?: 'Query', getPOIsBySlug: Array<{ __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, budget: PoiBudget, address: string, averageNote?: number | null, city: { __typename?: 'City', name: string }, categories: Array<{ __typename?: 'Category', icon: string, name: string }> }> };
+export type GetPoIsBySlugDiscoverQuery = { __typename?: 'Query', getPOIsBySlug: Array<{ __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, budget: PoiBudget, address: string, averageNote?: number | null, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', icon: string, name: string }> }> };
+
+export type GetPoIsBySlugDiscoverEditQueryVariables = Exact<{
+  slug: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type GetPoIsBySlugDiscoverEditQuery = { __typename?: 'Query', getPOIsBySlug: Array<{ __typename?: 'POI', id: string, name: string, description: string, photos: Array<string>, slug: string, averageNote?: number | null, address: string, budget: PoiBudget, coordinates: { __typename?: 'PointObject', x: number, y: number }, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', id: any, icon: string, name: string }> }> };
 
 export type GetNearPoIsQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type GetNearPoIsQuery = { __typename?: 'Query', getNearPOIs: Array<{ __typename?: 'POI', id: string, name: string, photos: Array<string>, slug: string, budget: PoiBudget, averageNote?: number | null, city: { __typename?: 'City', name: string }, categories: Array<{ __typename?: 'Category', icon: string, name: string }> }> };
+export type GetNearPoIsQuery = { __typename?: 'Query', getNearPOIs: Array<{ __typename?: 'POI', id: string, name: string, photos: Array<string>, slug: string, budget: PoiBudget, averageNote?: number | null, city: { __typename?: 'City', id: any, name: string }, categories: Array<{ __typename?: 'Category', icon: string, name: string }> }> };
 
 export type CreatePoiMutationVariables = Exact<{
   data: PoiCreateInput;
@@ -1557,6 +1564,7 @@ export const GetPoIsDocument = gql`
     description
     photos
     slug
+    averageNote
     coordinates {
       x
       y
@@ -1615,6 +1623,7 @@ export const GetPoIsBySlugDocument = gql`
     slug
     budget
     city {
+      id
       name
     }
     categories {
@@ -1667,6 +1676,7 @@ export const GetPoIsBySlugDiscoverDocument = gql`
     slug
     budget
     city {
+      id
       name
     }
     categories {
@@ -1711,6 +1721,66 @@ export type GetPoIsBySlugDiscoverQueryHookResult = ReturnType<typeof useGetPoIsB
 export type GetPoIsBySlugDiscoverLazyQueryHookResult = ReturnType<typeof useGetPoIsBySlugDiscoverLazyQuery>;
 export type GetPoIsBySlugDiscoverSuspenseQueryHookResult = ReturnType<typeof useGetPoIsBySlugDiscoverSuspenseQuery>;
 export type GetPoIsBySlugDiscoverQueryResult = Apollo.QueryResult<GetPoIsBySlugDiscoverQuery, GetPoIsBySlugDiscoverQueryVariables>;
+export const GetPoIsBySlugDiscoverEditDocument = gql`
+    query GetPOIsBySlugDiscoverEdit($slug: [String!]!) {
+  getPOIsBySlug(slug: $slug) {
+    id
+    name
+    description
+    photos
+    slug
+    averageNote
+    coordinates {
+      x
+      y
+    }
+    address
+    budget
+    city {
+      id
+      name
+    }
+    categories {
+      id
+      icon
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPoIsBySlugDiscoverEditQuery__
+ *
+ * To run a query within a React component, call `useGetPoIsBySlugDiscoverEditQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPoIsBySlugDiscoverEditQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPoIsBySlugDiscoverEditQuery({
+ *   variables: {
+ *      slug: // value for 'slug'
+ *   },
+ * });
+ */
+export function useGetPoIsBySlugDiscoverEditQuery(baseOptions: Apollo.QueryHookOptions<GetPoIsBySlugDiscoverEditQuery, GetPoIsBySlugDiscoverEditQueryVariables> & ({ variables: GetPoIsBySlugDiscoverEditQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPoIsBySlugDiscoverEditQuery, GetPoIsBySlugDiscoverEditQueryVariables>(GetPoIsBySlugDiscoverEditDocument, options);
+      }
+export function useGetPoIsBySlugDiscoverEditLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPoIsBySlugDiscoverEditQuery, GetPoIsBySlugDiscoverEditQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPoIsBySlugDiscoverEditQuery, GetPoIsBySlugDiscoverEditQueryVariables>(GetPoIsBySlugDiscoverEditDocument, options);
+        }
+export function useGetPoIsBySlugDiscoverEditSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetPoIsBySlugDiscoverEditQuery, GetPoIsBySlugDiscoverEditQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPoIsBySlugDiscoverEditQuery, GetPoIsBySlugDiscoverEditQueryVariables>(GetPoIsBySlugDiscoverEditDocument, options);
+        }
+export type GetPoIsBySlugDiscoverEditQueryHookResult = ReturnType<typeof useGetPoIsBySlugDiscoverEditQuery>;
+export type GetPoIsBySlugDiscoverEditLazyQueryHookResult = ReturnType<typeof useGetPoIsBySlugDiscoverEditLazyQuery>;
+export type GetPoIsBySlugDiscoverEditSuspenseQueryHookResult = ReturnType<typeof useGetPoIsBySlugDiscoverEditSuspenseQuery>;
+export type GetPoIsBySlugDiscoverEditQueryResult = Apollo.QueryResult<GetPoIsBySlugDiscoverEditQuery, GetPoIsBySlugDiscoverEditQueryVariables>;
 export const GetNearPoIsDocument = gql`
     query GetNearPOIs($slug: String!) {
   getNearPOIs(slug: $slug) {
@@ -1720,6 +1790,7 @@ export const GetNearPoIsDocument = gql`
     slug
     budget
     city {
+      id
       name
     }
     categories {
