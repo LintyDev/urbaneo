@@ -16,7 +16,7 @@ function DiscoverDescription({
 			<div className="flex items-center gap-1">
 				<p className="text-3xl font-medium">{poi?.name}</p>
 				<Notes note={poi?.averageNote ?? 0} />
-				{(user?.cityRole.some((c) => c.id === poi?.city.id) ||
+				{(user?.cityRole.some((c) => c.city.id === poi?.city.id) ||
 					user?.role === UserRole.Admin) && (
 					<DiscoverEdit slug={poi?.slug ?? ""} />
 				)}

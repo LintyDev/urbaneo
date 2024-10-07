@@ -15,7 +15,7 @@ export default class CategoryResolver {
 		return categories;
 	}
 
-	@Authorized(UserRole.ADMIN)
+	@Authorized(UserRole.USER, UserRole.USER_PREMIUM, UserRole.ADMIN)
 	@Query(() => [Category])
 	async searchCategories(@Arg("text") text: string) {
 		const categories = await new CategoryServices().searchCategories(text);

@@ -1,9 +1,15 @@
 import { FilePenLine } from "lucide-react";
 import CreateUpdatePOI from "../dashboard/pois/CreatePOI";
 import { useState } from "react";
-import { Query, useGetPoIsBySlugDiscoverEditQuery } from "@/graphql/schema";
+import {
+	Query,
+	useDeletePoiMutation,
+	useGetPoIsBySlugDiscoverEditQuery,
+} from "@/graphql/schema";
+import { useRouter } from "next/router";
 
 function DiscoverEdit({ slug }: { slug: string }) {
+	const router = useRouter();
 	const [openEditModal, setOpenEditModal] = useState(true);
 	const { loading, data, error } = useGetPoIsBySlugDiscoverEditQuery({
 		variables: {
@@ -12,11 +18,22 @@ function DiscoverEdit({ slug }: { slug: string }) {
 		skip: !slug,
 	});
 
-	const handleDeletePoi = (poi: Query["getPOIs"][number]) => {};
+	const [deletePOI] = useDeletePoiMutation();
+
+	const handleDeletePoi = async (poi: Query["getPOIs"][number]) => {
+		await deletePOI({
+			variables: {
+				deletePoiId: poi.id,
+			},
+			onCompleted(data, clientOptions) {
+				router.push("/moderation");
+			},
+		});
+	};
 	return (
 		<>
 			<p
-				className="ml-auto flex items-center gap-1 font-medium hover:underline cursor-pointer"
+				className="ml-auto flex items-center gap-1 cursor-pointer rounded-md bg-white px-[4px] py-1 text-sm font-semibold self-center text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
 				onClick={() => setOpenEditModal(false)}
 			>
 				<FilePenLine size={16} /> Editer

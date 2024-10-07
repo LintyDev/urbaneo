@@ -11,6 +11,9 @@ query Me {
 		cityRole {
 			id
 			label
+			city {
+				id
+			}
 		}
 	}
 }

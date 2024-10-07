@@ -500,7 +500,7 @@ export type UserWithoutPassword = {
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', id: any, label: Label }> } | null };
+export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'UserWithoutPassword', id: string, email: string, firstName: string, lastName: string, location: string, avatar: string, isValid: boolean, role: UserRole, cityRole: Array<{ __typename?: 'Role', id: any, label: Label, city: { __typename?: 'City', id: any } }> } | null };
 
 export type MyAccountQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -772,6 +772,9 @@ export const MeDocument = gql`
     cityRole {
       id
       label
+      city {
+        id
+      }
     }
   }
 }

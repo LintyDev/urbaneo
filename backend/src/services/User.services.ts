@@ -23,7 +23,7 @@ export default class UserServices {
 	async findUserByEmail(email: string): Promise<User | null> {
 		return await this.db.findOne({
 			where: { email },
-			relations: { cityRole: true },
+			relations: { cityRole: { city: true } },
 		});
 	}
 

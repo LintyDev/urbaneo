@@ -32,7 +32,8 @@ export default class POIResolver {
 			ctx.user?.role === UserRole.USER ||
 			ctx.user?.role === UserRole.USER_PREMIUM
 		) {
-			const authorizedCitiesIds = ctx.user?.cityRole.map((c) => c.id) ?? [];
+			const authorizedCitiesIds =
+				ctx.user?.cityRole.map((c) => c.city.id) ?? [];
 			const poisCityAdmin = await new POIServices().getPOIs(
 				limit,
 				authorizedCitiesIds
@@ -57,7 +58,7 @@ export default class POIResolver {
 			ctx.user?.role === UserRole.USER_PREMIUM
 		) {
 			const isAuthorized =
-				ctx.user?.cityRole.filter((r) => r.id === data.cityId) ?? [];
+				ctx.user?.cityRole.filter((r) => r.city.id === data.cityId) ?? [];
 			if (!isAuthorized?.length) {
 				throw new Error(
 					"Vous n'avez pas les droits pour effectuer cette action !"
@@ -87,7 +88,7 @@ export default class POIResolver {
 			ctx.user?.role === UserRole.USER_PREMIUM
 		) {
 			const isAuthorized =
-				ctx.user?.cityRole.filter((r) => r.id === data.cityId) ?? [];
+				ctx.user?.cityRole.filter((r) => r.city.id === data.cityId) ?? [];
 			if (!isAuthorized?.length) {
 				throw new Error(
 					"Vous n'avez pas les droits pour effectuer cette action !"
@@ -106,11 +107,13 @@ export default class POIResolver {
 	@Authorized(UserRole.ADMIN, UserRole.USER, UserRole.USER_PREMIUM)
 	@Mutation(() => Boolean)
 	async deletePOI(@Ctx() ctx: MyContext, @Arg("id") id: string) {
+		const poi = await new POIServices().getPOI(id);
 		if (
 			ctx.user?.role === UserRole.USER ||
 			ctx.user?.role === UserRole.USER_PREMIUM
 		) {
-			const isAuthorized = ctx.user?.cityRole.filter((r) => r.id === id) ?? [];
+			const isAuthorized =
+				ctx.user?.cityRole.filter((r) => r.city.id === poi.city.id) ?? [];
 			if (!isAuthorized?.length) {
 				throw new Error(
 					"Vous n'avez pas les droits pour effectuer cette action !"

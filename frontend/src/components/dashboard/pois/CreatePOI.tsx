@@ -34,12 +34,14 @@ function CreateUpdatePOI({
 	poiUpdate,
 	deletePoi,
 	disableCity,
+	setCity,
 }: {
 	closeCreatePOI: Dispatch<SetStateAction<boolean>>;
 	modal: "add" | "update";
 	poiUpdate?: Query["getPOIs"][number] | Query["getPOIsBySlug"][number];
-	deletePoi: (poi: Query["getPOIs"][number]) => void;
+	deletePoi?: (poi: Query["getPOIs"][number]) => void;
 	disableCity?: boolean;
+	setCity?: { cityId: string; cityName: string };
 }) {
 	const [latLong, setLatLong] = useState({ y: 50.633333, x: 3.066667 });
 	const [photos, setPhotos] = useState<{ url: string; file: File }[]>([]);
@@ -278,7 +280,7 @@ function CreateUpdatePOI({
 	});
 
 	const handleDeletePOI = async (poi: Query["getPOIs"][number]) => {
-		deletePoi(poi);
+		deletePoi && deletePoi(poi);
 	};
 
 	useEffect(() => {
@@ -334,6 +336,13 @@ function CreateUpdatePOI({
 			setPhotos([]);
 		}
 	}, [poiUpdate, reset, setValue]);
+
+	useEffect(() => {
+		if (setCity) {
+			setValue("cityId", setCity.cityId);
+			inputCity.current!.value = setCity.cityName;
+		}
+	}, [setCity, setValue]);
 
 	return (
 		<div className="flex flex-col w-full bg-white rounded-2xl shadow-md p-5 flex-grow overflow-visible">

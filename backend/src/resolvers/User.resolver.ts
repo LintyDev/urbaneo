@@ -158,6 +158,7 @@ export default class UserResolver {
 			let cookies = new Cookies(ctx.req, ctx.res);
 			cookies.set("token", token, {
 				httpOnly: true,
+				// secure: true
 			});
 
 			return newUser;
