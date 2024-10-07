@@ -1,5 +1,6 @@
 import CreateUpdatePOI from "@/components/dashboard/pois/CreatePOI";
 import ModerationPOI from "@/components/moderation/ModerationPOI";
+import ModerationUsers from "@/components/moderation/ModerationUsers";
 import { useAuth } from "@/contexts/AuthContext";
 import { Label } from "@/graphql/schema";
 import { MapPin, Monitor, PlusCircle, UserCog } from "lucide-react";
@@ -9,6 +10,7 @@ import { useState } from "react";
 function Moderation() {
 	const { user } = useAuth();
 	const [modalPOI, setModalPOI] = useState(false);
+	const [modalUsers, setModalUsers] = useState(false);
 	const [currCity, setCurrCity] = useState<{
 		slug: string;
 		name: string;
@@ -26,6 +28,15 @@ function Moderation() {
 	}) => {
 		setCurrCity(currCity);
 		setModalPOI(true);
+	};
+
+	const handleOpenManageUsers = (currCity: {
+		slug: string;
+		name: string;
+		id: string;
+	}) => {
+		setCurrCity(currCity);
+		setModalUsers(true);
 	};
 
 	return (
@@ -60,7 +71,16 @@ function Moderation() {
 											<MapPin size={14} /> Gérer les points d&apos;intérêts
 										</button>
 										{c.label === Label.CityAdmin && (
-											<button className="flex items-center gap-1 cursor-pointer rounded-md bg-black px-4 py-1 text-sm font-semibold self-center text-white shadow-sm ring-1 ring-inset ring-gray-900 hover:bg-gray-950">
+											<button
+												className="flex items-center gap-1 cursor-pointer rounded-md bg-black px-4 py-1 text-sm font-semibold self-center text-white shadow-sm ring-1 ring-inset ring-gray-900 hover:bg-gray-950"
+												onClick={() => {
+													handleOpenManageUsers({
+														slug: c.city.slug,
+														name: c.city.name,
+														id: c.city.id,
+													});
+												}}
+											>
 												<UserCog size={14} /> Gérer les modérateurs
 											</button>
 										)}
@@ -80,6 +100,9 @@ function Moderation() {
 				</div>
 			</section>
 			{modalPOI && <ModerationPOI closeModal={setModalPOI} city={currCity} />}
+			{modalUsers && (
+				<ModerationUsers closeModal={setModalUsers} city={currCity} />
+			)}
 		</>
 	);
 }

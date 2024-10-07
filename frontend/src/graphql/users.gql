@@ -36,6 +36,23 @@ query checkPassword($data: UserLoginInput!) {
 	checkPassword(data: $data)
 }
 
+query FindModeratorByCityId($cityId: String!) {
+	findModeratorByCityId(cityId: $cityId) {
+		email
+		avatar
+		firstName
+		location
+		id
+	}
+}
+
+query FindUserForCityRole($email: String!, $cityId: String!) {
+	findUserForCityRole(email: $email, cityId: $cityId) {
+		id
+		email
+	}
+}
+
 mutation UpdateUser($data: UserUpdateInput!) {
 	updateUser(data: $data) {
 		id

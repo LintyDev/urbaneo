@@ -1,13 +1,15 @@
-import { Repository } from "typeorm";
+import { ILike, Not, Repository } from "typeorm";
 import {
 	User,
 	UserCreateInput,
 	UserEditInput,
+	UserRole,
 	UserUpdateInput,
 } from "../entities/User.entity";
 import datasource from "../lib/datasource";
 import { validate } from "class-validator";
 import { SignJWT } from "jose";
+import { Label } from "../entities/Role.entity";
 
 export default class UserServices {
 	db: Repository<User>;
@@ -25,6 +27,40 @@ export default class UserServices {
 			where: { email },
 			relations: { cityRole: { city: true } },
 		});
+	}
+
+	async findModeratorByCityId(cityId: string): Promise<User[]> {
+		const users = await this.db.find({
+			where: {
+				role: Not(UserRole.ADMIN),
+				cityRole: {
+					label: Label.CITY_MODERATOR,
+					city: {
+						id: cityId,
+					},
+				},
+			},
+		});
+
+		return users;
+	}
+
+	async searchUsersForCityRole(
+		email: string,
+		id: string,
+		cityId: string
+	): Promise<User[]> {
+		const users = await this.db.find({
+			where: {
+				id: Not(id),
+				role: Not(UserRole.ADMIN),
+				email: ILike(`%${email}%`),
+				cityRole: {
+					city: { id: Not(cityId) },
+				},
+			},
+		});
+		return users;
 	}
 
 	async findUserByEmailWithReviews(email: string): Promise<User | null> {

@@ -1,14 +1,33 @@
-import { Arg, Args, Authorized, Mutation, Query, Resolver } from "type-graphql";
-import { UserRole } from "../entities/User.entity";
+import {
+	Arg,
+	Args,
+	Authorized,
+	Ctx,
+	Mutation,
+	Query,
+	Resolver,
+} from "type-graphql";
+import { User, UserRole } from "../entities/User.entity";
 import { Label, RoleInput, RoleUpdate } from "../entities/Role.entity";
 import RoleService from "../services/Role.services";
 import { Message } from "../entities/Message.entity";
+import MyContext from "../types/common.types";
 
 @Resolver()
 export default class RoleResolver {
-	@Authorized(UserRole.ADMIN)
+	@Authorized(UserRole.ADMIN, UserRole.USER, UserRole.USER_PREMIUM)
 	@Mutation(() => Message)
-	async AddRole(@Arg("data") data: RoleInput) {
+	async AddRole(@Ctx() ctx: MyContext, @Arg("data") data: RoleInput) {
+		if (ctx.user?.role !== UserRole.ADMIN) {
+			const isAuthorized = ctx.user?.cityRole.filter(
+				(r) => r.city.id === data.cityId
+			);
+
+			if (!isAuthorized?.length) {
+				throw new Error("Vous ne pouvez pas performer cette action");
+			}
+			data.label = Label.CITY_MODERATOR;
+		}
 		const msg = new Message();
 		try {
 			await new RoleService().addRole(data);
@@ -34,9 +53,20 @@ export default class RoleResolver {
 		return msg;
 	}
 
-	@Authorized(UserRole.ADMIN)
+	@Authorized(UserRole.ADMIN, UserRole.USER, UserRole.USER_PREMIUM)
 	@Mutation(() => Message)
-	async deleteRoles(@Arg("data") data: RoleInput) {
+	async deleteRoles(@Ctx() ctx: MyContext, @Arg("data") data: RoleInput) {
+		if (ctx.user?.role !== UserRole.ADMIN) {
+			const isAuthorized = ctx.user?.cityRole.filter(
+				(r) => r.city.id === data.cityId
+			);
+
+			if (!isAuthorized?.length) {
+				throw new Error("Vous ne pouvez pas performer cette action");
+			}
+			data.label = Label.CITY_MODERATOR;
+		}
+
 		const msg = new Message();
 		try {
 			await new RoleService().deleteRoleByCity(

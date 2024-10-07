@@ -14,6 +14,7 @@ import { SignJWT } from "jose";
 import Cookies from "cookies";
 import MyContext from "../types/common.types";
 import { Message } from "../entities/Message.entity";
+import { Label } from "../entities/Role.entity";
 
 @Resolver()
 export default class UserResolver {
@@ -45,6 +46,43 @@ export default class UserResolver {
 			throw new Error("");
 		}
 		return await new UserServices().findUserByEmailWithReviews(ctx.user.email);
+	}
+
+	@Authorized(UserRole.ADMIN, UserRole.USER, UserRole.USER_PREMIUM)
+	@Query(() => [UserWithoutPassword])
+	async findModeratorByCityId(
+		@Ctx() ctx: MyContext,
+		@Arg("cityId") cityId: string
+	) {
+		const isAuthorized = ctx.user?.cityRole.filter((r) => r.city.id === cityId);
+		if (!isAuthorized?.length) {
+			throw new Error("Vous ne pouvez pas performer cette action");
+		}
+
+		const users = await new UserServices().findModeratorByCityId(cityId);
+		return users;
+	}
+
+	@Authorized(UserRole.ADMIN, UserRole.USER, UserRole.USER_PREMIUM)
+	@Query(() => [UserWithoutPassword])
+	async findUserForCityRole(
+		@Ctx() ctx: MyContext,
+		@Arg("email") email: string,
+		@Arg("cityId") cityId: string
+	) {
+		const isAuthorized = ctx.user?.cityRole.filter(
+			(r) => r.label === Label.CITY_ADMIN
+		);
+		if (!isAuthorized) {
+			throw new Error("Vous ne pouvez pas performer cette action");
+		}
+
+		const users = await new UserServices().searchUsersForCityRole(
+			email,
+			ctx.user!.id,
+			cityId
+		);
+		return users;
 	}
 
 	@Query(() => Message)

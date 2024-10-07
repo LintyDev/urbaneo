@@ -273,6 +273,8 @@ export type PointObject = {
 export type Query = {
   __typename?: 'Query';
   checkPassword: Scalars['Boolean']['output'];
+  findModeratorByCityId: Array<UserWithoutPassword>;
+  findUserForCityRole: Array<UserWithoutPassword>;
   getAllReviews: Array<Review>;
   getAllReviewsByUser: Array<Review>;
   getCategories: Array<Category>;
@@ -301,6 +303,17 @@ export type Query = {
 
 export type QueryCheckPasswordArgs = {
   data: UserLoginInput;
+};
+
+
+export type QueryFindModeratorByCityIdArgs = {
+  cityId: Scalars['String']['input'];
+};
+
+
+export type QueryFindUserForCityRoleArgs = {
+  cityId: Scalars['String']['input'];
+  email: Scalars['String']['input'];
 };
 
 
@@ -749,6 +762,21 @@ export type CheckPasswordQueryVariables = Exact<{
 
 
 export type CheckPasswordQuery = { __typename?: 'Query', checkPassword: boolean };
+
+export type FindModeratorByCityIdQueryVariables = Exact<{
+  cityId: Scalars['String']['input'];
+}>;
+
+
+export type FindModeratorByCityIdQuery = { __typename?: 'Query', findModeratorByCityId: Array<{ __typename?: 'UserWithoutPassword', email: string, avatar: string, firstName: string, location: string, id: string }> };
+
+export type FindUserForCityRoleQueryVariables = Exact<{
+  email: Scalars['String']['input'];
+  cityId: Scalars['String']['input'];
+}>;
+
+
+export type FindUserForCityRoleQuery = { __typename?: 'Query', findUserForCityRole: Array<{ __typename?: 'UserWithoutPassword', id: string, email: string }> };
 
 export type UpdateUserMutationVariables = Exact<{
   data: UserUpdateInput;
@@ -2429,6 +2457,92 @@ export type CheckPasswordQueryHookResult = ReturnType<typeof useCheckPasswordQue
 export type CheckPasswordLazyQueryHookResult = ReturnType<typeof useCheckPasswordLazyQuery>;
 export type CheckPasswordSuspenseQueryHookResult = ReturnType<typeof useCheckPasswordSuspenseQuery>;
 export type CheckPasswordQueryResult = Apollo.QueryResult<CheckPasswordQuery, CheckPasswordQueryVariables>;
+export const FindModeratorByCityIdDocument = gql`
+    query FindModeratorByCityId($cityId: String!) {
+  findModeratorByCityId(cityId: $cityId) {
+    email
+    avatar
+    firstName
+    location
+    id
+  }
+}
+    `;
+
+/**
+ * __useFindModeratorByCityIdQuery__
+ *
+ * To run a query within a React component, call `useFindModeratorByCityIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindModeratorByCityIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindModeratorByCityIdQuery({
+ *   variables: {
+ *      cityId: // value for 'cityId'
+ *   },
+ * });
+ */
+export function useFindModeratorByCityIdQuery(baseOptions: Apollo.QueryHookOptions<FindModeratorByCityIdQuery, FindModeratorByCityIdQueryVariables> & ({ variables: FindModeratorByCityIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindModeratorByCityIdQuery, FindModeratorByCityIdQueryVariables>(FindModeratorByCityIdDocument, options);
+      }
+export function useFindModeratorByCityIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindModeratorByCityIdQuery, FindModeratorByCityIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindModeratorByCityIdQuery, FindModeratorByCityIdQueryVariables>(FindModeratorByCityIdDocument, options);
+        }
+export function useFindModeratorByCityIdSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<FindModeratorByCityIdQuery, FindModeratorByCityIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FindModeratorByCityIdQuery, FindModeratorByCityIdQueryVariables>(FindModeratorByCityIdDocument, options);
+        }
+export type FindModeratorByCityIdQueryHookResult = ReturnType<typeof useFindModeratorByCityIdQuery>;
+export type FindModeratorByCityIdLazyQueryHookResult = ReturnType<typeof useFindModeratorByCityIdLazyQuery>;
+export type FindModeratorByCityIdSuspenseQueryHookResult = ReturnType<typeof useFindModeratorByCityIdSuspenseQuery>;
+export type FindModeratorByCityIdQueryResult = Apollo.QueryResult<FindModeratorByCityIdQuery, FindModeratorByCityIdQueryVariables>;
+export const FindUserForCityRoleDocument = gql`
+    query FindUserForCityRole($email: String!, $cityId: String!) {
+  findUserForCityRole(email: $email, cityId: $cityId) {
+    id
+    email
+  }
+}
+    `;
+
+/**
+ * __useFindUserForCityRoleQuery__
+ *
+ * To run a query within a React component, call `useFindUserForCityRoleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindUserForCityRoleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindUserForCityRoleQuery({
+ *   variables: {
+ *      email: // value for 'email'
+ *      cityId: // value for 'cityId'
+ *   },
+ * });
+ */
+export function useFindUserForCityRoleQuery(baseOptions: Apollo.QueryHookOptions<FindUserForCityRoleQuery, FindUserForCityRoleQueryVariables> & ({ variables: FindUserForCityRoleQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindUserForCityRoleQuery, FindUserForCityRoleQueryVariables>(FindUserForCityRoleDocument, options);
+      }
+export function useFindUserForCityRoleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindUserForCityRoleQuery, FindUserForCityRoleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindUserForCityRoleQuery, FindUserForCityRoleQueryVariables>(FindUserForCityRoleDocument, options);
+        }
+export function useFindUserForCityRoleSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<FindUserForCityRoleQuery, FindUserForCityRoleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<FindUserForCityRoleQuery, FindUserForCityRoleQueryVariables>(FindUserForCityRoleDocument, options);
+        }
+export type FindUserForCityRoleQueryHookResult = ReturnType<typeof useFindUserForCityRoleQuery>;
+export type FindUserForCityRoleLazyQueryHookResult = ReturnType<typeof useFindUserForCityRoleLazyQuery>;
+export type FindUserForCityRoleSuspenseQueryHookResult = ReturnType<typeof useFindUserForCityRoleSuspenseQuery>;
+export type FindUserForCityRoleQueryResult = Apollo.QueryResult<FindUserForCityRoleQuery, FindUserForCityRoleQueryVariables>;
 export const UpdateUserDocument = gql`
     mutation UpdateUser($data: UserUpdateInput!) {
   updateUser(data: $data) {
