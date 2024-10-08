@@ -58,9 +58,7 @@ services:
       timeout: 30s
       retries: 5
   frontend:
-    build:
-    context: ./frontend
-    dockerfiler: Dockerfile.prod
+    build: ./frontend/prod.Dockerfile
     env_file:
       - ./frontend/.env
     ports:
