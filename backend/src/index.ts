@@ -20,6 +20,8 @@ import ReviewResolver from "./resolvers/Review.resolver";
 import CategoryResolver from "./resolvers/Category.resolver";
 import RoleResolver from "./resolvers/Role.resolver";
 import StatsResolver from "./resolvers/Stats.resolver";
+import { ApolloServerPluginLandingPageDisabled } from "@apollo/server/plugin/disabled";
+import { ApolloServerPluginLandingPageLocalDefault } from "@apollo/server/plugin/landingPage/default";
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -40,7 +42,12 @@ const main = async () => {
 	});
 	const server = new ApolloServer<MyContext>({
 		schema,
-		plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+		plugins: [
+			ApolloServerPluginDrainHttpServer({ httpServer }),
+			process.env.NODE_ENV === "production"
+				? ApolloServerPluginLandingPageDisabled()
+				: ApolloServerPluginLandingPageLocalDefault(),
+		],
 	});
 
 	await server.start();
