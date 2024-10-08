@@ -185,7 +185,7 @@ function CreateUpdatePOI({
 			const formImgs = new FormData();
 			Array.from(data.photos).forEach((f) => formImgs.append("picturePOI", f));
 			try {
-				const res = await axiosImg.post("/picture/imgPOI", formImgs);
+				const res = await axiosImg.post("/imgPOI", formImgs);
 				if (res.data.success && res.data.fileNames) {
 					fileNames = res.data.fileNames;
 					console.log("image saved");
@@ -236,10 +236,7 @@ function CreateUpdatePOI({
 					formImgsUpdate.append("picturePOI", f.file)
 				);
 				try {
-					const resUpdatePoi = await axiosImg.post(
-						"/picture/imgPOI",
-						formImgsUpdate
-					);
+					const resUpdatePoi = await axiosImg.post("/imgPOI", formImgsUpdate);
 					if (resUpdatePoi.data.success && resUpdatePoi.data.fileNames) {
 						fileNames = [...fileNames, ...resUpdatePoi.data.fileNames];
 						console.log("image updated");

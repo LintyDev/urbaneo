@@ -79,7 +79,7 @@ function Register() {
 			try {
 				const formImg = new FormData();
 				formImg.append("picture", data.avatar);
-				const res = await axiosImg.post("/picture/img", formImg);
+				const res = await axiosImg.post("/img", formImg);
 				if (res.data.success) {
 					filename = res.data.filename;
 				}

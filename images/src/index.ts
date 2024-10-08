@@ -28,7 +28,6 @@ app.get("/picture/hello", (req, res) => {
 });
 
 app.get("/picture/:img", (req, res) => {
-	console.log("get img", req.params.img);
 	const img = req.params.img;
 	const imgPath = path.dirname(__dirname) + "/img/" + img;
 
@@ -39,7 +38,6 @@ app.get("/picture/:img", (req, res) => {
 });
 
 app.post("/picture/img", function (req, res) {
-	console.log("post img");
 	upload(req, res, function (err: any) {
 		if (err instanceof multer.MulterError) {
 			return res.json({ message: err.message, success: false });
@@ -47,7 +45,6 @@ app.post("/picture/img", function (req, res) {
 			return res.json({ message: err.message, success: false });
 		}
 
-		console.log("IMAGES SAVES", req.file?.filename);
 		return res.json({
 			filename: req.file?.filename,
 			success: true,
@@ -77,13 +74,11 @@ app.post("/picture/imgPoi", function (req, res) {
 });
 
 app.post("/picture/deleteImg", function (req, res) {
-	console.log(req.body);
 	const path = `/images/img/${req.body.pictureName}`;
 	fs.unlink(path, (err) => {
 		if (err) {
 			return res.json({ message: err.message, success: false });
 		} else {
-			console.log("the file was deleted");
 			return res.json({
 				success: true,
 			});

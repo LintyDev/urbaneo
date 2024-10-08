@@ -3,7 +3,7 @@ import * as jose from "jose";
 import { Payload } from "../types/common";
 
 async function checkToken(req: Request, res: Response, next: NextFunction) {
-	console.log(req.cookies);
+	// console.log(req.cookies);
 	next();
 	return;
 	const header = req.headers["authorization"];

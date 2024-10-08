@@ -6,5 +6,5 @@ export const getImageUrl = (imageName?: string): string => {
 		);
 	}
 
-	return `${baseUrl}/picture/${imageName ?? "default.png"}`;
+	return `${baseUrl}/${imageName ?? "default.png"}`;
 };
