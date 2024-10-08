@@ -2,15 +2,17 @@ import POICard from "@/components/cards/POICard";
 import ErrorBox from "@/components/common/ErrorBox";
 import LoadingBox from "@/components/common/LoadingBox";
 import { useGetPoIsBySlugQuery } from "@/graphql/schema";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Favorites() {
-	const [favorites, setFavorites] = useState<string[]>(
-		JSON.parse(localStorage.getItem("favorite") ?? "[]")
-	);
+	const [favorites, setFavorites] = useState<string[]>([]);
 	const { loading, data, error } = useGetPoIsBySlugQuery({
 		variables: { slug: favorites },
 	});
+
+	useEffect(() => {
+		setFavorites(JSON.parse(localStorage.getItem("favorite") ?? "[]"));
+	}, []);
 
 	if (loading) return <LoadingBox />;
 	if (error) return <ErrorBox />;
