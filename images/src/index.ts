@@ -23,11 +23,11 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.get("/hello", (req, res) => {
+app.get("/picture/hello", (req, res) => {
 	res.send("Welcome to Urbaneo Images Server");
 });
 
-app.get("/:img", (req, res) => {
+app.get("/picture/:img", (req, res) => {
 	console.log("get img", req.params.img);
 	const img = req.params.img;
 	const imgPath = path.dirname(__dirname) + "/img/" + img;
@@ -38,7 +38,7 @@ app.get("/:img", (req, res) => {
 	});
 });
 
-app.post("/img", function (req, res) {
+app.post("/picture/img", function (req, res) {
 	console.log("post img");
 	upload(req, res, function (err: any) {
 		if (err instanceof multer.MulterError) {
@@ -57,7 +57,7 @@ app.post("/img", function (req, res) {
 
 app.use(checkToken);
 
-app.post("/imgPoi", function (req, res) {
+app.post("/picture/imgPoi", function (req, res) {
 	uploadPOI(req, res, function (err: any) {
 		if (err instanceof multer.MulterError) {
 			return res.json({ message: err.message, success: false });
@@ -76,7 +76,7 @@ app.post("/imgPoi", function (req, res) {
 	});
 });
 
-app.post("/deleteImg", function (req, res) {
+app.post("/picture/deleteImg", function (req, res) {
 	console.log(req.body);
 	const path = `/images/img/${req.body.pictureName}`;
 	fs.unlink(path, (err) => {
