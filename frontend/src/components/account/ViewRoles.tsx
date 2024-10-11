@@ -6,10 +6,10 @@ function ViewRoles({ user }: { user: MyAccountQuery["mePlus"] }) {
 		case UserRole.Admin:
 			status = "Administrateur";
 			break;
-		case UserRole.User:
+		case UserRole.UserPremium:
 			status = "Membre Premium";
 			break;
-		case UserRole.UserPremium:
+		case UserRole.User:
 			status = "Membre";
 			break;
 	}
